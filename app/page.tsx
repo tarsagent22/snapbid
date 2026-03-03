@@ -88,7 +88,7 @@ export default function Home() {
                     onChange={handleChange}
                     placeholder="e.g. Mike's Plumbing LLC"
                     required
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
@@ -98,7 +98,7 @@ export default function Home() {
                     value={form.trade}
                     onChange={handleChange}
                     required
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select your trade</option>
                     <option value="plumbing">Plumbing</option>
@@ -123,7 +123,7 @@ export default function Home() {
                     onChange={handleChange}
                     placeholder="e.g. John Smith"
                     required
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
@@ -134,7 +134,7 @@ export default function Home() {
                     onChange={handleChange}
                     placeholder="e.g. 123 Main St, Austin TX"
                     required
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -148,7 +148,7 @@ export default function Home() {
                   placeholder="e.g. Replace kitchen faucet and fix slow drain under sink. Customer also wants new shut-off valves installed."
                   required
                   rows={4}
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 />
               </div>
 
@@ -160,7 +160,7 @@ export default function Home() {
                   onChange={handleChange}
                   placeholder="e.g. 85"
                   type="number"
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <p className="text-xs text-gray-400 mt-1">Leave blank and we&apos;ll use market rates for your trade</p>
               </div>
