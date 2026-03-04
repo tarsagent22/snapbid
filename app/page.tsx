@@ -28,6 +28,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [quote, setQuote] = useState<any>(null)
   const [error, setError] = useState('')
+  const [lineItemOverrides] = useState<Record<number, string>>({})
 
   // Load profile if logged in
   useEffect(() => {
@@ -77,17 +78,136 @@ export default function Home() {
   }
 
   const handleDownloadPDF = async () => {
-    const res = await fetch('/api/generate-pdf', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, ...quote, businessName: profile?.businessName || form.businessName }),
+    const { jsPDF } = await import('jspdf')
+    const doc = new jsPDF({ unit: 'pt', format: 'letter' })
+
+    const biz = profile?.businessName || form.businessName
+    const trade = profile?.trade || form.trade
+    const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    const pageW = doc.internal.pageSize.getWidth()
+    const margin = 48
+    const contentW = pageW - margin * 2
+    let y = margin
+
+    // Header bar
+    doc.setFillColor(37, 99, 235)
+    doc.rect(0, 0, pageW, 72, 'F')
+    doc.setTextColor(255, 255, 255)
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(20)
+    doc.text(biz, margin, 36)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(11)
+    doc.text(trade ? trade.charAt(0).toUpperCase() + trade.slice(1) + ' Services' : '', margin, 54)
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(13)
+    doc.text(`Quote ${quote.quoteNumber}`, pageW - margin, 32, { align: 'right' })
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.text(date, pageW - margin, 48, { align: 'right' })
+    doc.text('Valid for 30 days', pageW - margin, 62, { align: 'right' })
+
+    y = 96
+
+    // Bill to box
+    doc.setFillColor(249, 250, 251)
+    doc.roundedRect(margin, y, contentW, 56, 4, 4, 'F')
+    doc.setTextColor(107, 114, 128)
+    doc.setFontSize(9)
+    doc.setFont('helvetica', 'bold')
+    doc.text('PREPARED FOR', margin + 12, y + 16)
+    doc.setTextColor(17, 24, 39)
+    doc.setFontSize(12)
+    doc.text(form.clientName, margin + 12, y + 32)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.setTextColor(107, 114, 128)
+    doc.text(form.clientAddress, margin + 12, y + 46)
+
+    y += 72
+
+    // Line items table header
+    doc.setFillColor(243, 244, 246)
+    doc.rect(margin, y, contentW, 22, 'F')
+    doc.setTextColor(107, 114, 128)
+    doc.setFontSize(9)
+    doc.setFont('helvetica', 'bold')
+    doc.text('DESCRIPTION', margin + 8, y + 15)
+    doc.text('QTY', margin + contentW * 0.62, y + 15, { align: 'right' })
+    doc.text('UNIT PRICE', margin + contentW * 0.78, y + 15, { align: 'right' })
+    doc.text('TOTAL', margin + contentW, y + 15, { align: 'right' })
+    y += 22
+
+    // Line items rows
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    ;(quote.lineItems || []).forEach((item: any, i: number) => {
+      if (i % 2 === 1) {
+        doc.setFillColor(249, 250, 251)
+        doc.rect(margin, y, contentW, 24, 'F')
+      }
+      doc.setTextColor(55, 65, 81)
+      const descLines = doc.splitTextToSize(item.description, contentW * 0.55)
+      doc.text(descLines, margin + 8, y + 16)
+      doc.setTextColor(107, 114, 128)
+      doc.text(String(item.qty), margin + contentW * 0.62, y + 16, { align: 'right' })
+      doc.text(`$${item.unitPrice}`, margin + contentW * 0.78, y + 16, { align: 'right' })
+      doc.setTextColor(17, 24, 39)
+      doc.setFont('helvetica', 'bold')
+      const override = lineItemOverrides[i]
+      doc.text(`$${override ?? item.total}`, margin + contentW, y + 16, { align: 'right' })
+      doc.setFont('helvetica', 'normal')
+      y += Math.max(24, descLines.length * 14)
     })
-    const blob = await res.blob()
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `snapbid-quote-${form.clientName.replace(/\s+/g, '-')}.html`
-    a.click()
+
+    // Divider
+    doc.setDrawColor(229, 231, 235)
+    doc.line(margin, y + 4, pageW - margin, y + 4)
+    y += 16
+
+    // Totals
+    const totalsX = pageW - margin - 200
+    doc.setTextColor(107, 114, 128)
+    doc.setFontSize(10)
+    doc.text('Subtotal', totalsX, y + 14)
+    doc.text(`$${quote.subtotal}`, pageW - margin, y + 14, { align: 'right' })
+    doc.text('Tax (est.)', totalsX, y + 30)
+    doc.text(`$${quote.tax}`, pageW - margin, y + 30, { align: 'right' })
+    doc.setDrawColor(229, 231, 235)
+    doc.line(totalsX, y + 36, pageW - margin, y + 36)
+    doc.setTextColor(17, 24, 39)
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(13)
+    doc.setTextColor(37, 99, 235)
+    doc.text('TOTAL', totalsX, y + 52)
+    doc.text(`$${quote.total}`, pageW - margin, y + 52, { align: 'right' })
+    y += 72
+
+    // Notes
+    if (quote.notes) {
+      doc.setFillColor(239, 246, 255)
+      const noteLines = doc.splitTextToSize(quote.notes, contentW - 24)
+      const noteH = noteLines.length * 14 + 28
+      doc.roundedRect(margin, y, contentW, noteH, 4, 4, 'F')
+      doc.setTextColor(29, 78, 216)
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(9)
+      doc.text('NOTES', margin + 12, y + 16)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(10)
+      doc.text(noteLines, margin + 12, y + 30)
+      y += noteH + 16
+    }
+
+    // Footer
+    doc.setDrawColor(229, 231, 235)
+    doc.line(margin, y + 8, pageW - margin, y + 8)
+    doc.setTextColor(156, 163, 175)
+    doc.setFontSize(9)
+    doc.setFont('helvetica', 'normal')
+    doc.text('Generated by SnapBid · AI-powered quotes for contractors · snapbid.app', pageW / 2, y + 22, { align: 'center' })
+
+    doc.save(`snapbid-quote-${form.clientName.replace(/\s+/g, '-')}.pdf`)
   }
 
   return (
@@ -450,7 +570,7 @@ export default function Home() {
 
             <div className="flex gap-4">
               <button onClick={handleDownloadPDF} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors text-sm">
-                📄 Download Quote
+                📄 Download PDF
               </button>
               <button onClick={() => setQuote(null)} className="flex-1 border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 px-6 rounded-xl transition-colors text-sm">
                 New Quote
