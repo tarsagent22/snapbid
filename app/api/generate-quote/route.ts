@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     const { businessName, trade, clientName, clientAddress, jobDescription, yourRate } = await req.json()
 
     const hourlyRate = yourRate ? parseFloat(yourRate) : (TRADE_RATES[trade] || 75)
-    const quoteNum = `QK-${Math.floor(1000 + Math.random() * 9000)}`
+    const quoteNum = `SB-${Math.floor(1000 + Math.random() * 9000)}`
 
     const prompt = `You are an expert contractor estimator. Generate a professional quote breakdown for the following job.
 

@@ -62,9 +62,9 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">Q</span>
+              <span className="text-white font-bold text-sm">S</span>
             </div>
-            <span className="font-semibold text-gray-900 text-lg">QuoteKit</span>
+            <span className="font-semibold text-gray-900 text-lg">SnapBid</span>
           </div>
           <span className="text-sm text-gray-500">AI-powered quotes in 60 seconds</span>
         </div>
@@ -294,7 +294,7 @@ export default function Home() {
 
             <p className="text-center text-xs text-gray-400">
               Want unlimited quotes + your logo on every PDF?{' '}
-              <a href="#" className="text-blue-600 underline">Upgrade to Pro — $19/mo</a>
+              <a href="https://snapbid.app" className="text-blue-600 underline">Upgrade to SnapBid Pro — $19/mo</a>
             </p>
           </div>
         )}
