@@ -5,7 +5,7 @@ set -e
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 # Token read from environment or secrets file
-VERCEL_TOKEN="${VERCEL_TOKEN:-$(grep 'Token (snapbid):' /home/tarsagent/.openclaw/workspace/SECRETS.md | awk '{print $NF}' | tr -d '[:space:]')}"
+VERCEL_TOKEN="${VERCEL_TOKEN:-$(grep 'Token (snapbid):' /home/tarsagent/.openclaw/workspace/SECRETS.md | grep -v 'Personal\|GitHub\|PAT' | awk '{print $NF}' | tr -d '[:space:]')}"
 COMMIT_MSG="${1:-chore: update}"
 
 echo "▶ Building..."
