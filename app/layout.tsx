@@ -1,10 +1,13 @@
 import type { Metadata } from 'next'
-import { Inter, Geist, Geist_Mono } from 'next/font/google'
+import { Inter, Geist_Mono } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
-const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -17,10 +20,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={`${inter.className} ${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <html lang="en" className={`${inter.variable} ${geistMono.variable}`}>
+        <body>
           {children}
-          <footer className="bg-gray-50 border-t border-gray-200 py-4 text-center text-xs text-gray-400">
+          <footer className="border-t border-gray-100 py-5 text-center text-xs text-gray-400 bg-white">
             © 2026 SnapBid · Built for tradespeople
           </footer>
         </body>

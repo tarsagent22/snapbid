@@ -148,43 +148,48 @@ export default function ProfilePage() {
     )
   }
 
-  const inputCls = "w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition-all duration-200"
-  const selectCls = "w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition-all duration-200"
-  const labelCls = "block text-sm font-medium text-gray-700 mb-1"
-  const sectionCls = "bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-5"
+  const inputCls = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 bg-white transition-all duration-150"
+  const selectCls = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 bg-white transition-all duration-150"
+  const labelCls = "block text-sm font-medium text-gray-700 mb-1.5"
+  const sectionCls = "bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5"
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center gap-3">
-          <div className="w-8 h-8 bg-[#2563EB] rounded-lg flex items-center justify-center flex-shrink-0">
-            <span className="text-white font-bold text-sm">S</span>
+    <main className="min-h-screen" style={{ background: 'var(--background)' }}>
+      <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-3.5 flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center shadow-sm shadow-blue-200 flex-shrink-0">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M9 1L3 9h5l-1 6 7-10H9V1z" fill="white" strokeLinejoin="round"/>
+            </svg>
           </div>
-          <span className="font-semibold text-gray-900 text-base sm:text-lg">SnapBid</span>
-          <span className="text-gray-400">·</span>
-          <span className="text-gray-500 text-sm">Your Profile</span>
+          <span className="font-semibold text-gray-900 text-[17px] tracking-tight">SnapBid</span>
+          <span className="text-gray-300">·</span>
+          <span className="text-gray-400 text-sm">Your Profile</span>
         </div>
       </header>
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 pt-4">
-        <button onClick={() => router.push('/')} className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1">
-          ← Back to quotes
+        <button onClick={() => router.push('/')} className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 transition-colors">
+          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/>
+          </svg>
+          Back to quotes
         </button>
       </div>
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         {isNew && (
-          <div className="bg-blue-50 border border-blue-100 rounded-xl px-5 py-4">
-            <p className="text-blue-800 font-medium text-sm">👋 Welcome to SnapBid!</p>
-            <p className="text-blue-600 text-sm mt-1">Set up your profile once and every quote will be calibrated to your business — your rates, your contact info, your terms.</p>
+          <div className="bg-gradient-to-r from-[#2563EB] to-blue-700 rounded-2xl px-6 py-5 text-white">
+            <p className="font-semibold text-base">👋 Welcome to SnapBid!</p>
+            <p className="text-blue-100 text-sm mt-1 leading-relaxed">Set up your profile once and every quote will be calibrated to your business — your rates, your contact info, your terms.</p>
           </div>
         )}
 
         {/* Section 1: Business Identity */}
         <div className={sectionCls}>
           <div>
-            <h2 className="text-base font-semibold text-gray-900">Business Identity</h2>
-            <p className="text-sm text-gray-400 mt-0.5">Appears on every quote you send.</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Business Identity</p>
+            <p className="text-sm text-gray-400 mt-1">Appears on every quote you send.</p>
           </div>
 
           <div>
@@ -223,8 +228,8 @@ export default function ProfilePage() {
         {/* Section 2: Contact Info */}
         <div className={sectionCls}>
           <div>
-            <h2 className="text-base font-semibold text-gray-900">Contact Information</h2>
-            <p className="text-sm text-gray-400 mt-0.5">Printed on every quote so clients can reach you directly.</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Contact Information</p>
+            <p className="text-sm text-gray-400 mt-1">Printed on every quote so clients can reach you directly.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -255,8 +260,8 @@ export default function ProfilePage() {
         {/* Section 3: Pricing */}
         <div className={sectionCls}>
           <div>
-            <h2 className="text-base font-semibold text-gray-900">Pricing Defaults</h2>
-            <p className="text-sm text-gray-400 mt-0.5">Used to calculate every quote. You can override per job.</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Pricing Defaults</p>
+            <p className="text-sm text-gray-400 mt-1">Used to calculate every quote. You can override per job.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -309,8 +314,8 @@ export default function ProfilePage() {
         {/* Section 4: Quote Settings */}
         <div className={sectionCls}>
           <div>
-            <h2 className="text-base font-semibold text-gray-900">Quote Settings</h2>
-            <p className="text-sm text-gray-400 mt-0.5">Control how your quotes look and what terms they include.</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Quote Settings</p>
+            <p className="text-sm text-gray-400 mt-1">Control how your quotes look and what terms they include.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
