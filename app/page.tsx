@@ -131,7 +131,13 @@ export default function Home() {
       <div className="max-w-4xl mx-auto px-6 py-10">
         {!quote ? (
           <>
-            <div className="mb-8 text-center">
+            <div
+              className="mb-8 text-center py-8 rounded-2xl"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='%23e5e7eb'/%3E%3C/svg%3E")`,
+                backgroundSize: '20px 20px',
+              }}
+            >
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Generate a Professional Quote</h1>
               <p className="text-gray-500">
                 {profile ? 'Calibrated to your rates — describe the job and go.' : 'Describe the job — we\'ll handle the rest'}

@@ -100,6 +100,15 @@ export default function ProfilePage() {
         </div>
       </header>
 
+      <div className="max-w-2xl mx-auto px-6 pt-6">
+        <button
+          onClick={() => router.push('/')}
+          className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
+        >
+          ← Back to quotes
+        </button>
+      </div>
+
       <div className="max-w-2xl mx-auto px-6 py-10">
         {isNew && (
           <div className="mb-6 bg-blue-50 border border-blue-100 rounded-xl px-5 py-4">
