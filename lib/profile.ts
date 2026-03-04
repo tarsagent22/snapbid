@@ -64,3 +64,41 @@ export async function incrementQuoteCount(userId: string): Promise<number> {
   await saveProfile(profile)
   return profile.quoteCount
 }
+
+// ── Quote history (stored in Clerk private metadata) ──────────────────────────
+
+export interface SavedQuote {
+  id: string
+  createdAt: string
+  clientName: string
+  clientAddress: string
+  jobDescription: string
+  total: number
+  lineItems: Array<{ description: string; qty: number; unitPrice: number; total: number }>
+  subtotal: number
+  tax: number
+  notes?: string
+  quoteNumber: string
+}
+
+export async function getQuoteHistory(userId: string): Promise<SavedQuote[]> {
+  try {
+    const client = await clerkClient()
+    const user = await client.users.getUser(userId)
+    return (user.privateMetadata?.quoteHistory as SavedQuote[]) ?? []
+  } catch {
+    return []
+  }
+}
+
+export async function saveQuoteToHistory(userId: string, quote: SavedQuote): Promise<void> {
+  const history = await getQuoteHistory(userId)
+  // Prepend newest first, keep last 50
+  const updated = [quote, ...history].slice(0, 50)
+  const client = await clerkClient()
+  await client.users.updateUserMetadata(userId, {
+    privateMetadata: {
+      quoteHistory: updated,
+    },
+  })
+}

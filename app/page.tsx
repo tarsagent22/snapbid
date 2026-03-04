@@ -20,6 +20,7 @@ const EXAMPLE_PROMPTS = [
 ]
 
 const FREE_QUOTA = 3
+const FORM_STORAGE_KEY = 'snapbid_draft_form'
 
 export default function Home() {
   const { user, isLoaded } = useUser()
@@ -28,6 +29,9 @@ export default function Home() {
   const [profile, setProfile] = useState<any>(null)
   const [quotesUsed, setQuotesUsed] = useState(0)
   const [showPaywall, setShowPaywall] = useState(false)
+  const [activeTab, setActiveTab] = useState<'new' | 'history'>('new')
+  const [history, setHistory] = useState<any[]>([])
+  const [historyLoading, setHistoryLoading] = useState(false)
   const [form, setForm] = useState({
     businessName: '',
     trade: '',
@@ -43,6 +47,19 @@ export default function Home() {
   const [copied, setCopied] = useState(false)
   const [descCount, setDescCount] = useState(0)
 
+  // Restore draft form from sessionStorage (survives sign-in redirect)
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem(FORM_STORAGE_KEY)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        setForm(f => ({ ...f, ...parsed }))
+        setDescCount(parsed.jobDescription?.length || 0)
+        sessionStorage.removeItem(FORM_STORAGE_KEY)
+      }
+    } catch {}
+  }, [])
+
   useEffect(() => {
     if (user) {
       fetch('/api/profile')
@@ -51,7 +68,12 @@ export default function Home() {
           if (data.profile) {
             setProfile(data.profile)
             setQuotesUsed(data.profile.quoteCount || 0)
-            setForm(f => ({ ...f, businessName: data.profile.businessName, trade: data.profile.trade }))
+            setForm(f => ({
+              ...f,
+              // Only fill business/trade if the draft doesn't already have client info
+              businessName: f.businessName || data.profile.businessName,
+              trade: f.trade || data.profile.trade,
+            }))
           } else {
             router.push('/profile')
           }
@@ -59,17 +81,32 @@ export default function Home() {
     }
   }, [user, router])
 
+  // Load history when tab switches
+  useEffect(() => {
+    if (activeTab === 'history' && user && history.length === 0) {
+      setHistoryLoading(true)
+      fetch('/api/quotes')
+        .then(r => r.json())
+        .then(data => setHistory(data.history || []))
+        .finally(() => setHistoryLoading(false))
+    }
+  }, [activeTab, user, history.length])
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
+    const updated = { ...form, [e.target.name]: e.target.value }
+    setForm(updated)
     if (e.target.name === 'jobDescription') setDescCount(e.target.value.length)
+    // Persist draft so it survives sign-in redirect
+    try { sessionStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(updated)) } catch {}
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Gate 1: guests must sign in — no identity = no tracking = no free quotes
+    // Gate 1: guests must sign in — save form first so it survives the redirect
     if (!user) {
-      openSignIn({ forceRedirectUrl: '/profile' })
+      try { sessionStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(form)) } catch {}
+      openSignIn({ forceRedirectUrl: '/' })
       return
     }
 
@@ -93,6 +130,9 @@ export default function Home() {
       setQuote(data)
       // Update local count from server response
       if (data.quoteCount !== undefined) setQuotesUsed(data.quoteCount)
+      // Clear draft and invalidate history cache
+      try { sessionStorage.removeItem(FORM_STORAGE_KEY) } catch {}
+      setHistory([]) // will re-fetch if user opens history tab
     } catch (err: any) {
       setError('Couldn\'t generate the quote. Try describing the job with more detail.')
     } finally {
@@ -346,9 +386,79 @@ export default function Home() {
         </div>
       )}
 
+      {/* ── TAB BAR (signed-in only) ─────────────────────────────────────────── */}
+      {user && !quote && (
+        <div className="border-b border-gray-100 bg-white">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 flex gap-6">
+            {(['new', 'history'] as const).map(tab => (
+              <button key={tab} onClick={() => setActiveTab(tab)}
+                className={`py-3 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === tab
+                    ? 'border-[#2563EB] text-[#2563EB]'
+                    : 'border-transparent text-gray-400 hover:text-gray-600'
+                }`}>
+                {tab === 'new' ? 'New Quote' : 'Quote History'}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ── MAIN CONTENT ────────────────────────────────────────────────────── */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
-        {!quote ? (
+        {/* ── HISTORY TAB ── */}
+        {activeTab === 'history' && user && !quote ? (
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-xl font-semibold text-gray-900 mb-5">Quote History</h2>
+            {historyLoading ? (
+              <div className="space-y-3">
+                {[1,2,3].map(i => (
+                  <div key={i} className="bg-white rounded-2xl border border-gray-100 p-5 animate-shimmer h-20" />
+                ))}
+              </div>
+            ) : history.length === 0 ? (
+              <div className="bg-white rounded-2xl border-2 border-dashed border-gray-200 p-12 text-center">
+                <div className="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-3 mx-auto">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M6 7h8M6 10h6M6 13h4M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"
+                      stroke="#d1d5db" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                </div>
+                <p className="text-sm font-medium text-gray-400">No quotes yet</p>
+                <p className="text-xs text-gray-300 mt-1">Your generated quotes will appear here</p>
+                <button onClick={() => setActiveTab('new')}
+                  className="mt-4 text-sm text-[#2563EB] hover:underline font-medium">
+                  Generate your first quote →
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {history.map((q: any) => (
+                  <div key={q.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:border-gray-200 transition-colors">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs font-mono text-gray-400">{q.quoteNumber}</span>
+                          <span className="text-gray-200 text-xs">·</span>
+                          <span className="text-xs text-gray-400">{new Date(q.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                        </div>
+                        <p className="font-semibold text-gray-900 text-sm truncate">{q.clientName || '—'}</p>
+                        <p className="text-xs text-gray-400 truncate">{q.clientAddress}</p>
+                        {q.jobDescription && (
+                          <p className="text-xs text-gray-400 mt-1 truncate italic">"{q.jobDescription}"</p>
+                        )}
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-lg font-bold text-gray-900">${q.total?.toLocaleString()}</p>
+                        <p className="text-xs text-gray-400">{q.lineItems?.length || 0} line items</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : !quote ? (
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
             {/* ── FORM (left / full width on mobile) ── */}
@@ -566,14 +676,33 @@ export default function Home() {
 
               {/* Sign-in nudge for guests */}
               {!user && isLoaded && (
-                <div className="bg-gradient-to-br from-[#2563EB] to-blue-700 rounded-2xl p-5 text-white">
-                  <p className="font-semibold text-sm mb-1">Get calibrated quotes</p>
-                  <p className="text-blue-200 text-xs mb-4 leading-relaxed">Sign in once to set your hourly rate, markup, and region. Every quote auto-adjusts to your numbers.</p>
-                  <SignInButton mode="modal" forceRedirectUrl="/profile">
-                    <button className="w-full bg-white text-[#2563EB] font-semibold py-2 rounded-lg text-sm hover:bg-blue-50 transition-colors">
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900 mb-1">Quotes calibrated to your business</p>
+                    <p className="text-xs text-gray-400 leading-relaxed">Sign in once to set your hourly rate, markup, and region. Every quote auto-adjusts to your exact numbers.</p>
+                  </div>
+                  <div className="space-y-2">
+                    {[
+                      'Accurate pricing every time',
+                      'Your branding on the PDF',
+                      'Quote history saved automatically',
+                    ].map(f => (
+                      <div key={f} className="flex items-center gap-2 text-xs text-gray-600">
+                        <svg className="w-3.5 h-3.5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
+                        </svg>
+                        {f}
+                      </div>
+                    ))}
+                  </div>
+                  <SignInButton mode="modal" forceRedirectUrl="/">
+                    <button className="w-full bg-[#2563EB] hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors shadow-sm shadow-blue-200">
                       Create free account →
                     </button>
                   </SignInButton>
+                  <p className="text-center text-[11px] text-gray-400">
+                    ✉️ Just your email — no password needed
+                  </p>
                 </div>
               )}
             </div>

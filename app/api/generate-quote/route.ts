@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { auth } from '@clerk/nextjs/server'
-import { getProfile, incrementQuoteCount } from '@/lib/profile'
+import { getProfile, incrementQuoteCount, saveQuoteToHistory } from '@/lib/profile'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -132,11 +132,27 @@ Return ONLY valid JSON, no markdown:
     quoteData.tax = tax
     quoteData.total = subtotal + tax
 
-    // Track quote count for paywall
+    // Track quote count and save to history
     if (userId) {
       const count = await incrementQuoteCount(userId)
       quoteData.quoteCount = count
       quoteData.isOverLimit = count > 3
+
+      // Save to history (fire-and-forget, don't block response)
+      const body = await req.clone().json().catch(() => ({}))
+      saveQuoteToHistory(userId, {
+        id: quoteData.quoteNumber || `Q-${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        clientName: body.clientName || '',
+        clientAddress: body.clientAddress || '',
+        jobDescription: body.jobDescription || '',
+        total: quoteData.total,
+        subtotal: quoteData.subtotal,
+        tax: quoteData.tax,
+        lineItems: quoteData.lineItems || [],
+        notes: quoteData.notes || '',
+        quoteNumber: quoteData.quoteNumber || '',
+      }).catch(console.error)
     }
 
     return NextResponse.json(quoteData)
