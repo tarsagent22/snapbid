@@ -60,6 +60,7 @@ export default function Home() {
   const [expandedHistoryId, setExpandedHistoryId] = useState<string | null>(null)
   const [historyPdfDownloading, setHistoryPdfDownloading] = useState<string | null>(null)
   const [statusUpdating, setStatusUpdating] = useState<string | null>(null)
+  const [reuseFlash, setReuseFlash] = useState<string | null>(null)
 
   // Restore draft form from sessionStorage (survives sign-in redirect)
   useEffect(() => {
@@ -295,6 +296,33 @@ ${biz}`
       setHistory(prev => prev.map(q => q.id === quoteId ? { ...q, status } : q))
     } catch {}
     setStatusUpdating(null)
+  }
+
+  const handleReuseQuote = (q: any) => {
+    // Pre-fill the new quote form from a history entry.
+    // We copy client info and job context, but clear the client name/address
+    // so the contractor can adjust if it's a different client (they see it's pre-filled).
+    setForm(f => ({
+      ...f,
+      clientName: q.clientName || '',
+      clientAddress: q.clientAddress || '',
+      clientEmail: q.clientEmail || '',
+      jobDescription: q.jobDescription || '',
+      // Don't carry over material tier / job type / property / access — let the user choose fresh
+      materialTierOverride: '',
+      jobType: '',
+      propertyType: '',
+      accessDifficulty: '',
+    }))
+    setDescCount((q.jobDescription || '').length)
+    setQuote(null)
+    setError('')
+    setLineItemOverrides({})
+    setActiveTab('new')
+    setReuseFlash(q.id)
+    setTimeout(() => setReuseFlash(null), 3000)
+    // Scroll to top so the user sees the pre-filled form
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleDownloadPDF = async () => {
@@ -1115,7 +1143,7 @@ ${biz}`
                           </div>
 
                           {/* Actions */}
-                          <div className="flex gap-2 mt-4">
+                          <div className="flex gap-2 mt-4 flex-wrap">
                             <button
                               onClick={() => handleDownloadHistoryPDF(q)}
                               disabled={historyPdfDownloading === q.id}
@@ -1132,6 +1160,30 @@ ${biz}`
                                 </svg>
                               )}
                               {historyPdfDownloading === q.id ? 'Generating…' : 'Download PDF'}
+                            </button>
+                            <button
+                              onClick={() => handleReuseQuote(q)}
+                              className={`flex items-center gap-1.5 border font-semibold py-2 px-4 rounded-xl text-xs transition-all ${
+                                reuseFlash === q.id
+                                  ? 'bg-green-500 border-green-500 text-white'
+                                  : 'bg-white border-gray-200 text-gray-600 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50'
+                              }`}
+                            >
+                              {reuseFlash === q.id ? (
+                                <>
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
+                                  </svg>
+                                  Form pre-filled!
+                                </>
+                              ) : (
+                                <>
+                                  <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                  </svg>
+                                  Reuse Quote
+                                </>
+                              )}
                             </button>
                           </div>
                         </div>
@@ -1156,6 +1208,16 @@ ${biz}`
                   {profile ? 'Calibrated to your rates — describe the job and go.' : 'Fill in the details and we\'ll handle the math.'}
                 </p>
               </div>
+
+              {/* Pre-fill banner — shown briefly after reusing a quote */}
+              {reuseFlash && (
+                <div className="flex items-center gap-2.5 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-4 text-sm text-blue-700 animate-fade-in-up">
+                  <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <span>Form pre-filled from your previous quote — update any details and generate a new one.</span>
+                </div>
+              )}
 
               <form onSubmit={handleSubmit} className="space-y-5">
 
