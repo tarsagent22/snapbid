@@ -1967,7 +1967,7 @@ ${biz}`
 
             {/* Founder badge */}
             <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4 text-center">
-              <span className="text-xs font-semibold text-amber-700">🔥 Founder Pricing — 43 of 50 spots remaining</span>
+              <span className="text-xs font-semibold text-amber-700">🔥 Founder Pricing — First 50 users lock in $9/mo forever</span>
             </div>
 
             {/* What's included */}

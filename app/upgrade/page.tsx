@@ -5,9 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 
 const FOUNDER_SPOTS_TOTAL = 50
-// In a real app this would come from a DB. For now we use a static decreasing number
-// based on launch date to create authentic scarcity feel.
-const FOUNDER_SPOTS_TAKEN = 7 // update this manually as signups come in
+const FOUNDER_SPOTS_TAKEN = 0 // update this as real signups come in
 const FOUNDER_SPOTS_LEFT = FOUNDER_SPOTS_TOTAL - FOUNDER_SPOTS_TAKEN
 
 const FEATURES = [
@@ -56,7 +54,7 @@ export default function UpgradePage() {
     <div className="min-h-screen" style={{ background: 'var(--background)' }}>
       {/* Founder pricing banner */}
       <div className="bg-amber-500 text-white text-center py-2 px-4 text-sm font-semibold">
-        🔥 Founder Pricing — Only {spotsLeft} of {FOUNDER_SPOTS_TOTAL} spots left at $9/mo. Price goes to $19 when full.
+        🔥 Founder Pricing — First {FOUNDER_SPOTS_TOTAL} users get $9/mo locked in forever. Price goes to $19 after that.
       </div>
 
       {/* Header */}
@@ -81,7 +79,7 @@ export default function UpgradePage() {
         {/* Badge */}
         <div className="flex justify-center mb-6">
           <span className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 text-xs font-semibold px-3 py-1 rounded-full border border-amber-200">
-            ⭐ Founder Pricing — Limited to {FOUNDER_SPOTS_TOTAL} users
+            ⭐ Founder Pricing — First {FOUNDER_SPOTS_TOTAL} users only
           </span>
         </div>
 
@@ -97,8 +95,8 @@ export default function UpgradePage() {
         {/* Spots progress bar */}
         <div className="mb-8">
           <div className="flex justify-between text-xs text-gray-500 mb-1.5">
-            <span>{FOUNDER_SPOTS_TAKEN} founders joined</span>
-            <span className="font-semibold text-amber-600">{spotsLeft} spots left</span>
+            <span>Just launched</span>
+            <span className="font-semibold text-amber-600">{spotsLeft} of {FOUNDER_SPOTS_TOTAL} spots available</span>
           </div>
           <div className="w-full bg-gray-100 rounded-full h-2">
             <div
