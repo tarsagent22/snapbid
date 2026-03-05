@@ -65,6 +65,7 @@ export default function Home() {
   const [statusUpdating, setStatusUpdating] = useState<string | null>(null)
   const [reuseFlash, setReuseFlash] = useState<string | null>(null)
   const [loadingStep, setLoadingStep] = useState(0)
+  const [showJobContext, setShowJobContext] = useState(false)
 
   // Restore draft form from sessionStorage (survives sign-in redirect)
   useEffect(() => {
@@ -1376,11 +1377,24 @@ ${biz}`
                 </div>
 
                 {/* Job context */}
-                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4">
-                  <div>
-                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Job Context</p>
-                    <p className="text-xs text-gray-400 mt-1">Optional — helps the AI price more accurately</p>
-                  </div>
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setShowJobContext(v => !v)}
+                    className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors"
+                  >
+                    <div>
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Job Context</p>
+                      <p className="text-xs text-gray-400 mt-0.5">Optional — helps the AI price more accurately</p>
+                    </div>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${showJobContext ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-400'}`}>
+                      <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        style={{ transform: showJobContext ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7"/>
+                      </svg>
+                    </div>
+                  </button>
+                  {showJobContext && <div className="px-5 pb-5 space-y-4">
                   {/* Job type */}
                   <div>
                     <p className="text-xs font-medium text-gray-500 mb-2">Job Type</p>
@@ -1442,6 +1456,7 @@ ${biz}`
                       ))}
                     </div>
                   </div>
+                  </div>}
                 </div>
 
                 {/* Job description */}
@@ -1561,6 +1576,13 @@ ${biz}`
                     </div>
                     <span className="text-xs text-gray-400 whitespace-nowrap">{quotesUsed}/{FREE_QUOTA} free quotes used</span>
                   </div>
+                )}
+
+                {/* Free trial reassurance for guests */}
+                {!user && (
+                  <p className="text-xs text-gray-400 text-center">
+                    Free account · {FREE_QUOTA} quotes included · No credit card
+                  </p>
                 )}
               </form>
             </div>
