@@ -98,6 +98,7 @@ export interface SavedQuote {
   tax: number
   notes?: string
   quoteNumber: string
+  scopeOfWork?: string
 }
 
 export async function getQuoteHistory(userId: string): Promise<SavedQuote[]> {

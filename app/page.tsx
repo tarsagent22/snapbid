@@ -187,7 +187,7 @@ Please find your quote below.
 QUOTE #${quote.quoteNumber}${tierLabel}
 From: ${biz}
 Date: ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-
+${quote.scopeOfWork ? `\nScope of Work:\n${quote.scopeOfWork}\n` : ''}
 ---
 ${lineList}
 ---
@@ -280,6 +280,23 @@ ${biz}`
     doc.setTextColor(107, 114, 128)
     doc.text(form.clientAddress, margin + 12, y + 46)
     y += 72
+
+    // Scope of work (if present)
+    if (quote.scopeOfWork) {
+      doc.setFillColor(239, 246, 255)
+      const scopeLines = doc.splitTextToSize(quote.scopeOfWork, contentW - 24)
+      const scopeH = scopeLines.length * 14 + 28
+      doc.roundedRect(margin, y, contentW, scopeH, 4, 4, 'F')
+      doc.setTextColor(29, 78, 216)
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(9)
+      doc.text('SCOPE OF WORK', margin + 12, y + 16)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(10)
+      doc.setTextColor(55, 65, 81)
+      doc.text(scopeLines, margin + 12, y + 30)
+      y += scopeH + 12
+    }
 
     doc.setFillColor(243, 244, 246)
     doc.rect(margin, y, contentW, 22, 'F')
@@ -409,6 +426,23 @@ ${biz}`
       doc.setTextColor(107, 114, 128)
       doc.text(q.clientAddress || '', margin + 12, y + 46)
       y += 72
+
+      // Scope of work for history PDF (if present)
+      if (q.scopeOfWork) {
+        doc.setFillColor(239, 246, 255)
+        const scopeLines = doc.splitTextToSize(q.scopeOfWork, contentW - 24)
+        const scopeH = scopeLines.length * 14 + 28
+        doc.roundedRect(margin, y, contentW, scopeH, 4, 4, 'F')
+        doc.setTextColor(29, 78, 216)
+        doc.setFont('helvetica', 'bold')
+        doc.setFontSize(9)
+        doc.text('SCOPE OF WORK', margin + 12, y + 16)
+        doc.setFont('helvetica', 'normal')
+        doc.setFontSize(10)
+        doc.setTextColor(55, 65, 81)
+        doc.text(scopeLines, margin + 12, y + 30)
+        y += scopeH + 12
+      }
 
       doc.setFillColor(243, 244, 246)
       doc.rect(margin, y, contentW, 22, 'F')
@@ -692,9 +726,17 @@ ${biz}`
                       {/* Expanded detail panel */}
                       {isExpanded && (
                         <div className="border-t border-gray-100 px-5 pb-5">
+                          {/* Scope of Work (if present) */}
+                          {q.scopeOfWork && (
+                            <div className="mt-4 mb-2 bg-blue-50 border border-blue-100 rounded-xl p-3.5">
+                              <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">Scope of Work</p>
+                              <p className="text-sm text-blue-800 leading-relaxed">{q.scopeOfWork}</p>
+                            </div>
+                          )}
+
                           {/* Job description */}
                           {q.jobDescription && (
-                            <div className="mt-4 mb-3 bg-gray-50 rounded-xl p-3.5">
+                            <div className={`${q.scopeOfWork ? 'mb-3' : 'mt-4 mb-3'} bg-gray-50 rounded-xl p-3.5`}>
                               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Job</p>
                               <p className="text-sm text-gray-700 italic">"{q.jobDescription}"</p>
                             </div>
@@ -1204,6 +1246,14 @@ ${biz}`
                   <p className="font-semibold text-gray-900">{form.clientName}</p>
                   <p className="text-sm text-gray-500 mt-0.5">{form.clientAddress}</p>
                 </div>
+
+                {/* Scope of Work */}
+                {quote.scopeOfWork && (
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Scope of Work</p>
+                    <p className="text-sm text-gray-700 leading-relaxed">{quote.scopeOfWork}</p>
+                  </div>
+                )}
 
                 {/* Line items — resolve from tier or standard quote */}
                 {(() => {

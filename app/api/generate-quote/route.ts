@@ -158,6 +158,7 @@ ${accessDifficulty === 'difficult' ? '- Access is DIFFICULT — add 20-30% to al
 ${minimumJobCharge ? `- If total is under $${minimumJobCharge}, add a "Minimum service charge" line item to reach the minimum` : ''}
 - Notes: payment terms, quote validity${yearsInBusiness ? ', reference experience if relevant' : ''}. Professional, 2-3 sentences max.
 ${introMessage ? `- Incorporate this contractor message naturally: "${introMessage}"` : ''}
+- scopeOfWork: Write 1-2 sentences describing what work will be performed and what the client receives. This is the "what you're getting" summary shown at the top of the quote. Be specific (mention key tasks/materials), professional, and client-facing. Do NOT repeat pricing or payment terms here.
 
 ${offerTieredOptions ? `TIERED QUOTE MODE — Generate 3 complete option sets:
 - "budget": Lower-cost materials, essential work only, minimal extras
@@ -170,6 +171,7 @@ Return ONLY valid JSON, no markdown:
 ${offerTieredOptions ? `{
   "quoteNumber": "${quoteNum}",
   "tiered": true,
+  "scopeOfWork": "string",
   "tiers": {
     "budget": { "label": "Budget", "lineItems": [{ "description": "string", "qty": "string", "unitPrice": number, "total": number }], "subtotal": number, "tax": number, "total": number },
     "standard": { "label": "Standard", "lineItems": [{ "description": "string", "qty": "string", "unitPrice": number, "total": number }], "subtotal": number, "tax": number, "total": number },
@@ -178,6 +180,7 @@ ${offerTieredOptions ? `{
   "notes": "string"
 }` : `{
   "quoteNumber": "${quoteNum}",
+  "scopeOfWork": "string",
   "lineItems": [{ "description": "string", "qty": "string", "unitPrice": number, "total": number }],
   "subtotal": number,
   "tax": number,
@@ -187,7 +190,7 @@ ${offerTieredOptions ? `{
 
     const message = await client.messages.create({
       model: 'claude-haiku-4-5',
-      max_tokens: offerTieredOptions ? 2048 : 1024,
+      max_tokens: offerTieredOptions ? 2200 : 1200,
       messages: [{ role: 'user', content: prompt }],
     })
 
@@ -254,6 +257,7 @@ ${offerTieredOptions ? `{
         lineItems: quoteData.tiered ? (quoteData.tiers?.standard?.lineItems || []) : (quoteData.lineItems || []),
         notes: quoteData.notes || '',
         quoteNumber: quoteData.quoteNumber || '',
+        scopeOfWork: quoteData.scopeOfWork || '',
       }).catch(console.error)
     }
 
