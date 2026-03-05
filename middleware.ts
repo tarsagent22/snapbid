@@ -5,6 +5,7 @@ const isPublicRoute = createRouteMatcher([
   '/sign-in(.*)',
   '/api/generate-quote',
   '/api/generate-pdf',
+  '/opengraph-image',
 ])
 
 export default clerkMiddleware(async (auth, req) => {
