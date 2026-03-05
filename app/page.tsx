@@ -54,6 +54,8 @@ export default function Home() {
   const [waitlistEmail, setWaitlistEmail] = useState('')
   const [waitlistSubmitting, setWaitlistSubmitting] = useState(false)
   const [waitlistDone, setWaitlistDone] = useState(false)
+  const [expandedHistoryId, setExpandedHistoryId] = useState<string | null>(null)
+  const [historyPdfDownloading, setHistoryPdfDownloading] = useState<string | null>(null)
 
   // Restore draft form from sessionStorage (survives sign-in redirect)
   useEffect(() => {
@@ -352,6 +354,137 @@ ${biz}`
     doc.save(`snapbid-quote-${form.clientName.replace(/\s+/g, '-')}.pdf`)
   }
 
+  const handleDownloadHistoryPDF = async (q: any) => {
+    setHistoryPdfDownloading(q.id)
+    try {
+      const { jsPDF } = await import('jspdf')
+      const doc = new jsPDF({ unit: 'pt', format: 'letter' })
+      const biz = profile?.businessName || q.businessName || 'My Business'
+      const trade = profile?.trade || ''
+      const date = new Date(q.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+      const pageW = doc.internal.pageSize.getWidth()
+      const margin = 48
+      const contentW = pageW - margin * 2
+      let y = margin
+
+      doc.setFillColor(37, 99, 235)
+      doc.rect(0, 0, pageW, 72, 'F')
+      doc.setTextColor(255, 255, 255)
+
+      const logoDataUrl = profile?.logoDataUrl
+      let textLeft = margin
+      if (logoDataUrl) {
+        try {
+          const fmt = logoDataUrl.startsWith('data:image/png') ? 'PNG' : 'JPEG'
+          doc.addImage(logoDataUrl, fmt, margin, 10, 52, 52)
+          textLeft = margin + 62
+        } catch {}
+      }
+
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(20)
+      doc.text(biz, textLeft, 36)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(11)
+      doc.text(trade ? trade.charAt(0).toUpperCase() + trade.slice(1) + ' Services' : '', textLeft, 54)
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(13)
+      doc.text(`Quote ${q.quoteNumber}`, pageW - margin, 32, { align: 'right' })
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(10)
+      doc.text(date, pageW - margin, 48, { align: 'right' })
+      y = 96
+
+      doc.setFillColor(249, 250, 251)
+      doc.roundedRect(margin, y, contentW, 56, 4, 4, 'F')
+      doc.setTextColor(107, 114, 128)
+      doc.setFontSize(9)
+      doc.setFont('helvetica', 'bold')
+      doc.text('PREPARED FOR', margin + 12, y + 16)
+      doc.setTextColor(17, 24, 39)
+      doc.setFontSize(12)
+      doc.text(q.clientName || '—', margin + 12, y + 32)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(10)
+      doc.setTextColor(107, 114, 128)
+      doc.text(q.clientAddress || '', margin + 12, y + 46)
+      y += 72
+
+      doc.setFillColor(243, 244, 246)
+      doc.rect(margin, y, contentW, 22, 'F')
+      doc.setTextColor(107, 114, 128)
+      doc.setFontSize(9)
+      doc.setFont('helvetica', 'bold')
+      doc.text('DESCRIPTION', margin + 8, y + 15)
+      doc.text('QTY', margin + contentW * 0.62, y + 15, { align: 'right' })
+      doc.text('UNIT PRICE', margin + contentW * 0.78, y + 15, { align: 'right' })
+      doc.text('TOTAL', margin + contentW, y + 15, { align: 'right' })
+      y += 22
+
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(10)
+      const items = q.lineItems || []
+      items.forEach((item: any, i: number) => {
+        if (i % 2 === 1) { doc.setFillColor(249, 250, 251); doc.rect(margin, y, contentW, 24, 'F') }
+        doc.setTextColor(55, 65, 81)
+        const descLines = doc.splitTextToSize(item.description, contentW * 0.55)
+        doc.text(descLines, margin + 8, y + 16)
+        doc.setTextColor(107, 114, 128)
+        doc.text(String(item.qty), margin + contentW * 0.62, y + 16, { align: 'right' })
+        doc.text(`$${item.unitPrice}`, margin + contentW * 0.78, y + 16, { align: 'right' })
+        doc.setTextColor(17, 24, 39)
+        doc.setFont('helvetica', 'bold')
+        doc.text(`$${item.total}`, margin + contentW, y + 16, { align: 'right' })
+        doc.setFont('helvetica', 'normal')
+        y += Math.max(24, descLines.length * 14)
+      })
+
+      doc.setDrawColor(229, 231, 235)
+      doc.line(margin, y + 4, pageW - margin, y + 4)
+      y += 16
+      const totalsX = pageW - margin - 200
+      doc.setTextColor(107, 114, 128)
+      doc.setFontSize(10)
+      doc.text('Subtotal', totalsX, y + 14)
+      doc.text(`$${q.subtotal}`, pageW - margin, y + 14, { align: 'right' })
+      doc.text('Tax (est.)', totalsX, y + 30)
+      doc.text(`$${q.tax}`, pageW - margin, y + 30, { align: 'right' })
+      doc.setDrawColor(229, 231, 235)
+      doc.line(totalsX, y + 36, pageW - margin, y + 36)
+      doc.setTextColor(37, 99, 235)
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(13)
+      doc.text('TOTAL', totalsX, y + 52)
+      doc.text(`$${q.total}`, pageW - margin, y + 52, { align: 'right' })
+      y += 72
+
+      if (q.notes) {
+        doc.setFillColor(239, 246, 255)
+        const noteLines = doc.splitTextToSize(q.notes, contentW - 24)
+        const noteH = noteLines.length * 14 + 28
+        doc.roundedRect(margin, y, contentW, noteH, 4, 4, 'F')
+        doc.setTextColor(29, 78, 216)
+        doc.setFont('helvetica', 'bold')
+        doc.setFontSize(9)
+        doc.text('NOTES', margin + 12, y + 16)
+        doc.setFont('helvetica', 'normal')
+        doc.setFontSize(10)
+        doc.text(noteLines, margin + 12, y + 30)
+        y += noteH + 16
+      }
+
+      doc.setDrawColor(229, 231, 235)
+      doc.line(margin, y + 8, pageW - margin, y + 8)
+      doc.setTextColor(156, 163, 175)
+      doc.setFontSize(9)
+      doc.setFont('helvetica', 'normal')
+      doc.text(`${biz} · Estimate prepared with SnapBid`, pageW / 2, y + 22, { align: 'center' })
+      doc.save(`snapbid-quote-${(q.clientName || 'quote').replace(/\s+/g, '-')}.pdf`)
+    } finally {
+      setHistoryPdfDownloading(null)
+    }
+  }
+
   // ─── Input / label shared styles ──────────────────────────────────────────
   const inp = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 bg-white transition-all duration-150"
   const lbl = "block text-sm font-medium text-gray-700 mb-1.5"
@@ -518,28 +651,145 @@ ${biz}`
               </div>
             ) : (
               <div className="space-y-3">
-                {history.map((q: any) => (
-                  <div key={q.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:border-gray-200 transition-colors">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-mono text-gray-400">{q.quoteNumber}</span>
-                          <span className="text-gray-200 text-xs">·</span>
-                          <span className="text-xs text-gray-400">{new Date(q.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                {history.map((q: any) => {
+                  const isExpanded = expandedHistoryId === q.id
+                  return (
+                    <div key={q.id} className={`bg-white rounded-2xl border shadow-sm transition-all duration-200 ${isExpanded ? 'border-[#2563EB]/30 shadow-blue-50' : 'border-gray-100 hover:border-gray-200'}`}>
+                      {/* Summary row — always visible, clickable to expand */}
+                      <button
+                        type="button"
+                        className="w-full text-left p-5"
+                        onClick={() => setExpandedHistoryId(isExpanded ? null : q.id)}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-xs font-mono text-gray-400">{q.quoteNumber}</span>
+                              <span className="text-gray-200 text-xs">·</span>
+                              <span className="text-xs text-gray-400">{new Date(q.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                            </div>
+                            <p className="font-semibold text-gray-900 text-sm">{q.clientName || '—'}</p>
+                            <p className="text-xs text-gray-400 truncate">{q.clientAddress}</p>
+                            {q.jobDescription && !isExpanded && (
+                              <p className="text-xs text-gray-400 mt-1 truncate italic">"{q.jobDescription}"</p>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-3 flex-shrink-0">
+                            <div className="text-right">
+                              <p className="text-lg font-bold text-gray-900">${q.total?.toLocaleString()}</p>
+                              <p className="text-xs text-gray-400">{q.lineItems?.length || 0} line items</p>
+                            </div>
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${isExpanded ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-400'}`}>
+                              <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7"/>
+                              </svg>
+                            </div>
+                          </div>
                         </div>
-                        <p className="font-semibold text-gray-900 text-sm truncate">{q.clientName || '—'}</p>
-                        <p className="text-xs text-gray-400 truncate">{q.clientAddress}</p>
-                        {q.jobDescription && (
-                          <p className="text-xs text-gray-400 mt-1 truncate italic">"{q.jobDescription}"</p>
-                        )}
-                      </div>
-                      <div className="text-right flex-shrink-0">
-                        <p className="text-lg font-bold text-gray-900">${q.total?.toLocaleString()}</p>
-                        <p className="text-xs text-gray-400">{q.lineItems?.length || 0} line items</p>
-                      </div>
+                      </button>
+
+                      {/* Expanded detail panel */}
+                      {isExpanded && (
+                        <div className="border-t border-gray-100 px-5 pb-5">
+                          {/* Job description */}
+                          {q.jobDescription && (
+                            <div className="mt-4 mb-3 bg-gray-50 rounded-xl p-3.5">
+                              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Job</p>
+                              <p className="text-sm text-gray-700 italic">"{q.jobDescription}"</p>
+                            </div>
+                          )}
+
+                          {/* Line items table */}
+                          {q.lineItems && q.lineItems.length > 0 && (
+                            <div className="mt-3">
+                              {/* Desktop */}
+                              <div className="hidden sm:block">
+                                <table className="w-full text-sm">
+                                  <thead>
+                                    <tr className="border-b border-gray-100">
+                                      <th className="text-left pb-2 text-xs font-semibold text-gray-400 uppercase tracking-wide">Description</th>
+                                      <th className="text-right pb-2 text-xs font-semibold text-gray-400 uppercase tracking-wide w-14">Qty</th>
+                                      <th className="text-right pb-2 text-xs font-semibold text-gray-400 uppercase tracking-wide w-20">Unit</th>
+                                      <th className="text-right pb-2 text-xs font-semibold text-gray-400 uppercase tracking-wide w-20">Total</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {q.lineItems.map((item: any, i: number) => (
+                                      <tr key={i} className="border-b border-gray-50 last:border-0">
+                                        <td className="py-2 text-gray-700 pr-4 text-sm">{item.description}</td>
+                                        <td className="py-2 text-right text-gray-400 text-sm tabular-nums">{item.qty}</td>
+                                        <td className="py-2 text-right text-gray-400 text-sm tabular-nums">${item.unitPrice}</td>
+                                        <td className="py-2 text-right font-semibold text-gray-900 text-sm tabular-nums">${item.total}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                              {/* Mobile */}
+                              <div className="sm:hidden space-y-2">
+                                {q.lineItems.map((item: any, i: number) => (
+                                  <div key={i} className="bg-gray-50 rounded-lg p-3">
+                                    <p className="text-sm font-medium text-gray-800 mb-1">{item.description}</p>
+                                    <div className="flex justify-between text-xs text-gray-400">
+                                      <span>Qty {item.qty} × ${item.unitPrice}</span>
+                                      <span className="font-semibold text-gray-900">${item.total}</span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+
+                              {/* Totals */}
+                              <div className="flex justify-end mt-3 pt-3 border-t border-gray-100">
+                                <div className="w-48 space-y-1.5 text-sm">
+                                  <div className="flex justify-between text-gray-500">
+                                    <span>Subtotal</span><span className="tabular-nums">${q.subtotal?.toLocaleString()}</span>
+                                  </div>
+                                  <div className="flex justify-between text-gray-500">
+                                    <span>Tax</span><span className="tabular-nums">${q.tax?.toLocaleString()}</span>
+                                  </div>
+                                  <div className="flex justify-between font-bold text-sm pt-1.5 border-t border-gray-100">
+                                    <span>Total</span>
+                                    <span className="text-[#2563EB] tabular-nums">${q.total?.toLocaleString()}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Notes */}
+                          {q.notes && (
+                            <div className="mt-3 bg-blue-50 border border-blue-100 rounded-xl p-3.5">
+                              <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">Notes</p>
+                              <p className="text-sm text-blue-800 leading-relaxed">{q.notes}</p>
+                            </div>
+                          )}
+
+                          {/* Actions */}
+                          <div className="flex gap-2 mt-4">
+                            <button
+                              onClick={() => handleDownloadHistoryPDF(q)}
+                              disabled={historyPdfDownloading === q.id}
+                              className="flex items-center gap-1.5 bg-[#2563EB] hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2 px-4 rounded-xl text-xs transition-colors shadow-sm shadow-blue-100"
+                            >
+                              {historyPdfDownloading === q.id ? (
+                                <svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/>
+                                  <path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                                </svg>
+                              ) : (
+                                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                              )}
+                              {historyPdfDownloading === q.id ? 'Generating…' : 'Download PDF'}
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
           </div>
