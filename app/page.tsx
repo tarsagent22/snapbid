@@ -164,6 +164,10 @@ export default function Home() {
         body: JSON.stringify(form),
       })
       const data = await res.json()
+      if (res.status === 402) {
+        setShowPaywall(true)
+        return
+      }
       if (!res.ok) throw new Error(data.error || 'Failed to generate quote')
       setQuote(data)
       setLineItemOverrides({}) // reset any prior overrides
