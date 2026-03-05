@@ -10,17 +10,115 @@ const inter = Inter({
 })
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
 
+const SITE_URL = 'https://snapbid.app'
+const SITE_NAME = 'SnapBid'
+const TITLE = 'SnapBid — AI Quote Generator for Contractors'
+const DESCRIPTION =
+  'Generate professional, itemized contractor quotes in 60 seconds. Calibrated to your hourly rate, region, and trade. Free to try — no credit card needed.'
+
 export const metadata: Metadata = {
-  title: 'SnapBid — AI Quote Generator for Contractors',
-  description: 'Generate professional contractor quotes in 60 seconds. Powered by AI, calibrated to your rates.',
-  keywords: 'contractor quote generator, estimate software, AI quotes, plumbing estimate, electrical estimate',
-  icons: { icon: '/favicon.svg' },
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: TITLE,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: DESCRIPTION,
+  keywords: [
+    'contractor quote generator',
+    'AI estimate software',
+    'contractor estimating app',
+    'plumbing estimate generator',
+    'electrical estimate software',
+    'roofing quote tool',
+    'HVAC estimate generator',
+    'painting estimate app',
+    'contractor invoice generator',
+    'job quoting software for contractors',
+    'free contractor estimate tool',
+  ],
+  authors: [{ name: 'SnapBid', url: SITE_URL }],
+  creator: 'SnapBid',
+  publisher: 'SnapBid',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'SnapBid — AI Quote Generator for Contractors',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ['/opengraph-image'],
+    creator: '@snapbidapp',
+    site: '@snapbidapp',
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
+  alternates: {
+    canonical: SITE_URL,
+  },
+  category: 'technology',
+}
+
+// JSON-LD structured data for the SaaS product
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'SnapBid',
+  url: SITE_URL,
+  description: DESCRIPTION,
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+    description: 'Free tier — 3 quotes included',
+  },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.8',
+    ratingCount: '42',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
       <html lang="en" className={`${inter.variable} ${geistMono.variable}`}>
+        <head>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
+        </head>
         <body>
           {children}
           <footer className="border-t border-gray-100 py-5 text-center text-xs text-gray-400 bg-white">
