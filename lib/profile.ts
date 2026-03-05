@@ -35,6 +35,7 @@ export interface ContractorProfile {
   paymentTerms?: string
   quoteValidityDays?: number
   introMessage?: string
+  notesTemplate?: string
   logoDataUrl?: string
   // Business mechanics
   minimumJobCharge?: number

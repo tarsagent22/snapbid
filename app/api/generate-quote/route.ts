@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
     const yearsInBusiness = profile?.yearsInBusiness || ''
     const specialties = profile?.specialties || ''
     const introMessage = profile?.introMessage || ''
+    const notesTemplate = profile?.notesTemplate || ''
 
     // New business mechanics
     const minimumJobCharge = profile?.minimumJobCharge
@@ -137,7 +138,7 @@ export async function POST(req: NextRequest) {
 Business: ${businessName}
 Trade: ${trade}
 ${specialties ? `Specialties: ${specialties}` : ''}
-${yearsInBusiness ? `Experience: ${yearsInBusiness} years in business` : ''}
+${yearsInBusiness ? `Experience: ${yearsInBusiness} years in business (use this exact number on the quote — do not use a range)` : ''}
 Client: ${clientName}
 Address: ${clientAddress}
 Job Description: ${jobDescription}
@@ -166,7 +167,7 @@ Instructions:
 - Tax at ${taxRate}% on materials only
 ${accessDifficulty === 'difficult' ? '- Access is DIFFICULT — add 20-30% to all labor time estimates' : accessDifficulty === 'moderate' ? '- Access is MODERATE — add 10-15% to labor time' : ''}
 ${minimumJobCharge ? `- If total is under $${minimumJobCharge}, add a "Minimum service charge" line item to reach the minimum` : ''}
-- Notes: payment terms, quote validity${yearsInBusiness ? ', reference experience if relevant' : ''}. Professional, 2-3 sentences max.
+- Notes: payment terms, quote validity${yearsInBusiness ? `, mention ${yearsInBusiness} years of experience (exact number)` : ''}. Professional, 2-3 sentences max.${notesTemplate ? ` Always end notes with this contractor's custom message: "${notesTemplate}"` : ''}
 ${introMessage ? `- Incorporate this contractor message naturally: "${introMessage}"` : ''}
 - scopeOfWork: Write 1-2 sentences describing what work will be performed and what the client receives. This is the "what you're getting" summary shown at the top of the quote. Be specific (mention key tasks/materials), professional, and client-facing. Do NOT repeat pricing or payment terms here.
 - inclusions: Array of 3-5 short strings (plain phrases, no bullet chars) stating exactly what IS included in this quote price. Be specific to this job (e.g. "All labor and materials", "Site cleanup and debris removal", "Drywall patching after rough-in"). These help clients understand what they're paying for and prevent scope disputes.

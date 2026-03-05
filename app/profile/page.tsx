@@ -96,13 +96,14 @@ export default function ProfilePage() {
     email: '',
     businessAddress: '',
     licenseNumber: '',
-    yearsInBusiness: '1-3',
+    yearsInBusiness: '',
     specialties: '',
     // Quote settings
     paymentTerms: '50-deposit',
     quoteValidityDays: '30',
     taxRate: '8.5',
     introMessage: '',
+    notesTemplate: '',
     // Business mechanics
     minimumJobCharge: '',
     tripCharge: '',
@@ -142,12 +143,13 @@ export default function ProfilePage() {
             email: p.email || '',
             businessAddress: p.businessAddress || '',
             licenseNumber: p.licenseNumber || '',
-            yearsInBusiness: p.yearsInBusiness || '1-3',
+            yearsInBusiness: p.yearsInBusiness || '',
             specialties: p.specialties || '',
             paymentTerms: p.paymentTerms || '50-deposit',
             quoteValidityDays: String(p.quoteValidityDays || '30'),
             taxRate: String(p.taxRate || '8.5'),
             introMessage: p.introMessage || '',
+            notesTemplate: p.notesTemplate || '',
             minimumJobCharge: p.minimumJobCharge ? String(p.minimumJobCharge) : '',
             tripCharge: p.tripCharge ? String(p.tripCharge) : '',
             pricingModel: p.pricingModel || 'time-and-materials',
@@ -343,9 +345,8 @@ export default function ProfilePage() {
             </div>
             <div>
               <label className={labelCls}>Years in Business</label>
-              <select name="yearsInBusiness" value={form.yearsInBusiness} onChange={handleChange} className={selectCls}>
-                {YEARS_OPTIONS.map(y => <option key={y.value} value={y.value}>{y.label}</option>)}
-              </select>
+              <input name="yearsInBusiness" type="number" min="0" max="99" value={form.yearsInBusiness} onChange={handleChange} placeholder="e.g. 8" className={inputCls} />
+              <p className={helperCls}>Shown on quotes as "X years of experience" — be specific</p>
             </div>
           </div>
 
@@ -617,6 +618,14 @@ export default function ProfilePage() {
               placeholder="e.g. Thank you for the opportunity to work on your project. We stand behind our work with a 1-year labor warranty."
               rows={3} className={`${inputCls} resize-none`} />
             <p className={helperCls}>Shown at the top of every quote — great for a brief pitch or warranty statement</p>
+          </div>
+
+          <div>
+            <label className={labelCls}>Default Quote Notes <span className="text-gray-400 font-normal">(optional)</span></label>
+            <textarea name="notesTemplate" value={form.notesTemplate} onChange={handleChange}
+              placeholder="e.g. All work is guaranteed for 1 year. Any unforeseen conditions (hidden damage, code upgrades) will be communicated before proceeding."
+              rows={3} className={`${inputCls} resize-none`} />
+            <p className={helperCls}>Appended to the notes on every quote — warranties, disclaimers, anything you always include. AI adds job-specific notes on top of this.</p>
           </div>
         </div>
 
