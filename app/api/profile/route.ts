@@ -57,6 +57,8 @@ export async function POST(req: NextRequest) {
     serviceCallRate: parseFloat(body.serviceCallRate) || undefined,
     // Saved line items
     savedLineItems: Array.isArray(body.savedLineItems) ? body.savedLineItems : (existing?.savedLineItems || []),
+    // Quote display settings
+    showMarkupOnQuote: body.showMarkupOnQuote === true || body.showMarkupOnQuote === 'true',
   }
 
   await saveProfile(profile)

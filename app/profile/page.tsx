@@ -118,6 +118,8 @@ export default function ProfilePage() {
     sqftRateRoofing: '',
     tearOffRate: '',
     serviceCallRate: '',
+    // Quote display settings
+    showMarkupOnQuote: false as boolean,
   })
 
   useEffect(() => {
@@ -159,6 +161,7 @@ export default function ProfilePage() {
             sqftRateRoofing: p.sqftRateRoofing ? String(p.sqftRateRoofing) : '',
             tearOffRate: p.tearOffRate ? String(p.tearOffRate) : '',
             serviceCallRate: p.serviceCallRate ? String(p.serviceCallRate) : '',
+            showMarkupOnQuote: p.showMarkupOnQuote || false,
           })
         } else {
           setIsNew(true)
@@ -407,6 +410,24 @@ export default function ProfilePage() {
               <label className={labelCls}>Markup on Materials (%)</label>
               <input name="markup" type="number" value={form.markup} onChange={handleChange} placeholder="20" className={inputCls} />
               <p className={helperCls}>Added on top of material costs</p>
+              <div className="flex items-center gap-3 mt-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, showMarkupOnQuote: !form.showMarkupOnQuote })}
+                  className={`relative flex-shrink-0 w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${
+                    form.showMarkupOnQuote ? 'bg-[#2563EB]' : 'bg-gray-300'
+                  }`}
+                  role="switch"
+                  aria-checked={form.showMarkupOnQuote}>
+                  <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${
+                    form.showMarkupOnQuote ? 'translate-x-4' : 'translate-x-0'
+                  }`} />
+                </button>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Show material markup % on client quotes</p>
+                  <p className="text-xs text-gray-400 mt-0.5">When off, markup is applied to pricing but not shown to clients</p>
+                </div>
+              </div>
             </div>
             <div>
               <label className={labelCls}>Tax Rate (%)</label>

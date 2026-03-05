@@ -53,6 +53,8 @@ export interface ContractorProfile {
   serviceCallRate?: number    // hvac: flat service call
   // Saved line items library
   savedLineItems?: SavedLineItem[]
+  // Quote display settings
+  showMarkupOnQuote?: boolean
 }
 
 export async function getProfile(userId: string): Promise<ContractorProfile | null> {

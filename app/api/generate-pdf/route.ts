@@ -8,7 +8,10 @@ export async function POST(req: NextRequest) {
     const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 
     // Build HTML for PDF-like rendering (browser print / puppeteer-friendly)
-    const { phone, email, businessAddress, licenseNumber, paymentTerms, quoteValidityDays, introMessage } = data
+    const { phone, email, businessAddress, licenseNumber, paymentTerms, quoteValidityDays, introMessage, scopeOfWork, inclusions, exclusions, showMarkupOnQuote } = data
+    const filteredLineItems = showMarkupOnQuote
+      ? lineItems
+      : lineItems.filter((item: any) => !item.description.toLowerCase().includes('markup'))
 
     const PAYMENT_LABELS: Record<string, string> = {
       '50-deposit': '50% deposit to begin, balance on completion',
@@ -57,6 +60,18 @@ export async function POST(req: NextRequest) {
   .terms strong { color: #374151; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
   .footer { text-align: center; font-size: 12px; color: #9ca3af; border-top: 1px solid #f3f4f6; padding-top: 16px; }
   .badge { display: inline-block; background: #dbeafe; color: #1d4ed8; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; }
+  .scope { background: #eff6ff; border-radius: 8px; padding: 16px; margin-bottom: 24px; }
+  .scope label { font-size: 11px; font-weight: 600; color: #1d4ed8; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px; }
+  .scope ul { list-style: none; margin: 0; padding: 0; }
+  .scope ul li { font-size: 13px; color: #374151; padding: 2px 0; }
+  .inclusions { background: #f0fdf4; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+  .inclusions label { font-size: 11px; font-weight: 600; color: #166534; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px; }
+  .inclusions ul { list-style: none; margin: 0; padding: 0; }
+  .inclusions ul li { font-size: 13px; color: #14532d; padding: 2px 0; }
+  .exclusions { background: #fffbeb; border-radius: 8px; padding: 16px; margin-bottom: 24px; }
+  .exclusions label { font-size: 11px; font-weight: 600; color: #92400e; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px; }
+  .exclusions ul { list-style: none; margin: 0; padding: 0; }
+  .exclusions ul li { font-size: 13px; color: #78350f; padding: 2px 0; }
 </style>
 </head>
 <body>
@@ -94,7 +109,7 @@ export async function POST(req: NextRequest) {
       </tr>
     </thead>
     <tbody>
-      ${lineItems.map((item: any) => `
+      ${filteredLineItems.map((item: any) => `
       <tr>
         <td>${item.description}</td>
         <td>${item.qty}</td>
@@ -111,6 +126,18 @@ export async function POST(req: NextRequest) {
       <div class="totals-row grand"><span>Total</span><span>$${total}</span></div>
     </div>
   </div>
+
+  ${scopeOfWork ? `<div class="scope"><label>Scope of Work</label><ul>${
+    (() => {
+      const rawParts = scopeOfWork.split(/\n/).map((s: string) => s.trim()).filter(Boolean)
+      const parts = rawParts.length > 1 ? rawParts : scopeOfWork.split(/(?<=[.!?])\s+/).map((s: string) => s.trim()).filter(Boolean)
+      return parts.map((s: string) => `<li>\u2192 ${s}</li>`).join('')
+    })()
+  }</ul></div>` : ''}
+
+  ${inclusions && inclusions.length > 0 ? `<div class="inclusions"><label>What's Included</label><ul>${inclusions.map((s: string) => `<li>\u2713 ${s}</li>`).join('')}</ul></div>` : ''}
+
+  ${exclusions && exclusions.length > 0 ? `<div class="exclusions"><label>Not Included</label><ul>${exclusions.map((s: string) => `<li>\u2717 ${s}</li>`).join('')}</ul></div>` : ''}
 
   ${notes ? `<div class="notes"><label>Notes</label><p>${notes}</p></div>` : ''}
 
