@@ -59,6 +59,7 @@ export default function Home() {
   const [waitlistDone, setWaitlistDone] = useState(false)
   const [expandedHistoryId, setExpandedHistoryId] = useState<string | null>(null)
   const [historyPdfDownloading, setHistoryPdfDownloading] = useState<string | null>(null)
+  const [statusUpdating, setStatusUpdating] = useState<string | null>(null)
 
   // Restore draft form from sessionStorage (survives sign-in redirect)
   useEffect(() => {
@@ -280,6 +281,20 @@ ${biz}`
     } catch {}
     setWaitlistSubmitting(false)
     setWaitlistDone(true)
+  }
+
+  const handleUpdateStatus = async (quoteId: string, status: 'pending' | 'won' | 'lost') => {
+    setStatusUpdating(quoteId)
+    try {
+      await fetch('/api/quotes', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: quoteId, status }),
+      })
+      // Update local history state optimistically
+      setHistory(prev => prev.map(q => q.id === quoteId ? { ...q, status } : q))
+    } catch {}
+    setStatusUpdating(null)
   }
 
   const handleDownloadPDF = async () => {
@@ -816,7 +831,37 @@ ${biz}`
         {/* ── HISTORY TAB ── */}
         {activeTab === 'history' && user && !quote ? (
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-xl font-semibold text-gray-900 mb-5">Quote History</h2>
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-xl font-semibold text-gray-900">Quote History</h2>
+              {history.length > 0 && (() => {
+                const won = history.filter(q => q.status === 'won').length
+                const lost = history.filter(q => q.status === 'lost').length
+                const pending = history.filter(q => !q.status || q.status === 'pending').length
+                const total = history.length
+                const winRate = won + lost > 0 ? Math.round((won / (won + lost)) * 100) : null
+                return (
+                  <div className="flex items-center gap-3 text-xs">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />
+                      <span className="text-gray-500">{won} won</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-red-400 inline-block" />
+                      <span className="text-gray-500">{lost} lost</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-gray-300 inline-block" />
+                      <span className="text-gray-500">{pending} pending</span>
+                    </div>
+                    {winRate !== null && (
+                      <span className="bg-blue-50 text-blue-600 font-semibold px-2 py-0.5 rounded-full">
+                        {winRate}% win rate
+                      </span>
+                    )}
+                  </div>
+                )
+              })()}
+            </div>
             {historyLoading ? (
               <div className="space-y-3">
                 {[1,2,3].map(i => (
@@ -852,10 +897,27 @@ ${biz}`
                       >
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
+                            <div className="flex items-center gap-2 mb-1 flex-wrap">
                               <span className="text-xs font-mono text-gray-400">{q.quoteNumber}</span>
                               <span className="text-gray-200 text-xs">·</span>
                               <span className="text-xs text-gray-400">{new Date(q.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                              {q.status === 'won' && (
+                                <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-green-100 text-green-700">
+                                  <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>
+                                  WON
+                                </span>
+                              )}
+                              {q.status === 'lost' && (
+                                <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-red-100 text-red-600">
+                                  <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12"/></svg>
+                                  LOST
+                                </span>
+                              )}
+                              {(!q.status || q.status === 'pending') && (
+                                <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-400">
+                                  PENDING
+                                </span>
+                              )}
                             </div>
                             <p className="font-semibold text-gray-900 text-sm">{q.clientName || '—'}</p>
                             <p className="text-xs text-gray-400 truncate">{q.clientAddress}</p>
@@ -1007,6 +1069,50 @@ ${biz}`
                               <p className="text-sm text-blue-800 leading-relaxed">{q.notes}</p>
                             </div>
                           )}
+
+                          {/* Quote status tracking */}
+                          <div className="mt-4 pt-4 border-t border-gray-100">
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Quote Status</p>
+                            <div className="flex gap-2">
+                              {(['won', 'pending', 'lost'] as const).map(s => {
+                                const isActive = q.status === s || (!q.status && s === 'pending')
+                                const isLoading = statusUpdating === q.id
+                                const styles: Record<string, string> = {
+                                  won: isActive
+                                    ? 'bg-green-500 border-green-500 text-white shadow-sm shadow-green-100'
+                                    : 'bg-white border-gray-200 text-gray-500 hover:border-green-300 hover:text-green-600',
+                                  pending: isActive
+                                    ? 'bg-gray-200 border-gray-200 text-gray-700'
+                                    : 'bg-white border-gray-200 text-gray-400 hover:border-gray-300',
+                                  lost: isActive
+                                    ? 'bg-red-500 border-red-500 text-white shadow-sm shadow-red-100'
+                                    : 'bg-white border-gray-200 text-gray-500 hover:border-red-300 hover:text-red-500',
+                                }
+                                const icons: Record<string, React.ReactNode> = {
+                                  won: <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>,
+                                  pending: <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" strokeWidth={2}/><path d="M12 6v6l4 2" strokeLinecap="round" strokeWidth={2}/></svg>,
+                                  lost: <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12"/></svg>,
+                                }
+                                return (
+                                  <button
+                                    key={s}
+                                    type="button"
+                                    disabled={isLoading || isActive}
+                                    onClick={() => handleUpdateStatus(q.id, s)}
+                                    className={`flex items-center gap-1.5 border font-semibold py-1.5 px-3 rounded-xl text-xs transition-all disabled:cursor-default ${styles[s]}`}
+                                  >
+                                    {isLoading && !isActive ? (
+                                      <svg className="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                                      </svg>
+                                    ) : icons[s]}
+                                    {s.charAt(0).toUpperCase() + s.slice(1)}
+                                  </button>
+                                )
+                              })}
+                            </div>
+                          </div>
 
                           {/* Actions */}
                           <div className="flex gap-2 mt-4">

@@ -102,6 +102,7 @@ export interface SavedQuote {
   scopeOfWork?: string
   inclusions?: string[]
   exclusions?: string[]
+  status?: 'pending' | 'won' | 'lost'
 }
 
 export async function getQuoteHistory(userId: string): Promise<SavedQuote[]> {
@@ -117,6 +118,21 @@ export async function getQuoteHistory(userId: string): Promise<SavedQuote[]> {
 export async function saveQuoteToHistory(userId: string, quote: SavedQuote): Promise<void> {
   const history = await getQuoteHistory(userId)
   const updated = [quote, ...history].slice(0, 50)
+  const client = await clerkClient()
+  await client.users.updateUserMetadata(userId, {
+    privateMetadata: {
+      quoteHistory: updated,
+    },
+  })
+}
+
+export async function updateQuoteStatus(
+  userId: string,
+  quoteId: string,
+  status: 'pending' | 'won' | 'lost'
+): Promise<void> {
+  const history = await getQuoteHistory(userId)
+  const updated = history.map(q => q.id === quoteId ? { ...q, status } : q)
   const client = await clerkClient()
   await client.users.updateUserMetadata(userId, {
     privateMetadata: {
