@@ -76,6 +76,16 @@ export async function saveProfile(profile: ContractorProfile): Promise<void> {
   })
 }
 
+export async function getSubscriptionStatus(userId: string): Promise<boolean> {
+  try {
+    const client = await clerkClient()
+    const user = await client.users.getUser(userId)
+    return !!(user.publicMetadata?.subscribed)
+  } catch {
+    return false
+  }
+}
+
 export async function incrementQuoteCount(userId: string): Promise<number> {
   const profile = await getProfile(userId)
   if (!profile) return 0

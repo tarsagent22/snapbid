@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { auth } from '@clerk/nextjs/server'
-import { getProfile, incrementQuoteCount, saveQuoteToHistory } from '@/lib/profile'
+import { getProfile, getSubscriptionStatus, incrementQuoteCount, saveQuoteToHistory } from '@/lib/profile'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -40,6 +40,16 @@ export async function POST(req: NextRequest) {
 
     const { userId } = await auth()
     const profile = userId ? await getProfile(userId) : null
+    const isSubscribed = userId ? await getSubscriptionStatus(userId) : false
+
+    // Enforce free tier limit (3 quotes) for authenticated non-subscribed users
+    const FREE_QUOTA = 3
+    if (userId && !isSubscribed && (profile?.quoteCount ?? 0) >= FREE_QUOTA) {
+      return NextResponse.json(
+        { error: 'limit_reached', upgradeUrl: '/upgrade' },
+        { status: 402 }
+      )
+    }
 
     // Core pricing params
     const businessName = profile?.businessName || body.businessName || 'My Business'
@@ -247,9 +257,16 @@ ${offerTieredOptions ? `{
 
     // Track and save
     if (userId) {
-      const count = await incrementQuoteCount(userId)
-      quoteData.quoteCount = count
-      quoteData.isOverLimit = count > 3
+      // Only increment count for free-tier users (subscribed users have unlimited quotes)
+      if (!isSubscribed) {
+        const count = await incrementQuoteCount(userId)
+        quoteData.quoteCount = count
+        quoteData.isOverLimit = count >= FREE_QUOTA
+      } else {
+        quoteData.quoteCount = profile?.quoteCount ?? 0
+        quoteData.isOverLimit = false
+      }
+      quoteData.isSubscribed = isSubscribed
 
       saveQuoteToHistory(userId, {
         id: quoteData.quoteNumber || `Q-${Date.now()}`,

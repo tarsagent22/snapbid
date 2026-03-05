@@ -29,6 +29,9 @@ export default function Home() {
   const [profile, setProfile] = useState<any>(null)
   const [quotesUsed, setQuotesUsed] = useState(0)
   const [showPaywall, setShowPaywall] = useState(false)
+  const [upgrading, setUpgrading] = useState(false)
+  const [showUpgradedBanner, setShowUpgradedBanner] = useState(false)
+  const isSubscribed = !!(user?.publicMetadata?.subscribed)
   const [activeTab, setActiveTab] = useState<'new' | 'history'>('new')
   const [history, setHistory] = useState<any[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
@@ -96,6 +99,18 @@ export default function Home() {
     }
   }, [user, router])
 
+  // Handle ?upgraded=true after Stripe checkout success
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      if (params.get('upgraded') === 'true') {
+        setShowUpgradedBanner(true)
+        window.history.replaceState({}, '', '/')
+        setTimeout(() => setShowUpgradedBanner(false), 6000)
+      }
+    }
+  }, [])
+
   // Load history when tab switches
   useEffect(() => {
     if (activeTab === 'history' && user && history.length === 0) {
@@ -125,8 +140,8 @@ export default function Home() {
       return
     }
 
-    // Gate 2: over free quota — show paywall
-    if (quotesUsed >= FREE_QUOTA) {
+    // Gate 2: over free quota and not subscribed — show paywall
+    if (quotesUsed >= FREE_QUOTA && !isSubscribed) {
       setShowPaywall(true)
       return
     }
@@ -282,6 +297,17 @@ ${biz}`
     } catch {}
     setWaitlistSubmitting(false)
     setWaitlistDone(true)
+  }
+
+  const handleUpgrade = async () => {
+    setUpgrading(true)
+    try {
+      const res = await fetch('/api/stripe/checkout', { method: 'POST' })
+      const data = await res.json()
+      if (data.url) window.location.href = data.url
+    } catch {
+      setUpgrading(false)
+    }
   }
 
   const handleUpdateStatus = async (quoteId: string, status: 'pending' | 'won' | 'lost') => {
@@ -763,6 +789,25 @@ ${biz}`
         </div>
       </header>
 
+      {/* ── UPGRADE SUCCESS BANNER ──────────────────────────────────────────── */}
+      {showUpgradedBanner && (
+        <div className="bg-green-500 text-white">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
+              </svg>
+              <span className="text-sm font-semibold">Welcome to SnapBid Pro! You now have unlimited quotes.</span>
+            </div>
+            <button onClick={() => setShowUpgradedBanner(false)} className="text-white/70 hover:text-white transition-colors">
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ── PROFILE CALIBRATION BAR (signed-in) ────────────────────────────── */}
       {profile && (
         <div className="bg-[#2563EB]/5 border-b border-[#2563EB]/10">
@@ -774,15 +819,23 @@ ${biz}`
             </div>
             <div className="flex items-center gap-3">
               {/* Quota pill */}
-              <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
-                quotesUsed >= FREE_QUOTA
-                  ? 'bg-red-100 text-red-600'
-                  : quotesUsed >= FREE_QUOTA - 1
-                  ? 'bg-orange-100 text-orange-600'
-                  : 'bg-blue-100 text-blue-600'
-              }`}>
-                {quotesUsed >= FREE_QUOTA ? 'Free limit reached' : `${FREE_QUOTA - quotesUsed} free quote${FREE_QUOTA - quotesUsed !== 1 ? 's' : ''} left`}
-              </span>
+              {isSubscribed ? (
+                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700">
+                  ⚡ Pro — Unlimited
+                </span>
+              ) : (
+                <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
+                  quotesUsed >= FREE_QUOTA
+                    ? 'bg-red-100 text-red-600'
+                    : quotesUsed >= FREE_QUOTA - 1
+                    ? 'bg-orange-100 text-orange-600'
+                    : 'bg-blue-100 text-blue-600'
+                }`}>
+                  {quotesUsed >= FREE_QUOTA
+                    ? 'Free limit reached'
+                    : `${FREE_QUOTA - quotesUsed} free quote${FREE_QUOTA - quotesUsed !== 1 ? 's' : ''} left`}
+                </span>
+              )}
               <button onClick={() => router.push('/profile')} className="text-xs text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap transition-colors">
                 Edit profile →
               </button>
@@ -1434,7 +1487,7 @@ ${biz}`
                       </svg>
                       Sign in to Generate
                     </>
-                  ) : quotesUsed >= FREE_QUOTA ? (
+                  ) : quotesUsed >= FREE_QUOTA && !isSubscribed ? (
                     <>
                       🔒 Upgrade to Continue
                     </>
@@ -1909,16 +1962,16 @@ ${biz}`
 
             <h2 className="text-xl font-bold text-gray-900 text-center mb-2">You've used your 3 free quotes</h2>
             <p className="text-gray-500 text-sm text-center leading-relaxed mb-6">
-              SnapBid Pro is launching soon at <span className="font-semibold text-gray-800">$19/mo</span> — unlimited quotes, PDF downloads, and client management.
+              Upgrade to <span className="font-semibold text-gray-800">SnapBid Pro for $19/mo</span> and get unlimited quotes, professional PDFs, and full client management.
             </p>
 
             {/* What's included */}
             <div className="bg-gray-50 rounded-xl p-4 mb-6 space-y-2">
               {[
-                'Unlimited quotes',
+                'Unlimited quotes — no monthly cap',
                 'Branded PDF downloads',
-                'Calibrated to your rates',
-                'Quote history & tracking',
+                'Calibrated to your exact rates & trade',
+                'Quote history & win/loss tracking',
               ].map(f => (
                 <div key={f} className="flex items-center gap-2.5 text-sm text-gray-700">
                   <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1929,37 +1982,32 @@ ${biz}`
               ))}
             </div>
 
-            {waitlistDone ? (
-              <div className="bg-green-50 border border-green-100 rounded-xl p-4 text-center mb-3">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
-                  </svg>
-                </div>
-                <p className="text-sm font-semibold text-green-800">You're on the list!</p>
-                <p className="text-xs text-green-600 mt-1">We'll email you when SnapBid Pro launches.</p>
+            {/* Price + CTA */}
+            <div className="text-center mb-4">
+              <div className="flex items-baseline justify-center gap-1 mb-1">
+                <span className="text-gray-400 text-base">$</span>
+                <span className="text-3xl font-bold text-gray-900">19</span>
+                <span className="text-gray-400 text-base">/month</span>
               </div>
-            ) : (
-              <form onSubmit={handleWaitlistSubmit} className="mb-3">
-                <p className="text-xs text-gray-500 text-center mb-2">Get notified when Pro launches:</p>
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    value={waitlistEmail}
-                    onChange={e => setWaitlistEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    required
-                    className="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <button
-                    type="submit"
-                    disabled={waitlistSubmitting}
-                    className="bg-[#2563EB] hover:bg-blue-700 disabled:opacity-70 text-white font-semibold py-2.5 px-4 rounded-xl transition-colors text-sm shadow-sm shadow-blue-200 whitespace-nowrap">
-                    {waitlistSubmitting ? '…' : 'Notify me'}
-                  </button>
-                </div>
-              </form>
-            )}
+              <p className="text-xs text-gray-400 mb-4">Cancel anytime · No contracts · Secured by Stripe</p>
+              <button
+                onClick={handleUpgrade}
+                disabled={upgrading}
+                className="w-full bg-[#2563EB] hover:bg-blue-700 disabled:opacity-70 text-white font-semibold py-3.5 rounded-xl transition-colors text-sm shadow-sm shadow-blue-200 flex items-center justify-center gap-2">
+                {upgrading ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                    </svg>
+                    Redirecting to checkout…
+                  </>
+                ) : (
+                  <>⚡ Upgrade Now — $19/mo</>
+                )}
+              </button>
+            </div>
+
             <button onClick={() => setShowPaywall(false)}
               className="w-full text-sm text-gray-400 hover:text-gray-600 transition-colors py-1">
               Maybe later
