@@ -229,7 +229,7 @@ ${offerTieredOptions ? `{
           }))
         }
         const tierSubtotal = (tier.lineItems || []).reduce((s: number, i: any) => s + (parseFloat(i.total) || 0), 0)
-        const tierTax = round50(tierSubtotal * (taxRate / 100))
+        const tierTax = taxRate === 0 ? 0 : round50(tierSubtotal * (taxRate / 100))
         tier.subtotal = tierSubtotal
         tier.tax = tierTax
         tier.total = tierSubtotal + tierTax
@@ -250,7 +250,7 @@ ${offerTieredOptions ? `{
       const subtotal = (quoteData.lineItems || []).reduce(
         (sum: number, item: any) => sum + (parseFloat(item.total) || 0), 0
       )
-      const tax = round50(subtotal * (taxRate / 100))
+      const tax = taxRate === 0 ? 0 : round50(subtotal * (taxRate / 100))
       quoteData.subtotal = subtotal
       quoteData.tax = tax
       quoteData.total = subtotal + tax

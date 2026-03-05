@@ -460,16 +460,21 @@ ${biz}`
     doc.setFontSize(10)
     doc.text('Subtotal', totalsX, y + 14)
     doc.text(`$${pdfTotals?.subtotal}`, pageW - margin, y + 14, { align: 'right' })
-    doc.text('Tax (est.)', totalsX, y + 30)
-    doc.text(`$${pdfTotals?.tax}`, pageW - margin, y + 30, { align: 'right' })
+    const hasTax1 = (pdfTotals?.tax ?? 0) > 0
+    if (hasTax1) {
+      doc.text('Tax (est.)', totalsX, y + 30)
+      doc.text(`$${pdfTotals?.tax}`, pageW - margin, y + 30, { align: 'right' })
+    }
+    const lineY1 = hasTax1 ? y + 36 : y + 20
+    const totalY1 = hasTax1 ? y + 52 : y + 36
     doc.setDrawColor(229, 231, 235)
-    doc.line(totalsX, y + 36, pageW - margin, y + 36)
+    doc.line(totalsX, lineY1, pageW - margin, lineY1)
     doc.setTextColor(37, 99, 235)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(13)
-    doc.text('TOTAL', totalsX, y + 52)
-    doc.text(`$${pdfTotals?.total}`, pageW - margin, y + 52, { align: 'right' })
-    y += 72
+    doc.text('TOTAL', totalsX, totalY1)
+    doc.text(`$${pdfTotals?.total}`, pageW - margin, totalY1, { align: 'right' })
+    y += hasTax1 ? 72 : 56
 
     // Helper: render a labeled section box with bullet items
     const renderSectionBox = (
@@ -651,16 +656,21 @@ ${biz}`
       doc.setFontSize(10)
       doc.text('Subtotal', totalsX, y + 14)
       doc.text(`$${q.subtotal}`, pageW - margin, y + 14, { align: 'right' })
-      doc.text('Tax (est.)', totalsX, y + 30)
-      doc.text(`$${q.tax}`, pageW - margin, y + 30, { align: 'right' })
+      const hasTax2 = (q.tax ?? 0) > 0
+      if (hasTax2) {
+        doc.text('Tax (est.)', totalsX, y + 30)
+        doc.text(`$${q.tax}`, pageW - margin, y + 30, { align: 'right' })
+      }
+      const lineY2 = hasTax2 ? y + 36 : y + 20
+      const totalY2 = hasTax2 ? y + 52 : y + 36
       doc.setDrawColor(229, 231, 235)
-      doc.line(totalsX, y + 36, pageW - margin, y + 36)
+      doc.line(totalsX, lineY2, pageW - margin, lineY2)
       doc.setTextColor(37, 99, 235)
       doc.setFont('helvetica', 'bold')
       doc.setFontSize(13)
-      doc.text('TOTAL', totalsX, y + 52)
-      doc.text(`$${q.total}`, pageW - margin, y + 52, { align: 'right' })
-      y += 72
+      doc.text('TOTAL', totalsX, totalY2)
+      doc.text(`$${q.total}`, pageW - margin, totalY2, { align: 'right' })
+      y += hasTax2 ? 72 : 56
 
       // Reusable section renderer for history PDF
       const renderHistSection = (
@@ -1119,9 +1129,11 @@ ${biz}`
                                   <div className="flex justify-between text-gray-500">
                                     <span>Subtotal</span><span className="tabular-nums">${q.subtotal?.toLocaleString()}</span>
                                   </div>
-                                  <div className="flex justify-between text-gray-500">
-                                    <span>Tax</span><span className="tabular-nums">${q.tax?.toLocaleString()}</span>
-                                  </div>
+                                  {(q.tax ?? 0) > 0 && (
+                                    <div className="flex justify-between text-gray-500">
+                                      <span>Tax</span><span className="tabular-nums">${q.tax?.toLocaleString()}</span>
+                                    </div>
+                                  )}
                                   <div className="flex justify-between font-bold text-sm pt-1.5 border-t border-gray-100">
                                     <span>Total</span>
                                     <span className="text-[#2563EB] tabular-nums">${q.total?.toLocaleString()}</span>
@@ -1941,9 +1953,11 @@ ${biz}`
                           <div className="flex justify-between text-gray-500">
                             <span>Subtotal</span><span className="tabular-nums">${activeTotals?.subtotal}</span>
                           </div>
-                          <div className="flex justify-between text-gray-500">
-                            <span>Tax (est.)</span><span className="tabular-nums">${activeTotals?.tax}</span>
-                          </div>
+                          {(activeTotals?.tax ?? 0) > 0 && (
+                            <div className="flex justify-between text-gray-500">
+                              <span>Tax (est.)</span><span className="tabular-nums">${activeTotals?.tax}</span>
+                            </div>
+                          )}
                           <div className="flex justify-between font-bold text-base pt-2.5 border-t-2 border-gray-100">
                             <span>Total</span>
                             <span className="text-[#2563EB] tabular-nums">${activeTotals?.total}</span>

@@ -14,10 +14,13 @@ export async function POST(req: NextRequest) {
   }
 
   // Clerk metadata has a ~8KB limit per key — resize is handled client-side
-  // Rough check: base64 of 150KB image ≈ 200KB string — too large for metadata
-  if (logoDataUrl && logoDataUrl.length > 150_000) {
-    return NextResponse.json({ error: 'Logo too large. Please use an image under 100KB.' }, { status: 400 })
+  // Detect format for validation/logging
+  const fmt = logoDataUrl?.startsWith('data:image/jpeg') ? 'JPEG' : 'PNG'
+  // 12000 chars ≈ ~9KB base64 — stays safely within Clerk metadata limits
+  if (logoDataUrl && logoDataUrl.length > 12000) {
+    return NextResponse.json({ error: 'Image too large after compression. Please use a smaller or simpler logo.' }, { status: 400 })
   }
+  void fmt // used for format detection above
 
   const profile = await getProfile(userId)
   if (!profile) return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
