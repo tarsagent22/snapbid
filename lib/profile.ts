@@ -1,15 +1,16 @@
 /**
  * Profile storage via Clerk private metadata.
- *
- * Profiles are stored as `privateMetadata.contractorProfile` on the Clerk user
- * object. This means:
- *  - Data persists permanently — tied to the user's email/auth account
- *  - Survives all Vercel deploys, cold starts, and function restarts
- *  - No external database required
- *  - Data is never exposed to the browser (private metadata is server-only)
  */
 
 import { clerkClient } from '@clerk/nextjs/server'
+
+export interface SavedLineItem {
+  id: string
+  description: string
+  defaultQty: string
+  defaultUnitPrice: number
+  category: 'labor' | 'material' | 'other'
+}
 
 export interface ContractorProfile {
   userId: string
@@ -19,22 +20,39 @@ export interface ContractorProfile {
   region: string
   materialTier: 'budget' | 'standard' | 'premium'
   crewSize: number
-  markup: number           // percentage e.g. 20 = 20%
+  markup: number
   quoteCount: number
   createdAt: string
   updatedAt: string
-  // Extended profile fields
+  // Contact & identity
   phone?: string
   email?: string
   businessAddress?: string
   licenseNumber?: string
   yearsInBusiness?: string
-  specialties?: string     // comma-separated
-  taxRate?: number         // percentage e.g. 8.5
-  paymentTerms?: string    // e.g. '50-deposit', 'net-30'
+  specialties?: string
+  taxRate?: number
+  paymentTerms?: string
   quoteValidityDays?: number
   introMessage?: string
-  logoDataUrl?: string   // base64 data URL, stored in Clerk metadata
+  logoDataUrl?: string
+  // Business mechanics
+  minimumJobCharge?: number
+  tripCharge?: number
+  pricingModel?: 'flat-rate' | 'time-and-materials' | 'cost-plus'
+  offerTieredOptions?: boolean
+  afterHoursRate?: number
+  // Trade-specific rates
+  fixtureRate?: number        // plumbing: per-fixture flat rate
+  panelWorkRate?: number      // electrical: panel/service rate
+  permitFeeTypical?: number   // electrical: typical permit cost
+  sqftRateInterior?: number   // painting: interior $/sqft
+  sqftRateExterior?: number   // painting: exterior $/sqft
+  sqftRateRoofing?: number    // roofing: $/sqft
+  tearOffRate?: number        // roofing: tear-off $/sqft
+  serviceCallRate?: number    // hvac: flat service call
+  // Saved line items library
+  savedLineItems?: SavedLineItem[]
 }
 
 export async function getProfile(userId: string): Promise<ContractorProfile | null> {
@@ -66,7 +84,7 @@ export async function incrementQuoteCount(userId: string): Promise<number> {
   return profile.quoteCount
 }
 
-// ── Quote history (stored in Clerk private metadata) ──────────────────────────
+// ── Quote history ─────────────────────────────────────────────────────────────
 
 export interface SavedQuote {
   id: string
@@ -94,7 +112,6 @@ export async function getQuoteHistory(userId: string): Promise<SavedQuote[]> {
 
 export async function saveQuoteToHistory(userId: string, quote: SavedQuote): Promise<void> {
   const history = await getQuoteHistory(userId)
-  // Prepend newest first, keep last 50
   const updated = [quote, ...history].slice(0, 50)
   const client = await clerkClient()
   await client.users.updateUserMetadata(userId, {

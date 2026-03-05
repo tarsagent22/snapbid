@@ -39,6 +39,9 @@ export default function Home() {
     clientAddress: '',
     jobDescription: '',
     materialTierOverride: '',
+    jobType: '',
+    propertyType: '',
+    accessDifficulty: '',
   })
   const [loading, setLoading] = useState(false)
   const [quote, setQuote] = useState<any>(null)
@@ -46,6 +49,7 @@ export default function Home() {
   const [lineItemOverrides] = useState<Record<number, string>>({})
   const [copied, setCopied] = useState(false)
   const [descCount, setDescCount] = useState(0)
+  const [selectedTier, setSelectedTier] = useState<'budget' | 'standard' | 'premium'>('standard')
 
   // Restore draft form from sessionStorage (survives sign-in redirect)
   useEffect(() => {
@@ -142,10 +146,13 @@ export default function Home() {
 
   const handleCopyQuote = () => {
     if (!quote) return
-    const lines = quote.lineItems?.map((item: any, i: number) =>
+    const activeItems = quote.tiered ? (quote.tiers?.[selectedTier]?.lineItems || []) : (quote.lineItems || [])
+    const activeTotals = quote.tiered ? quote.tiers?.[selectedTier] : quote
+    const tierLabel = quote.tiered ? ` (${selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1)} Option)` : ''
+    const lines = activeItems.map((item: any, i: number) =>
       `  ${item.description}: $${lineItemOverrides[i] ?? item.total}`
     ).join('\n') ?? ''
-    const text = `QUOTE #${quote.quoteNumber}\nClient: ${form.clientName}\nAddress: ${form.clientAddress}\n\n${lines}\n\nSubtotal: $${quote.subtotal}\nTax: $${quote.tax}\nTOTAL: $${quote.total}\n\nPowered by SnapBid • snapbid.app`
+    const text = `QUOTE #${quote.quoteNumber}${tierLabel}\nClient: ${form.clientName}\nAddress: ${form.clientAddress}\n\n${lines}\n\nSubtotal: $${activeTotals?.subtotal}\nTax: $${activeTotals?.tax}\nTOTAL: $${activeTotals?.total}`
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
@@ -221,7 +228,9 @@ export default function Home() {
 
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(10)
-    ;(quote.lineItems || []).forEach((item: any, i: number) => {
+    const pdfItems = quote.tiered ? (quote.tiers?.[selectedTier]?.lineItems || []) : (quote.lineItems || [])
+    const pdfTotals = quote.tiered ? quote.tiers?.[selectedTier] : quote
+    ;(pdfItems).forEach((item: any, i: number) => {
       if (i % 2 === 1) { doc.setFillColor(249, 250, 251); doc.rect(margin, y, contentW, 24, 'F') }
       doc.setTextColor(55, 65, 81)
       const descLines = doc.splitTextToSize(item.description, contentW * 0.55)
@@ -243,16 +252,16 @@ export default function Home() {
     doc.setTextColor(107, 114, 128)
     doc.setFontSize(10)
     doc.text('Subtotal', totalsX, y + 14)
-    doc.text(`$${quote.subtotal}`, pageW - margin, y + 14, { align: 'right' })
+    doc.text(`$${pdfTotals?.subtotal}`, pageW - margin, y + 14, { align: 'right' })
     doc.text('Tax (est.)', totalsX, y + 30)
-    doc.text(`$${quote.tax}`, pageW - margin, y + 30, { align: 'right' })
+    doc.text(`$${pdfTotals?.tax}`, pageW - margin, y + 30, { align: 'right' })
     doc.setDrawColor(229, 231, 235)
     doc.line(totalsX, y + 36, pageW - margin, y + 36)
     doc.setTextColor(37, 99, 235)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(13)
     doc.text('TOTAL', totalsX, y + 52)
-    doc.text(`$${quote.total}`, pageW - margin, y + 52, { align: 'right' })
+    doc.text(`$${pdfTotals?.total}`, pageW - margin, y + 52, { align: 'right' })
     y += 72
 
     if (quote.notes) {
@@ -540,6 +549,75 @@ export default function Home() {
                   </div>
                 </div>
 
+                {/* Job context */}
+                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4">
+                  <div>
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Job Context</p>
+                    <p className="text-xs text-gray-400 mt-1">Optional — helps the AI price more accurately</p>
+                  </div>
+                  {/* Job type */}
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 mb-2">Job Type</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        { value: 'new-install', label: 'New Install' },
+                        { value: 'repair', label: 'Repair' },
+                        { value: 'replacement', label: 'Replacement' },
+                        { value: 'maintenance', label: 'Maintenance' },
+                        { value: 'emergency', label: '⚡ Emergency' },
+                      ].map(opt => (
+                        <button key={opt.value} type="button"
+                          onClick={() => setForm(f => ({ ...f, jobType: f.jobType === opt.value ? '' : opt.value }))}
+                          className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
+                            form.jobType === opt.value
+                              ? opt.value === 'emergency' ? 'bg-orange-500 border-orange-500 text-white' : 'bg-[#2563EB] border-[#2563EB] text-white'
+                              : 'border-gray-200 text-gray-500 hover:border-gray-300 bg-white'
+                          }`}>
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Property type */}
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 mb-2">Property Type</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {['Residential', 'Commercial', 'Rental'].map(opt => (
+                        <button key={opt} type="button"
+                          onClick={() => setForm(f => ({ ...f, propertyType: f.propertyType === opt.toLowerCase() ? '' : opt.toLowerCase() }))}
+                          className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
+                            form.propertyType === opt.toLowerCase()
+                              ? 'bg-[#2563EB] border-[#2563EB] text-white'
+                              : 'border-gray-200 text-gray-500 hover:border-gray-300 bg-white'
+                          }`}>
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Access difficulty */}
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 mb-2">Site Access</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        { value: 'easy', label: 'Easy' },
+                        { value: 'moderate', label: 'Moderate' },
+                        { value: 'difficult', label: 'Difficult' },
+                      ].map(opt => (
+                        <button key={opt.value} type="button"
+                          onClick={() => setForm(f => ({ ...f, accessDifficulty: f.accessDifficulty === opt.value ? '' : opt.value }))}
+                          className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
+                            form.accessDifficulty === opt.value
+                              ? opt.value === 'difficult' ? 'bg-red-500 border-red-500 text-white' : opt.value === 'moderate' ? 'bg-amber-500 border-amber-500 text-white' : 'bg-green-500 border-green-500 text-white'
+                              : 'border-gray-200 text-gray-500 hover:border-gray-300 bg-white'
+                          }`}>
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
                 {/* Job description */}
                 <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-3">
                   <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Job Description</p>
@@ -725,7 +803,7 @@ export default function Home() {
           /* ── QUOTE RESULT ──────────────────────────────────────────────── */
           <div className="animate-fade-in-up max-w-3xl mx-auto">
             {/* Success header */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
                   <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -733,7 +811,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Quote Ready</h2>
+                  <h2 className="text-lg font-semibold text-gray-900">{quote.tiered ? 'Tiered Quote Ready' : 'Quote Ready'}</h2>
                   <p className="text-xs text-gray-400">#{quote.quoteNumber}</p>
                 </div>
               </div>
@@ -745,6 +823,33 @@ export default function Home() {
                 New quote
               </button>
             </div>
+
+            {/* Tier selector (tiered quotes only) */}
+            {quote.tiered && (
+              <div className="flex gap-2 mb-4">
+                {(['budget', 'standard', 'premium'] as const).map(tier => (
+                  <button key={tier} type="button"
+                    onClick={() => setSelectedTier(tier)}
+                    className={`flex-1 relative py-2.5 rounded-xl border text-sm font-medium transition-all ${
+                      selectedTier === tier
+                        ? 'bg-[#2563EB] border-[#2563EB] text-white shadow-md shadow-blue-200'
+                        : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'
+                    }`}>
+                    {tier.charAt(0).toUpperCase() + tier.slice(1)}
+                    {tier === 'standard' && (
+                      <span className={`ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                        selectedTier === 'standard' ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-600'
+                      }`}>Recommended</span>
+                    )}
+                    {quote.tiers?.[tier] && (
+                      <p className={`text-xs mt-0.5 ${selectedTier === tier ? 'text-blue-100' : 'text-gray-400'}`}>
+                        ${quote.tiers[tier].total?.toLocaleString()}
+                      </p>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Quote card */}
             <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm mb-4">
@@ -780,58 +885,69 @@ export default function Home() {
                   <p className="text-sm text-gray-500 mt-0.5">{form.clientAddress}</p>
                 </div>
 
-                {/* Line items — desktop */}
-                <div className="hidden md:block">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b-2 border-gray-100">
-                        <th className="text-left pb-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide">Description</th>
-                        <th className="text-right pb-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide w-16">Qty</th>
-                        <th className="text-right pb-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide w-24">Unit</th>
-                        <th className="text-right pb-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide w-24">Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {quote.lineItems?.map((item: any, i: number) => (
-                        <tr key={i} className="border-b border-gray-50 group">
-                          <td className="py-3 text-gray-700 pr-4">{item.description}</td>
-                          <td className="py-3 text-right text-gray-400 tabular-nums">{item.qty}</td>
-                          <td className="py-3 text-right text-gray-400 tabular-nums">${item.unitPrice}</td>
-                          <td className="py-3 text-right font-semibold text-gray-900 tabular-nums">${lineItemOverrides[i] ?? item.total}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Line items — mobile */}
-                <div className="md:hidden space-y-2">
-                  {quote.lineItems?.map((item: any, i: number) => (
-                    <div key={i} className="bg-gray-50 rounded-xl p-3.5">
-                      <p className="text-sm font-medium text-gray-800 mb-2">{item.description}</p>
-                      <div className="flex justify-between text-xs text-gray-400">
-                        <span>Qty {item.qty} × ${item.unitPrice}</span>
-                        <span className="font-semibold text-gray-900">${lineItemOverrides[i] ?? item.total}</span>
+                {/* Line items — resolve from tier or standard quote */}
+                {(() => {
+                  const activeItems = quote.tiered
+                    ? (quote.tiers?.[selectedTier]?.lineItems || [])
+                    : (quote.lineItems || [])
+                  const activeTotals = quote.tiered
+                    ? quote.tiers?.[selectedTier]
+                    : quote
+                  return (
+                    <>
+                      {/* Desktop */}
+                      <div className="hidden md:block">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="border-b-2 border-gray-100">
+                              <th className="text-left pb-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide">Description</th>
+                              <th className="text-right pb-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide w-16">Qty</th>
+                              <th className="text-right pb-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide w-24">Unit</th>
+                              <th className="text-right pb-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide w-24">Total</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {activeItems.map((item: any, i: number) => (
+                              <tr key={i} className="border-b border-gray-50">
+                                <td className="py-3 text-gray-700 pr-4">{item.description}</td>
+                                <td className="py-3 text-right text-gray-400 tabular-nums">{item.qty}</td>
+                                <td className="py-3 text-right text-gray-400 tabular-nums">${item.unitPrice}</td>
+                                <td className="py-3 text-right font-semibold text-gray-900 tabular-nums">${lineItemOverrides[i] ?? item.total}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
                       </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Totals */}
-                <div className="flex justify-end pt-2">
-                  <div className="w-56 space-y-2 text-sm">
-                    <div className="flex justify-between text-gray-500">
-                      <span>Subtotal</span><span className="tabular-nums">${quote.subtotal}</span>
-                    </div>
-                    <div className="flex justify-between text-gray-500">
-                      <span>Tax (est.)</span><span className="tabular-nums">${quote.tax}</span>
-                    </div>
-                    <div className="flex justify-between font-bold text-base pt-2.5 border-t-2 border-gray-100">
-                      <span>Total</span>
-                      <span className="text-[#2563EB] tabular-nums">${quote.total}</span>
-                    </div>
-                  </div>
-                </div>
+                      {/* Mobile */}
+                      <div className="md:hidden space-y-2">
+                        {activeItems.map((item: any, i: number) => (
+                          <div key={i} className="bg-gray-50 rounded-xl p-3.5">
+                            <p className="text-sm font-medium text-gray-800 mb-2">{item.description}</p>
+                            <div className="flex justify-between text-xs text-gray-400">
+                              <span>Qty {item.qty} × ${item.unitPrice}</span>
+                              <span className="font-semibold text-gray-900">${lineItemOverrides[i] ?? item.total}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {/* Totals */}
+                      <div className="flex justify-end pt-2">
+                        <div className="w-56 space-y-2 text-sm">
+                          <div className="flex justify-between text-gray-500">
+                            <span>Subtotal</span><span className="tabular-nums">${activeTotals?.subtotal}</span>
+                          </div>
+                          <div className="flex justify-between text-gray-500">
+                            <span>Tax (est.)</span><span className="tabular-nums">${activeTotals?.tax}</span>
+                          </div>
+                          <div className="flex justify-between font-bold text-base pt-2.5 border-t-2 border-gray-100">
+                            <span>Total</span>
+                            <span className="text-[#2563EB] tabular-nums">${activeTotals?.total}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )
+                })()}
 
                 {/* Notes */}
                 {quote.notes && (
