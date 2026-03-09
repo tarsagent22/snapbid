@@ -192,6 +192,8 @@ export default function ProfilePage() {
     // Business mechanics
     minimumJobCharge: '',
     tripCharge: '',
+    afterHoursRate: '',
+    specialties: '',
     pricingModel: 'time-and-materials',
     offerTieredOptions: false as boolean,
     // Trade-specific
@@ -233,6 +235,8 @@ export default function ProfilePage() {
             notesTemplate: p.notesTemplate || '',
             minimumJobCharge: p.minimumJobCharge ? String(p.minimumJobCharge) : '',
             tripCharge: p.tripCharge ? String(p.tripCharge) : '',
+            afterHoursRate: p.afterHoursRate ? String(p.afterHoursRate) : '',
+            specialties: p.specialties || '',
             pricingModel: p.pricingModel || 'time-and-materials',
             offerTieredOptions: p.offerTieredOptions || false,
             fixtureRate: p.fixtureRate ? String(p.fixtureRate) : '',
@@ -275,10 +279,15 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     setSaving(true)
+    const payload = {
+      ...form,
+      afterHoursRate: form.afterHoursRate ? parseFloat(form.afterHoursRate) : undefined,
+      savedLineItems,
+    }
     await fetch('/api/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, savedLineItems }),
+      body: JSON.stringify(payload),
     })
     setSaving(false)
     setSavedOk(true)
@@ -547,6 +556,16 @@ export default function ProfilePage() {
                   <label className={labelCls}>Service / Trip Charge ($)</label>
                   <input name="tripCharge" type="number" value={form.tripCharge} onChange={handleChange} placeholder="e.g. 75" className={inputCls} />
                   <p className={helperCls}>Added automatically when a service call or travel fee applies</p>
+                </div>
+                <div>
+                  <label className={labelCls}>After-Hours / Emergency Rate ($/hr)</label>
+                  <input name="afterHoursRate" type="number" value={form.afterHoursRate} onChange={handleChange} placeholder="e.g. 150" className={inputCls} />
+                  <p className={helperCls}>Used automatically for emergency or after-hours jobs</p>
+                </div>
+                <div className="sm:col-span-2">
+                  <label className={labelCls}>Specialties <span className="text-gray-400 font-normal">(optional)</span></label>
+                  <input name="specialties" value={form.specialties} onChange={handleChange} placeholder="e.g. Tankless water heaters, copper re-pipes, hydro-jetting" className={inputCls} />
+                  <p className={helperCls}>Helps the AI tailor quotes to your specific expertise</p>
                 </div>
                 <div className="sm:col-span-2">
                   <label className={labelCls}>Preferred Quote Format</label>
