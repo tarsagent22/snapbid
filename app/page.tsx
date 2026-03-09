@@ -66,6 +66,19 @@ export default function Home() {
   const [reuseFlash, setReuseFlash] = useState<string | null>(null)
   const [loadingStep, setLoadingStep] = useState(0)
   const [showJobContext, setShowJobContext] = useState(false)
+  const [founderSpotsLeft, setFounderSpotsLeft] = useState<number>(50)
+
+  // Fetch live founder spot count from Stripe
+  useEffect(() => {
+    fetch('/api/founder-count')
+      .then(r => r.json())
+      .then(d => {
+        if (d.count !== null && d.count !== undefined) {
+          setFounderSpotsLeft(Math.max(0, 50 - d.count))
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   // Restore draft form from sessionStorage (survives sign-in redirect)
   useEffect(() => {
@@ -2113,7 +2126,7 @@ ${biz}`
                     <p className="text-sm font-semibold text-green-800">
                       {quotesUsed >= FREE_QUOTA ? 'You\'ve used all your free quotes' : 'This was your last free quote'}
                     </p>
-                    <p className="text-xs text-green-600">Upgrade for $9/mo and keep quoting — no limits, ever.</p>
+                    <p className="text-xs text-green-600">Upgrade for $9/mo — {founderSpotsLeft} founder spots left.</p>
                   </div>
                 </div>
                 <button
@@ -2164,9 +2177,19 @@ ${biz}`
               Join as a <span className="font-semibold text-green-600">founding member</span> and lock in $9/mo forever — before we go public at $19.
             </p>
 
-            {/* Founder badge */}
-            <div className="bg-green-50 border border-green-200 rounded-lg px-3 py-2 mb-4 text-center">
-              <span className="text-xs font-semibold text-green-700">🔥 Founder Pricing — First 50 users lock in $9/mo forever</span>
+            {/* Founder spots live counter */}
+            <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 mb-4">
+              <div className="flex justify-between items-center text-xs mb-1.5">
+                <span className="font-semibold text-green-700">🔥 Founder Pricing</span>
+                <span className="text-green-600 font-semibold">{founderSpotsLeft} of 50 spots left</span>
+              </div>
+              <div className="w-full bg-green-100 rounded-full h-1.5">
+                <div
+                  className="bg-green-500 h-1.5 rounded-full transition-all duration-500"
+                  style={{ width: `${Math.max(4, ((50 - founderSpotsLeft) / 50) * 100)}%` }}
+                />
+              </div>
+              <p className="text-xs text-green-600 mt-1.5">Lock in $9/mo forever — goes to $19 after 50 users</p>
             </div>
 
             {/* What's included */}
