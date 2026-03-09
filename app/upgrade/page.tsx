@@ -164,14 +164,6 @@ export default function UpgradePage() {
           </div>
         </div>
 
-        {/* Social proof placeholder */}
-        <div className="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-100">
-          <p className="text-sm text-gray-600 text-center italic">
-            "Saves me 30-45 minutes per quote. Paid for itself on day one."
-          </p>
-          <p className="text-xs text-gray-400 text-center mt-1">— Early beta user, HVAC contractor</p>
-        </div>
-
         {/* Back link */}
         <div className="text-center">
           <button
