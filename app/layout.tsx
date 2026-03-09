@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Geist_Mono } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 import './globals.css'
 
 const inter = Inter({
@@ -109,7 +110,8 @@ const jsonLd = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { userId } = await auth()
   return (
     <ClerkProvider>
       <html lang="en" className={`${inter.variable} ${geistMono.variable}`}>
@@ -125,7 +127,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
               <p className="text-xs text-gray-400">© 2026 SnapBid · Built for tradespeople</p>
               <nav className="flex items-center gap-4 text-xs text-gray-400">
-                <a href="/profile" className="hover:text-gray-600 transition-colors">Profile</a>
+                {userId && (
+                  <a href="/profile" className="hover:text-gray-600 transition-colors">Profile</a>
+                )}
                 <a href="/upgrade" className="hover:text-gray-600 transition-colors">Upgrade</a>
                 <a href="mailto:hello@snapbid.app" className="hover:text-gray-600 transition-colors">Contact</a>
               </nav>

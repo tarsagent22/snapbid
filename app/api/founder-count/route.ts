@@ -13,7 +13,8 @@ export async function GET() {
   }
 
   if (!process.env.STRIPE_SECRET_KEY) {
-    return NextResponse.json({ count: 0 })
+    // Return null so the UI knows Stripe isn't configured yet (vs. genuinely 0 subscribers)
+    return NextResponse.json({ count: null })
   }
 
   try {

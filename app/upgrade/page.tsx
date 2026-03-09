@@ -20,15 +20,24 @@ export default function UpgradePage() {
   const { user, isLoaded } = useUser()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [spotsLeft, setSpotsLeft] = useState(FOUNDER_SPOTS_TOTAL)
+  const [spotsLeft, setSpotsLeft] = useState<number | null>(null)
 
   // Fetch real subscriber count from Stripe
   useEffect(() => {
     fetch('/api/founder-count')
       .then(r => r.json())
-      .then(d => setSpotsLeft(Math.max(0, FOUNDER_SPOTS_TOTAL - (d.count || 0))))
+      .then(d => {
+        if (d.count === null || d.count === undefined) {
+          // Stripe not yet live — show honest "just launched" state
+          setSpotsLeft(FOUNDER_SPOTS_TOTAL)
+        } else {
+          setSpotsLeft(Math.max(0, FOUNDER_SPOTS_TOTAL - d.count))
+        }
+      })
       .catch(() => setSpotsLeft(FOUNDER_SPOTS_TOTAL))
   }, [])
+
+  const displaySpotsLeft = spotsLeft ?? FOUNDER_SPOTS_TOTAL
 
   const handleUpgrade = async () => {
     if (!user) {
@@ -48,7 +57,7 @@ export default function UpgradePage() {
     }
   }
 
-  const spotsPercent = Math.round((spotsLeft / FOUNDER_SPOTS_TOTAL) * 100)
+  const spotsPercent = Math.round((displaySpotsLeft / FOUNDER_SPOTS_TOTAL) * 100)
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--background)' }}>
@@ -96,12 +105,12 @@ export default function UpgradePage() {
         <div className="mb-8">
           <div className="flex justify-between text-xs text-gray-500 mb-1.5">
             <span>Just launched</span>
-            <span className="font-semibold text-amber-600">{spotsLeft} of {FOUNDER_SPOTS_TOTAL} spots available</span>
+            <span className="font-semibold text-amber-600">{displaySpotsLeft} of {FOUNDER_SPOTS_TOTAL} spots available</span>
           </div>
           <div className="w-full bg-gray-100 rounded-full h-2">
             <div
               className="bg-amber-500 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${100 - spotsPercent}%` }}
+              style={{ width: `${Math.max(4, 100 - spotsPercent)}%` }}
             />
           </div>
         </div>
