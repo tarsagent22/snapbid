@@ -784,7 +784,7 @@ ${biz}`
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center shadow-sm shadow-blue-200">
+            <div className="w-8 h-8 rounded-lg bg-[#D97706] flex items-center justify-center shadow-sm shadow-amber-200">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M9 1L3 9h5l-1 6 7-10H9V1z" fill="white" strokeLinejoin="round"/>
               </svg>
@@ -823,7 +823,7 @@ ${biz}`
                 </div>
               ) : (
                 <SignInButton mode="modal" forceRedirectUrl="/profile">
-                  <button className="text-sm bg-[#2563EB] hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm shadow-blue-200">
+                  <button className="text-sm bg-[#D97706] hover:bg-amber-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm shadow-amber-200">
                     Sign In
                   </button>
                 </SignInButton>
@@ -854,17 +854,17 @@ ${biz}`
 
       {/* ── PROFILE CALIBRATION BAR (signed-in) ────────────────────────────── */}
       {profile && (
-        <div className="bg-[#2563EB]/5 border-b border-[#2563EB]/10">
+        <div className="bg-[#D97706]/5 border-b border-[#D97706]/10">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-2 flex items-center justify-between gap-4">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-blue-700 font-medium">⚡ Calibrated to {profile.businessName}</span>
+              <span className="text-xs text-amber-700 font-medium">⚡ Calibrated to {profile.businessName}</span>
               <span className="hidden sm:inline text-blue-300 text-xs">·</span>
-              <span className="hidden sm:inline text-xs text-blue-500">${profile.hourlyRate}/hr · {profile.materialTier} materials · {profile.region}</span>
+              <span className="hidden sm:inline text-xs text-amber-500">${profile.hourlyRate}/hr · {profile.materialTier} materials · {profile.region}</span>
             </div>
             <div className="flex items-center gap-3">
               {/* Quota pill */}
               {isSubscribed ? (
-                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700">
+                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
                   ⚡ Pro — Unlimited
                 </span>
               ) : (
@@ -873,14 +873,14 @@ ${biz}`
                     ? 'bg-red-100 text-red-600'
                     : quotesUsed >= FREE_QUOTA - 1
                     ? 'bg-orange-100 text-orange-600'
-                    : 'bg-blue-100 text-blue-600'
+                    : 'bg-amber-100 text-amber-600'
                 }`}>
                   {quotesUsed >= FREE_QUOTA
                     ? 'Free limit reached'
                     : `${FREE_QUOTA - quotesUsed} free quote${FREE_QUOTA - quotesUsed !== 1 ? 's' : ''} left`}
                 </span>
               )}
-              <button onClick={() => router.push('/profile')} className="text-xs text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap transition-colors">
+              <button onClick={() => router.push('/profile')} className="text-xs text-amber-600 hover:text-amber-800 font-medium whitespace-nowrap transition-colors">
                 Edit profile →
               </button>
             </div>
@@ -894,21 +894,21 @@ ${biz}`
           {/* Dot grid background */}
           <div className="absolute inset-0 dot-grid opacity-60" />
           <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-14 sm:py-20 text-center">
-            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6 border border-blue-100">
+            <div className="inline-flex items-center gap-2 bg-amber-50 text-amber-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6 border border-amber-100">
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                <path d="M5.5 0.5L1.5 5.5h3l-.5 4 4.5-6H5.5V0.5z" fill="#2563EB"/>
+                <path d="M5.5 0.5L1.5 5.5h3l-.5 4 4.5-6H5.5V0.5z" fill="#D97706"/>
               </svg>
               AI-powered · Built for tradespeople
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight mb-4 leading-[1.1]">
               Professional quotes<br />
-              <span className="text-[#2563EB]">in 60 seconds</span>
+              <span className="text-[#D97706]">in 60 seconds</span>
             </h1>
             <p className="text-gray-500 text-lg sm:text-xl max-w-xl mx-auto mb-8 leading-relaxed">
               Describe the job in plain English. SnapBid generates accurate, itemized quotes calibrated to your rates.
             </p>
             <SignInButton mode="modal" forceRedirectUrl="/profile">
-              <button className="inline-flex items-center gap-2 bg-[#2563EB] hover:bg-blue-700 text-white font-semibold px-7 py-3.5 rounded-xl transition-colors shadow-lg shadow-blue-200 text-sm">
+              <button className="inline-flex items-center gap-2 bg-[#D97706] hover:bg-amber-700 text-white font-semibold px-7 py-3.5 rounded-xl transition-colors shadow-lg shadow-amber-200 text-sm">
                 Get started free
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M8 3l5 4-5 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </button>
@@ -922,8 +922,8 @@ ${biz}`
                 { step: '02', title: 'AI builds the quote', desc: 'Itemized line items, materials, labor, and totals — calibrated to your rates.' },
                 { step: '03', title: 'Download or copy', desc: 'Professional PDF ready to send. Impress clients, close more jobs.' },
               ].map(item => (
-                <div key={item.step} className="bg-white rounded-2xl border border-gray-100 px-6 py-5 shadow-sm">
-                  <p className="text-[11px] font-bold text-[#2563EB] tracking-widest mb-3">{item.step}</p>
+                <div key={item.step} className="bg-white rounded-2xl border border-gray-100 px-6 py-5 shadow-md">
+                  <p className="text-[11px] font-bold text-[#D97706] tracking-widest mb-3">{item.step}</p>
                   <p className="text-sm font-semibold text-gray-900 mb-1.5">{item.title}</p>
                   <p className="text-sm text-gray-400 leading-relaxed">{item.desc}</p>
                 </div>
@@ -941,7 +941,7 @@ ${biz}`
               <button key={tab} onClick={() => setActiveTab(tab)}
                 className={`py-3 text-sm font-medium border-b-2 transition-colors ${
                   activeTab === tab
-                    ? 'border-[#2563EB] text-[#2563EB]'
+                    ? 'border-[#D97706] text-[#D97706]'
                     : 'border-transparent text-gray-400 hover:text-gray-600'
                 }`}>
                 {tab === 'new' ? 'New Quote' : 'Quote History'}
@@ -979,7 +979,7 @@ ${biz}`
                       <span className="text-gray-500">{pending} pending</span>
                     </div>
                     {winRate !== null && (
-                      <span className="bg-blue-50 text-blue-600 font-semibold px-2 py-0.5 rounded-full">
+                      <span className="bg-amber-50 text-amber-600 font-semibold px-2 py-0.5 rounded-full">
                         {winRate}% win rate
                       </span>
                     )}
@@ -1004,7 +1004,7 @@ ${biz}`
                 <p className="text-sm font-medium text-gray-400">No quotes yet</p>
                 <p className="text-xs text-gray-300 mt-1">Your generated quotes will appear here</p>
                 <button onClick={() => setActiveTab('new')}
-                  className="mt-4 text-sm text-[#2563EB] hover:underline font-medium">
+                  className="mt-4 text-sm text-[#D97706] hover:underline font-medium">
                   Generate your first quote →
                 </button>
               </div>
@@ -1013,7 +1013,7 @@ ${biz}`
                 {history.map((q: any) => {
                   const isExpanded = expandedHistoryId === q.id
                   return (
-                    <div key={q.id} className={`bg-white rounded-2xl border shadow-sm transition-all duration-200 ${isExpanded ? 'border-[#2563EB]/30 shadow-blue-50' : 'border-gray-100 hover:border-gray-200'}`}>
+                    <div key={q.id} className={`bg-white rounded-2xl border shadow-sm transition-all duration-200 ${isExpanded ? 'border-[#D97706]/30 shadow-amber-50' : 'border-gray-100 hover:border-gray-200'}`}>
                       {/* Summary row — always visible, clickable to expand */}
                       <button
                         type="button"
@@ -1055,7 +1055,7 @@ ${biz}`
                               <p className="text-lg font-bold text-gray-900">${q.total?.toLocaleString()}</p>
                               <p className="text-xs text-gray-400">{q.lineItems?.length || 0} line items</p>
                             </div>
-                            <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${isExpanded ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-400'}`}>
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${isExpanded ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-400'}`}>
                               <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7"/>
@@ -1074,15 +1074,15 @@ ${biz}`
                               <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                               </svg>
-                              <a href={`mailto:${q.clientEmail}`} className="hover:text-blue-500 transition-colors">{q.clientEmail}</a>
+                              <a href={`mailto:${q.clientEmail}`} className="hover:text-amber-500 transition-colors">{q.clientEmail}</a>
                             </div>
                           )}
 
                           {/* Scope of Work (if present) */}
                           {q.scopeOfWork && (
-                            <div className="mt-4 mb-2 bg-blue-50 border border-blue-100 rounded-xl p-3.5">
-                              <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">Scope of Work</p>
-                              <p className="text-sm text-blue-800 leading-relaxed">{q.scopeOfWork}</p>
+                            <div className="mt-4 mb-2 bg-amber-50 border border-amber-100 rounded-xl p-3.5">
+                              <p className="text-[10px] font-bold text-amber-400 uppercase tracking-widest mb-1">Scope of Work</p>
+                              <p className="text-sm text-amber-800 leading-relaxed">{q.scopeOfWork}</p>
                             </div>
                           )}
 
@@ -1146,7 +1146,7 @@ ${biz}`
                                   )}
                                   <div className="flex justify-between font-bold text-sm pt-1.5 border-t border-gray-100">
                                     <span>Total</span>
-                                    <span className="text-[#2563EB] tabular-nums">${q.total?.toLocaleString()}</span>
+                                    <span className="text-[#D97706] tabular-nums">${q.total?.toLocaleString()}</span>
                                   </div>
                                 </div>
                               </div>
@@ -1191,9 +1191,9 @@ ${biz}`
 
                           {/* Notes */}
                           {q.notes && (
-                            <div className="mt-3 bg-blue-50 border border-blue-100 rounded-xl p-3.5">
-                              <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">Notes</p>
-                              <p className="text-sm text-blue-800 leading-relaxed">{q.notes}</p>
+                            <div className="mt-3 bg-amber-50 border border-amber-100 rounded-xl p-3.5">
+                              <p className="text-[10px] font-bold text-amber-400 uppercase tracking-widest mb-1">Notes</p>
+                              <p className="text-sm text-amber-800 leading-relaxed">{q.notes}</p>
                             </div>
                           )}
 
@@ -1246,7 +1246,7 @@ ${biz}`
                             <button
                               onClick={() => handleDownloadHistoryPDF(q)}
                               disabled={historyPdfDownloading === q.id}
-                              className="flex items-center gap-1.5 bg-[#2563EB] hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2 px-4 rounded-xl text-xs transition-colors shadow-sm shadow-blue-100"
+                              className="flex items-center gap-1.5 bg-[#D97706] hover:bg-amber-700 disabled:opacity-60 text-white font-semibold py-2 px-4 rounded-xl text-xs transition-colors shadow-sm shadow-amber-100"
                             >
                               {historyPdfDownloading === q.id ? (
                                 <svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
@@ -1265,7 +1265,7 @@ ${biz}`
                               className={`flex items-center gap-1.5 border font-semibold py-2 px-4 rounded-xl text-xs transition-all ${
                                 reuseFlash === q.id
                                   ? 'bg-green-500 border-green-500 text-white'
-                                  : 'bg-white border-gray-200 text-gray-600 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50'
+                                  : 'bg-white border-gray-200 text-gray-600 hover:border-amber-300 hover:text-amber-600 hover:bg-amber-50'
                               }`}
                             >
                               {reuseFlash === q.id ? (
@@ -1310,8 +1310,8 @@ ${biz}`
 
               {/* Pre-fill banner — shown briefly after reusing a quote */}
               {reuseFlash && (
-                <div className="flex items-center gap-2.5 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-4 text-sm text-blue-700 animate-fade-in-up">
-                  <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center gap-2.5 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-4 text-sm text-amber-700 animate-fade-in-up">
+                  <svg className="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
                   <span>Form pre-filled from your previous quote — update any details and generate a new one.</span>
@@ -1322,7 +1322,7 @@ ${biz}`
 
                 {/* Business + Trade (guests only) */}
                 {!profile && (
-                  <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4">
+                  <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-md space-y-4">
                     <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Your Business</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
@@ -1344,8 +1344,8 @@ ${biz}`
                               onClick={() => setForm(f => ({ ...f, trade: c.value }))}
                               className={`text-xs px-2.5 py-1 rounded-lg border transition-all ${
                                 form.trade === c.value
-                                  ? 'bg-[#2563EB] border-[#2563EB] text-white shadow-sm'
-                                  : 'bg-gray-50 border-gray-200 text-gray-500 hover:border-blue-300 hover:text-blue-600'
+                                  ? 'bg-[#D97706] border-[#D97706] text-white shadow-sm'
+                                  : 'bg-gray-50 border-gray-200 text-gray-500 hover:border-amber-300 hover:text-amber-600'
                               }`}>
                               {c.label}
                             </button>
@@ -1357,7 +1357,7 @@ ${biz}`
                 )}
 
                 {/* Client info */}
-                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4">
+                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-md space-y-4">
                   <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Client</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
@@ -1382,7 +1382,7 @@ ${biz}`
                 </div>
 
                 {/* Job context */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
                   <button
                     type="button"
                     onClick={() => setShowJobContext(v => !v)}
@@ -1392,7 +1392,7 @@ ${biz}`
                       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Job Context</p>
                       <p className="text-xs text-gray-400 mt-0.5">Optional — helps the AI price more accurately</p>
                     </div>
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${showJobContext ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-400'}`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${showJobContext ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-400'}`}>
                       <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         style={{ transform: showJobContext ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7"/>
@@ -1415,7 +1415,7 @@ ${biz}`
                           onClick={() => setForm(f => ({ ...f, jobType: f.jobType === opt.value ? '' : opt.value }))}
                           className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
                             form.jobType === opt.value
-                              ? opt.value === 'emergency' ? 'bg-orange-500 border-orange-500 text-white' : 'bg-[#2563EB] border-[#2563EB] text-white'
+                              ? opt.value === 'emergency' ? 'bg-orange-500 border-orange-500 text-white' : 'bg-[#D97706] border-[#D97706] text-white'
                               : 'border-gray-200 text-gray-500 hover:border-gray-300 bg-white'
                           }`}>
                           {opt.label}
@@ -1432,7 +1432,7 @@ ${biz}`
                           onClick={() => setForm(f => ({ ...f, propertyType: f.propertyType === opt.toLowerCase() ? '' : opt.toLowerCase() }))}
                           className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
                             form.propertyType === opt.toLowerCase()
-                              ? 'bg-[#2563EB] border-[#2563EB] text-white'
+                              ? 'bg-[#D97706] border-[#D97706] text-white'
                               : 'border-gray-200 text-gray-500 hover:border-gray-300 bg-white'
                           }`}>
                           {opt}
@@ -1465,7 +1465,7 @@ ${biz}`
                 </div>
 
                 {/* Job description */}
-                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-3">
+                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-md space-y-3">
                   <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Job Description</p>
                   <div>
                     <textarea name="jobDescription" value={form.jobDescription} onChange={handleChange}
@@ -1477,7 +1477,7 @@ ${biz}`
                         {EXAMPLE_PROMPTS.map((p, i) => (
                           <button key={i} type="button"
                             onClick={() => { setForm(f => ({ ...f, jobDescription: p })); setDescCount(p.length) }}
-                            className="text-[11px] text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-2 py-0.5 rounded-md transition-colors">
+                            className="text-[11px] text-amber-500 hover:text-amber-700 bg-amber-50 hover:bg-amber-100 px-2 py-0.5 rounded-md transition-colors">
                             {p.split(' ').slice(0, 4).join(' ')}…
                           </button>
                         ))}
@@ -1490,7 +1490,7 @@ ${biz}`
                 </div>
 
                 {/* Material tier */}
-                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-md">
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Material Quality</p>
                     {profile && <span className="text-xs text-gray-400">default: {profile.materialTier}</span>}
@@ -1508,13 +1508,13 @@ ${biz}`
                           onClick={() => setForm(f => ({ ...f, materialTierOverride: f.materialTierOverride === tier.value ? '' : tier.value }))}
                           className={`relative p-3 rounded-xl border-2 text-center transition-all duration-150 ${
                             active
-                              ? 'border-[#2563EB] bg-blue-50 shadow-sm'
+                              ? 'border-[#D97706] bg-amber-50 shadow-sm'
                               : 'border-gray-100 bg-white hover:border-gray-200 hover:bg-gray-50'
                           }`}>
                           <div className="text-lg mb-0.5">{tier.icon}</div>
-                          <div className={`text-xs font-semibold ${active ? 'text-[#2563EB]' : 'text-gray-700'}`}>{tier.label}</div>
+                          <div className={`text-xs font-semibold ${active ? 'text-[#D97706]' : 'text-gray-700'}`}>{tier.label}</div>
                           <div className="text-[10px] text-gray-400 mt-0.5">{tier.sub}</div>
-                          {active && <div className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[#2563EB]" />}
+                          {active && <div className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[#D97706]" />}
                         </button>
                       )
                     })}
@@ -1540,7 +1540,7 @@ ${biz}`
                 )}
 
                 <button type="submit" disabled={loading}
-                  className="w-full relative overflow-hidden bg-[#2563EB] hover:bg-blue-700 disabled:opacity-70 text-white font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 text-sm shadow-md shadow-blue-200 flex items-center justify-center gap-2">
+                  className="w-full relative overflow-hidden bg-[#D97706] hover:bg-amber-700 disabled:opacity-70 text-white font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 text-sm shadow-md shadow-amber-200 flex items-center justify-center gap-2">
                   {loading ? (
                     <>
                       <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
@@ -1575,7 +1575,7 @@ ${biz}`
                   <div className="flex items-center gap-2">
                     <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                       <div
-                        className={`h-full rounded-full transition-all ${quotesUsed >= FREE_QUOTA - 1 ? 'bg-orange-400' : 'bg-[#2563EB]'}`}
+                        className={`h-full rounded-full transition-all ${quotesUsed >= FREE_QUOTA - 1 ? 'bg-orange-400' : 'bg-[#D97706]'}`}
                         style={{ width: `${(quotesUsed / FREE_QUOTA) * 100}%` }}
                       />
                     </div>
@@ -1605,8 +1605,8 @@ ${biz}`
               {loading ? (
                 <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm animate-fade-in-up">
                   <div className="flex items-center gap-3 mb-5">
-                    <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
-                      <svg className="animate-spin w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24">
+                    <div className="w-9 h-9 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0">
+                      <svg className="animate-spin w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                       </svg>
@@ -1620,14 +1620,14 @@ ${biz}`
                     {['Reading job description…', 'Calculating your rates…', 'Building line items…', 'Finalizing totals…'].map((step, i) => (
                       <div key={i} className={`flex items-center gap-3 transition-all duration-500 ${i <= loadingStep && loadingStep <= 4 ? 'opacity-100' : 'opacity-25'}`}>
                         <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          i < loadingStep && loadingStep <= 4 ? 'bg-green-100' : i === loadingStep ? 'bg-blue-100' : 'bg-gray-100'
+                          i < loadingStep && loadingStep <= 4 ? 'bg-green-100' : i === loadingStep ? 'bg-amber-100' : 'bg-gray-100'
                         }`}>
                           {i < loadingStep && loadingStep <= 4 ? (
                             <svg className="w-3 h-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/>
                             </svg>
                           ) : i === loadingStep ? (
-                            <svg className="animate-spin w-3 h-3 text-blue-600" fill="none" viewBox="0 0 24 24">
+                            <svg className="animate-spin w-3 h-3 text-amber-600" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                             </svg>
@@ -1654,15 +1654,15 @@ ${biz}`
                   </div>
                 </div>
               ) : (
-                <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
-                  <div className="bg-[#2563EB] px-5 py-4 flex justify-between items-center">
+                <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-md">
+                  <div className="bg-[#1C1917] px-5 py-4 flex justify-between items-center">
                     <div>
                       <p className="text-white text-sm font-bold">Sample Output</p>
-                      <p className="text-blue-200 text-xs mt-0.5">Roofing Services</p>
+                      <p className="text-stone-400 text-xs mt-0.5">Roofing Services</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-blue-200 text-[10px] uppercase tracking-wide">Quote</p>
-                      <p className="text-white text-xs font-bold mt-0.5">SB-0142</p>
+                      <p className="text-stone-400 text-[10px] uppercase tracking-wide">Quote</p>
+                      <p className="text-amber-400 text-xs font-bold mt-0.5">SB-0142</p>
                     </div>
                   </div>
                   <div className="px-5 py-4 space-y-2.5">
@@ -1680,7 +1680,7 @@ ${biz}`
                     ))}
                     <div className="pt-2.5 border-t border-gray-100 flex justify-between items-center">
                       <span className="text-xs text-gray-400">Total</span>
-                      <span className="text-sm font-bold text-[#2563EB]">$2,843</span>
+                      <span className="text-sm font-bold text-[#D97706]">$2,843</span>
                     </div>
                   </div>
                   <div className="px-5 pb-3.5">
@@ -1691,7 +1691,7 @@ ${biz}`
 
               {/* How it works — signed-in users only (guests see it in hero) */}
               {user && (
-                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4">
+                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-md space-y-4">
                   <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">How it works</p>
                   {[
                     { n: '01', t: 'Describe the job', d: 'Plain English, no jargon.' },
@@ -1699,7 +1699,7 @@ ${biz}`
                     { n: '03', t: 'Download PDF', d: 'Professional. Ready to send.' },
                   ].map(s => (
                     <div key={s.n} className="flex items-start gap-3">
-                      <span className="text-[11px] font-bold text-[#2563EB] w-6 pt-0.5">{s.n}</span>
+                      <span className="text-[11px] font-bold text-[#D97706] w-6 pt-0.5">{s.n}</span>
                       <div>
                         <p className="text-sm font-medium text-gray-800">{s.t}</p>
                         <p className="text-xs text-gray-400">{s.d}</p>
@@ -1711,7 +1711,7 @@ ${biz}`
 
               {/* Sign-in nudge for guests */}
               {!user && isLoaded && (
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-md p-5 space-y-4">
                   <div>
                     <p className="text-sm font-semibold text-gray-900 mb-1">Quotes calibrated to your business</p>
                     <p className="text-xs text-gray-400 leading-relaxed">Sign in once to set your hourly rate, markup, and region. Every quote auto-adjusts to your exact numbers.</p>
@@ -1731,7 +1731,7 @@ ${biz}`
                     ))}
                   </div>
                   <SignInButton mode="modal" forceRedirectUrl="/">
-                    <button className="w-full bg-[#2563EB] hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors shadow-sm shadow-blue-200">
+                    <button className="w-full bg-[#D97706] hover:bg-amber-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors shadow-sm shadow-amber-200">
                       Create free account →
                     </button>
                   </SignInButton>
@@ -1777,17 +1777,17 @@ ${biz}`
                     onClick={() => setSelectedTier(tier)}
                     className={`flex-1 relative py-2.5 rounded-xl border text-sm font-medium transition-all ${
                       selectedTier === tier
-                        ? 'bg-[#2563EB] border-[#2563EB] text-white shadow-md shadow-blue-200'
+                        ? 'bg-[#D97706] border-[#D97706] text-white shadow-md shadow-amber-200'
                         : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'
                     }`}>
                     {tier.charAt(0).toUpperCase() + tier.slice(1)}
                     {tier === 'standard' && (
                       <span className={`ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-                        selectedTier === 'standard' ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-600'
+                        selectedTier === 'standard' ? 'bg-white/20 text-white' : 'bg-amber-100 text-amber-600'
                       }`}>Recommended</span>
                     )}
                     {quote.tiers?.[tier] && (
-                      <p className={`text-xs mt-0.5 ${selectedTier === tier ? 'text-blue-100' : 'text-gray-400'}`}>
+                      <p className={`text-xs mt-0.5 ${selectedTier === tier ? 'text-amber-100' : 'text-gray-400'}`}>
                         ${quote.tiers[tier].total?.toLocaleString()}
                       </p>
                     )}
@@ -1797,33 +1797,33 @@ ${biz}`
             )}
 
             {/* Quote card */}
-            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm mb-4">
+            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-md mb-4">
               {/* Card header */}
-              <div className="bg-[#2563EB] px-8 py-6 flex justify-between items-start">
+              <div className="bg-[#1C1917] px-8 py-6 flex justify-between items-start">
                 <div>
                   <h3 className="text-white font-bold text-xl tracking-tight">
                     {profile?.businessName || form.businessName}
                   </h3>
-                  <p className="text-blue-200 text-sm mt-0.5 capitalize">
+                  <p className="text-stone-400 text-sm mt-0.5 capitalize">
                     {(profile?.trade || form.trade)} Services
                   </p>
                   {(profile?.phone || profile?.email) && (
-                    <p className="text-blue-200 text-xs mt-2 space-x-3">
+                    <p className="text-stone-400 text-xs mt-2 space-x-3">
                       {profile?.phone && <span>{profile.phone}</span>}
                       {profile?.email && <span>{profile.email}</span>}
                     </p>
                   )}
                 </div>
                 <div className="text-right">
-                  <p className="text-blue-200 text-xs font-medium uppercase tracking-wide">Quote</p>
-                  <p className="text-white font-bold text-lg mt-0.5">{quote.quoteNumber}</p>
-                  <p className="text-blue-200 text-xs mt-1">{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                  <p className="text-stone-400 text-xs font-medium uppercase tracking-wide">Quote</p>
+                  <p className="text-amber-400 font-bold text-lg mt-0.5">{quote.quoteNumber}</p>
+                  <p className="text-stone-400 text-xs mt-1">{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                   <div className="mt-1.5 flex items-center gap-1 justify-end">
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="flex-shrink-0">
-                      <circle cx="5" cy="5" r="4" stroke="rgba(147,197,253,0.8)" strokeWidth="1"/>
-                      <path d="M5 2.5v2.5l1.5 1.5" stroke="rgba(147,197,253,0.8)" strokeWidth="1" strokeLinecap="round"/>
+                      <circle cx="5" cy="5" r="4" stroke="rgba(120,113,108,0.8)" strokeWidth="1"/>
+                      <path d="M5 2.5v2.5l1.5 1.5" stroke="rgba(120,113,108,0.8)" strokeWidth="1" strokeLinecap="round"/>
                     </svg>
-                    <p className="text-blue-200 text-xs">Expires {new Date(Date.now() + (profile?.quoteValidityDays || 30) * 86400000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                    <p className="text-stone-400 text-xs">Expires {new Date(Date.now() + (profile?.quoteValidityDays || 30) * 86400000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                   </div>
                 </div>
               </div>
@@ -1910,7 +1910,7 @@ ${biz}`
                                           onBlur={() => handleLineItemEditCommit(i)}
                                           onKeyDown={e => handleLineItemEditKeyDown(e, i)}
                                           autoFocus
-                                          className="w-20 text-right border border-blue-400 rounded-lg px-2 py-1 text-sm font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50"
+                                          className="w-20 text-right border border-blue-400 rounded-lg px-2 py-1 text-sm font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-amber-50"
                                         />
                                       </div>
                                     ) : (
@@ -1929,7 +1929,7 @@ ${biz}`
                                           type="button"
                                           title="Click to edit"
                                           onClick={() => handleLineItemEditStart(i, displayTotal)}
-                                          className={`font-semibold tabular-nums transition-colors hover:text-blue-600 cursor-pointer rounded px-1 py-0.5 hover:bg-blue-50 ${isOverridden ? 'text-blue-600' : 'text-gray-900'}`}
+                                          className={`font-semibold tabular-nums transition-colors hover:text-amber-600 cursor-pointer rounded px-1 py-0.5 hover:bg-amber-50 ${isOverridden ? 'text-amber-600' : 'text-gray-900'}`}
                                         >
                                           ${displayTotal}
                                         </button>
@@ -1968,14 +1968,14 @@ ${biz}`
                                       onBlur={() => handleLineItemEditCommit(i)}
                                       onKeyDown={e => handleLineItemEditKeyDown(e, i)}
                                       autoFocus
-                                      className="w-16 text-right border border-blue-400 rounded px-1.5 py-0.5 text-xs font-semibold text-gray-900 focus:outline-none bg-blue-50"
+                                      className="w-16 text-right border border-blue-400 rounded px-1.5 py-0.5 text-xs font-semibold text-gray-900 focus:outline-none bg-amber-50"
                                     />
                                   </div>
                                 ) : (
                                   <button
                                     type="button"
                                     onClick={() => handleLineItemEditStart(i, displayTotal)}
-                                    className={`font-semibold transition-colors active:text-blue-600 ${isOverridden ? 'text-blue-600' : 'text-gray-900'}`}
+                                    className={`font-semibold transition-colors active:text-amber-600 ${isOverridden ? 'text-amber-600' : 'text-gray-900'}`}
                                   >
                                     ${displayTotal} ✎
                                   </button>
@@ -1998,7 +1998,7 @@ ${biz}`
                           )}
                           <div className="flex justify-between font-bold text-base pt-2.5 border-t-2 border-gray-100">
                             <span>Total</span>
-                            <span className="text-[#2563EB] tabular-nums">${activeTotals?.total}</span>
+                            <span className="text-[#D97706] tabular-nums">${activeTotals?.total}</span>
                           </div>
                         </div>
                       </div>
@@ -2044,9 +2044,9 @@ ${biz}`
 
                 {/* Notes */}
                 {quote.notes && (
-                  <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-                    <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">Notes</p>
-                    <p className="text-sm text-blue-800 leading-relaxed">{quote.notes}</p>
+                  <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
+                    <p className="text-[10px] font-bold text-amber-400 uppercase tracking-widest mb-1.5">Notes</p>
+                    <p className="text-sm text-amber-800 leading-relaxed">{quote.notes}</p>
                   </div>
                 )}
 
@@ -2060,7 +2060,7 @@ ${biz}`
             {/* Action buttons */}
             <div className="flex gap-3 flex-wrap">
               <button onClick={handleDownloadPDF}
-                className="flex-1 min-w-[130px] flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-blue-700 text-white font-semibold py-3 px-5 rounded-xl transition-colors text-sm shadow-md shadow-blue-200">
+                className="flex-1 min-w-[130px] flex items-center justify-center gap-2 bg-[#D97706] hover:bg-amber-700 text-white font-semibold py-3 px-5 rounded-xl transition-colors text-sm shadow-md shadow-amber-200">
                 <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
@@ -2158,9 +2158,9 @@ ${biz}`
             </button>
 
             {/* Icon */}
-            <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-5 mx-auto">
+            <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center mb-5 mx-auto">
               <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-                <path d="M14 2L4 14h8l-2 10 14-16H14V2z" fill="#2563EB"/>
+                <path d="M14 2L4 14h8l-2 10 14-16H14V2z" fill="#D97706"/>
               </svg>
             </div>
 

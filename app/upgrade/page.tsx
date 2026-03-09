@@ -73,7 +73,7 @@ export default function UpgradePage() {
             onClick={() => router.push('/')}
             className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
           >
-            <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center shadow-sm shadow-blue-200">
+            <div className="w-8 h-8 rounded-lg bg-[#D97706] flex items-center justify-center shadow-sm shadow-amber-200">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M9 1L3 9h5l-1 6 7-10H9V1z" fill="white" strokeLinejoin="round"/>
               </svg>
@@ -95,7 +95,7 @@ export default function UpgradePage() {
         {/* Headline */}
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 text-center leading-tight mb-3">
           Win more jobs.<br />
-          <span className="text-[#2563EB]">Quote in seconds.</span>
+          <span className="text-[#D97706]">Quote in seconds.</span>
         </h1>
         <p className="text-gray-500 text-center text-base leading-relaxed mb-10">
           Join as a founding member and lock in $9/mo forever — before we open to the public at $19.
@@ -118,7 +118,7 @@ export default function UpgradePage() {
         {/* Pricing Card */}
         <div className="bg-white rounded-2xl border-2 border-amber-400 shadow-md overflow-hidden mb-6">
           {/* Price block */}
-          <div className="bg-[#2563EB] px-8 py-8 text-center relative">
+          <div className="bg-[#D97706] px-8 py-8 text-center relative">
             {/* Was $19 badge */}
             <div className="absolute top-4 right-4 bg-white/20 text-white/80 text-xs px-2 py-0.5 rounded-full line-through">
               $19/mo
@@ -128,7 +128,7 @@ export default function UpgradePage() {
               <span className="text-5xl font-bold text-white">9</span>
               <span className="text-white/70 text-lg font-medium">/mo</span>
             </div>
-            <p className="text-blue-100 text-sm mt-1">Locked in forever · Cancel anytime</p>
+            <p className="text-amber-100 text-sm mt-1">Locked in forever · Cancel anytime</p>
           </div>
 
           {/* Features */}

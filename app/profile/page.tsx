@@ -339,7 +339,7 @@ export default function ProfilePage() {
   const inputCls = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 bg-white transition-all duration-150"
   const selectCls = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 bg-white transition-all duration-150"
   const labelCls = "block text-sm font-medium text-gray-700 mb-1.5"
-  const sectionCls = "bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5"
+  const sectionCls = "bg-white rounded-2xl border border-gray-100 shadow-md p-6 space-y-5"
   const helperCls = "text-xs text-gray-400 mt-1"
 
   const showTradeSpecific = TRADE_SPECIFIC.includes(form.trade)
@@ -348,7 +348,7 @@ export default function ProfilePage() {
     <main className="min-h-screen" style={{ background: 'var(--background)' }}>
       <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-3.5 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center shadow-sm shadow-blue-200 flex-shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-[#D97706] flex items-center justify-center shadow-sm shadow-amber-200 flex-shrink-0">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M9 1L3 9h5l-1 6 7-10H9V1z" fill="white" strokeLinejoin="round"/>
             </svg>
@@ -392,7 +392,7 @@ export default function ProfilePage() {
             Saved Items
             {savedLineItems.length > 0 && (
               <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
-                activeTab === 'saved-items' ? 'bg-blue-100 text-blue-600' : 'bg-gray-200 text-gray-500'
+                activeTab === 'saved-items' ? 'bg-amber-100 text-amber-600' : 'bg-gray-200 text-gray-500'
               }`}>{savedLineItems.length}</span>
             )}
           </button>
@@ -403,9 +403,9 @@ export default function ProfilePage() {
         {activeTab === 'profile' && (
           <>
             {isNew && (
-              <div className="bg-gradient-to-r from-[#2563EB] to-blue-700 rounded-2xl px-6 py-5 text-white">
+              <div className="bg-gradient-to-r from-[#D97706] to-blue-700 rounded-2xl px-6 py-5 text-white">
                 <p className="font-semibold text-base">👋 Welcome to SnapBid!</p>
-                <p className="text-blue-100 text-sm mt-1 leading-relaxed">Set up your profile once and every quote will be calibrated to your business — your rates, your contact info, your terms.</p>
+                <p className="text-amber-100 text-sm mt-1 leading-relaxed">Set up your profile once and every quote will be calibrated to your business — your rates, your contact info, your terms.</p>
               </div>
             )}
 
@@ -495,7 +495,7 @@ export default function ProfilePage() {
                       type="checkbox"
                       checked={form.showMarkupOnQuote}
                       onChange={() => setForm({ ...form, showMarkupOnQuote: !form.showMarkupOnQuote })}
-                      className="w-3.5 h-3.5 rounded accent-[#2563EB]"
+                      className="w-3.5 h-3.5 rounded accent-[#D97706]"
                     />
                     <span className="text-xs text-gray-500">Show on quote</span>
                   </label>
@@ -528,11 +528,11 @@ export default function ProfilePage() {
                       onClick={() => setForm({ ...form, materialTier: tier.value })}
                       className={`px-4 py-3 rounded-xl border text-sm font-medium transition-all duration-200 text-center ${
                         form.materialTier === tier.value
-                          ? 'bg-[#2563EB] border-[#2563EB] text-white shadow-sm'
-                          : 'border-gray-200 text-gray-600 hover:border-blue-300 hover:bg-blue-50'
+                          ? 'bg-[#D97706] border-[#D97706] text-white shadow-sm'
+                          : 'border-gray-200 text-gray-600 hover:border-amber-300 hover:bg-amber-50'
                       }`}>
                       <div className="font-semibold">{tier.label}</div>
-                      <div className={`text-xs mt-0.5 ${form.materialTier === tier.value ? 'text-blue-100' : 'text-gray-400'}`}>{tier.desc}</div>
+                      <div className={`text-xs mt-0.5 ${form.materialTier === tier.value ? 'text-amber-100' : 'text-gray-400'}`}>{tier.desc}</div>
                     </button>
                   ))}
                 </div>
@@ -584,7 +584,7 @@ export default function ProfilePage() {
                   type="button"
                   onClick={() => setForm({ ...form, offerTieredOptions: !form.offerTieredOptions })}
                   className={`relative flex-shrink-0 w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none mt-0.5 ${
-                    form.offerTieredOptions ? 'bg-[#2563EB]' : 'bg-gray-300'
+                    form.offerTieredOptions ? 'bg-[#D97706]' : 'bg-gray-300'
                   }`}
                   role="switch"
                   aria-checked={form.offerTieredOptions}>
@@ -714,7 +714,7 @@ export default function ProfilePage() {
                 className={`flex-1 font-semibold py-3 px-6 rounded-xl transition-all duration-200 text-sm min-h-[44px] shadow-sm ${
                   savedOk
                     ? 'bg-green-500 text-white'
-                    : 'bg-[#2563EB] hover:bg-blue-700 disabled:bg-blue-300 text-white shadow-blue-200'
+                    : 'bg-[#D97706] hover:bg-amber-700 disabled:bg-amber-300 text-white shadow-amber-200'
                 }`}>
                 {savedOk ? '✓ Saved!' : saving ? 'Saving…' : isNew ? 'Save Profile & Start Quoting →' : 'Update Profile'}
               </button>
@@ -739,21 +739,21 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Quote card header */}
-                <div className="bg-[#2563EB] px-8 py-6 flex justify-between items-start">
+                <div className="bg-[#1C1917] px-8 py-6 flex justify-between items-start">
                   <div>
                     <h3 className="text-white font-bold text-xl tracking-tight">{mockQuote.businessName}</h3>
-                    <p className="text-blue-200 text-sm mt-0.5">{mockQuote.tradeLabel} Services</p>
+                    <p className="text-stone-400 text-sm mt-0.5">{mockQuote.tradeLabel} Services</p>
                     {(mockQuote.phone || mockQuote.email) && (
-                      <p className="text-blue-200 text-xs mt-2 space-x-3">
+                      <p className="text-stone-400 text-xs mt-2 space-x-3">
                         {mockQuote.phone && <span>{mockQuote.phone}</span>}
                         {mockQuote.email && <span>{mockQuote.email}</span>}
                       </p>
                     )}
                   </div>
                   <div className="text-right">
-                    <p className="text-blue-200 text-xs font-medium uppercase tracking-wide">Quote</p>
-                    <p className="text-white font-bold text-lg mt-0.5">{mockQuote.quoteNumber}</p>
-                    <p className="text-blue-200 text-xs mt-1">{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                    <p className="text-stone-400 text-xs font-medium uppercase tracking-wide">Quote</p>
+                    <p className="text-amber-400 font-bold text-lg mt-0.5">{mockQuote.quoteNumber}</p>
+                    <p className="text-stone-400 text-xs mt-1">{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                   </div>
                 </div>
 
@@ -806,7 +806,7 @@ export default function ProfilePage() {
                       )}
                       <div className="flex justify-between font-bold text-base pt-2.5 border-t-2 border-gray-100">
                         <span>Total</span>
-                        <span className="text-[#2563EB] tabular-nums">${mockQuote.total.toLocaleString()}</span>
+                        <span className="text-[#D97706] tabular-nums">${mockQuote.total.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
@@ -843,9 +843,9 @@ export default function ProfilePage() {
 
                   {/* Notes */}
                   {mockQuote.notes && (
-                    <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-                      <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">Notes</p>
-                      <p className="text-sm text-blue-800 leading-relaxed">{mockQuote.notes}</p>
+                    <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
+                      <p className="text-[10px] font-bold text-amber-400 uppercase tracking-widest mb-1.5">Notes</p>
+                      <p className="text-sm text-amber-800 leading-relaxed">{mockQuote.notes}</p>
                     </div>
                   )}
 
@@ -876,7 +876,7 @@ export default function ProfilePage() {
                         <p className="text-sm font-medium text-gray-800 truncate">{item.description}</p>
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded uppercase tracking-wide ${
-                            item.category === 'labor' ? 'bg-blue-100 text-blue-600' :
+                            item.category === 'labor' ? 'bg-amber-100 text-amber-600' :
                             item.category === 'material' ? 'bg-gray-200 text-gray-600' :
                             'bg-purple-100 text-purple-600'
                           }`}>{item.category}</span>
@@ -924,7 +924,7 @@ export default function ProfilePage() {
                 </div>
                 <button type="button" onClick={handleAddLineItem}
                   disabled={!newLineItem.description || !newLineItem.defaultUnitPrice}
-                  className="w-full border border-[#2563EB] text-[#2563EB] hover:bg-blue-50 disabled:opacity-40 disabled:cursor-not-allowed font-medium py-2 rounded-xl text-sm transition-colors">
+                  className="w-full border border-[#D97706] text-[#D97706] hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed font-medium py-2 rounded-xl text-sm transition-colors">
                   + Add to Library
                 </button>
               </div>
@@ -936,7 +936,7 @@ export default function ProfilePage() {
                 className={`flex-1 font-semibold py-3 px-6 rounded-xl transition-all duration-200 text-sm min-h-[44px] shadow-sm ${
                   savedOk
                     ? 'bg-green-500 text-white'
-                    : 'bg-[#2563EB] hover:bg-blue-700 disabled:bg-blue-300 text-white shadow-blue-200'
+                    : 'bg-[#D97706] hover:bg-amber-700 disabled:bg-amber-300 text-white shadow-amber-200'
                 }`}>
                 {savedOk ? '✓ Saved!' : saving ? 'Saving…' : 'Save Changes'}
               </button>

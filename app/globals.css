@@ -1,10 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8f9fb;
-  --foreground: #0f1117;
-  --brand: #2563EB;
-  --brand-dark: #1d4ed8;
+  --background: #f4f3f0;
+  --foreground: #1c1917;
+  --brand: #D97706;
+  --brand-dark: #B45309;
+  --brand-light: #FEF3C7;
 }
 
 body {
@@ -41,17 +42,17 @@ body {
   animation: shimmer 1.5s linear infinite;
 }
 
-/* Subtle dot grid background */
+/* Dot grid background — more dramatic */
 .dot-grid {
-  background-image: radial-gradient(circle, #d1d5db 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(circle, #a8a29e 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
 }
 
 /* Focus ring override — consistent across all inputs */
 input:focus, select:focus, textarea:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-  border-color: #2563EB !important;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.18);
+  border-color: #D97706 !important;
 }
 
 /* Smooth scrolling */
