@@ -864,37 +864,26 @@ ${biz}`
 
       {/* ── PROFILE CALIBRATION BAR (signed-in) ────────────────────────────── */}
       {profile && (
-        <div className="relative z-10 bg-[#faf8f5] border-b border-gray-100">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-2 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-600 flex-shrink-0" />
-              <span className="text-xs text-gray-600 font-medium truncate">
-                {profile.businessName}
-              </span>
-              <span className="hidden sm:inline text-gray-300 text-xs flex-shrink-0">·</span>
-              <span className="hidden sm:inline text-xs text-gray-400 truncate">${profile.hourlyRate}/hr · {profile.materialTier} · {profile.region}</span>
-            </div>
+        <div className="relative z-10 bg-[#faf8f5] border-b border-gray-100/60">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-1.5 flex items-center justify-between gap-4">
+            <span className="text-xs text-gray-400 truncate">
+              {profile.businessName}
+              {profile.hourlyRate ? <span className="text-gray-300"> · ${profile.hourlyRate}/hr</span> : null}
+            </span>
             <div className="flex items-center gap-3">
-              {/* Quota pill */}
-              {isSubscribed ? (
-                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-amber-100 text-red-800">
-                  ✓ Pro — Unlimited
-                </span>
-              ) : (
-                <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
-                  quotesUsed >= FREE_QUOTA
-                    ? 'bg-red-100 text-red-600'
-                    : quotesUsed >= FREE_QUOTA - 1
-                    ? 'bg-orange-100 text-orange-600'
-                    : 'bg-amber-100 text-red-700'
-                }`}>
-                  {quotesUsed >= FREE_QUOTA
-                    ? 'Free limit reached'
-                    : `${FREE_QUOTA - quotesUsed} free quote${FREE_QUOTA - quotesUsed !== 1 ? 's' : ''} left`}
+              {!isSubscribed && quotesUsed < FREE_QUOTA && (
+                <span className="text-xs text-gray-400">
+                  {FREE_QUOTA - quotesUsed} free {FREE_QUOTA - quotesUsed === 1 ? 'quote' : 'quotes'} left
                 </span>
               )}
-              <button onClick={() => router.push('/profile')} className="text-xs text-red-700 hover:text-red-800 font-medium whitespace-nowrap transition-colors">
-                Edit profile →
+              {!isSubscribed && quotesUsed >= FREE_QUOTA && (
+                <span className="text-xs text-red-600 font-medium">Free limit reached</span>
+              )}
+              {isSubscribed && (
+                <span className="text-xs text-amber-600 font-medium">Pro</span>
+              )}
+              <button onClick={() => router.push('/profile')} className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
+                Edit profile
               </button>
             </div>
           </div>

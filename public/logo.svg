@@ -1,19 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 52" fill="none" role="img" aria-label="SnapBid">
-  <!-- Clipboard body -->
+  <!-- Clipboard body (maroon) -->
   <rect x="4" y="12" width="36" height="34" rx="4" fill="#991b1b"/>
-  <rect x="4" y="12" width="36" height="34" rx="4" fill="white" opacity="0.07"/>
 
-  <!-- Wide clip bar across top -->
+  <!-- Clipboard interior (cream/off-white) -->
+  <rect x="8" y="17" width="28" height="25" rx="2" fill="#faf8f5"/>
+
+  <!-- Wide clip bar across top (dark maroon) -->
   <rect x="11" y="6" width="22" height="11" rx="3" fill="#7f1d1d"/>
   <!-- Clip hole -->
-  <rect x="15" y="8" width="14" height="5" rx="2" fill="#991b1b"/>
+  <rect x="15" y="8" width="14" height="5" rx="2" fill="#c9a87a"/>
 
-  <!-- Paper lines (gold) -->
-  <rect x="10" y="22" width="14" height="2" rx="1" fill="#d97706" opacity="0.7"/>
-  <rect x="10" y="27" width="10" height="2" rx="1" fill="#d97706" opacity="0.5"/>
-
-  <!-- Gold checkmark -->
-  <path d="M9 35 L15 42 L33 28" stroke="#d97706" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Gold checkmark over cream interior -->
+  <path d="M11 28 L17 35 L33 21" stroke="#d97706" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
 
   <!-- Wordmark -->
   <text x="50" y="37"
