@@ -864,18 +864,21 @@ ${biz}`
 
       {/* ── PROFILE CALIBRATION BAR (signed-in) ────────────────────────────── */}
       {profile && (
-        <div className="relative z-10 bg-[#f4f3f0] border-b border-[#16a34a]/10">
+        <div className="relative z-10 bg-white border-b border-gray-100">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-2 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-green-700 font-medium">⚡ Calibrated to {profile.businessName}</span>
-              <span className="hidden sm:inline text-blue-300 text-xs">·</span>
-              <span className="hidden sm:inline text-xs text-green-500">${profile.hourlyRate}/hr · {profile.materialTier} materials · {profile.region}</span>
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+              <span className="text-xs text-gray-600 font-medium truncate">
+                {profile.businessName}
+              </span>
+              <span className="hidden sm:inline text-gray-300 text-xs flex-shrink-0">·</span>
+              <span className="hidden sm:inline text-xs text-gray-400 truncate">${profile.hourlyRate}/hr · {profile.materialTier} · {profile.region}</span>
             </div>
             <div className="flex items-center gap-3">
               {/* Quota pill */}
               {isSubscribed ? (
                 <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-green-100 text-green-700">
-                  ⚡ Pro — Unlimited
+                  ✓ Pro — Unlimited
                 </span>
               ) : (
                 <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
@@ -1311,7 +1314,7 @@ ${biz}`
                 <h2 className="text-xl font-semibold text-gray-900">
                   {profile ? `Quote for ${profile.businessName}` : 'Generate a Quote'}
                 </h2>
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-gray-500 mt-1">
                   {profile ? 'Calibrated to your rates — describe the job and go.' : 'Fill in the details and we\'ll handle the math.'}
                 </p>
               </div>
