@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" role="img" aria-label="SnapBid icon">
-  <!-- Clip tab -->
-  <rect x="11" y="1" width="10" height="5" rx="2.5" fill="#16a34a"/>
-  <!-- Clipboard body (dark green) -->
-  <rect x="3" y="5" width="26" height="26" rx="4" fill="#14532d"/>
-  <!-- Clipboard face (brand green) -->
-  <rect x="6" y="10" width="20" height="18" rx="2" fill="#16a34a"/>
-  <!-- Checkmark -->
-  <path d="M7 20 L12 26 L25 13" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Clipboard body -->
+  <rect x="3" y="9" width="26" height="22" rx="4" fill="#991b1b"/>
+  <!-- Wide clip bar -->
+  <rect x="9" y="4" width="14" height="8" rx="3" fill="#7f1d1d"/>
+  <!-- Clip hole -->
+  <rect x="12" y="6" width="8" height="4" rx="1.5" fill="#991b1b"/>
+  <!-- Gold checkmark -->
+  <path d="M7 22 L12 28 L25 16" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

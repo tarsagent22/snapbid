@@ -30,7 +30,7 @@ export default async function Image() {
             right: 0,
             width: '500px',
             height: '500px',
-            background: 'radial-gradient(circle, #dcfce7 0%, #ffffff 70%)',
+            background: 'radial-gradient(circle, #fef3c7 0%, #ffffff 70%)',
             borderRadius: '50%',
             transform: 'translate(30%, -30%)',
           }}
@@ -45,7 +45,7 @@ export default async function Image() {
             width: '320px',
             height: '320px',
             opacity: 0.12,
-            background: 'radial-gradient(circle, #16a34a 1.5px, transparent 1.5px)',
+            background: 'radial-gradient(circle, #991b1b 1.5px, transparent 1.5px)',
             backgroundSize: '22px 22px',
           }}
         />
@@ -58,7 +58,7 @@ export default async function Image() {
             <div style={{
               position: 'absolute', top: '4px', left: '22px',
               width: '20px', height: '10px',
-              background: '#16a34a', borderRadius: '4px',
+              background: '#991b1b', borderRadius: '4px',
             }} />
             {/* clipboard body dark */}
             <div style={{
@@ -70,7 +70,7 @@ export default async function Image() {
             <div style={{
               position: 'absolute', top: '20px', left: '10px',
               width: '44px', height: '52px',
-              background: '#16a34a', borderRadius: '4px',
+              background: '#991b1b', borderRadius: '4px',
             }} />
             {/* line 1 */}
             <div style={{
@@ -102,7 +102,7 @@ export default async function Image() {
           </div>
           {/* Wordmark */}
           <div style={{ display: 'flex', alignItems: 'baseline', marginLeft: '12px' }}>
-            <span style={{ fontSize: '48px', fontWeight: 800, color: '#16a34a', letterSpacing: '-2px', lineHeight: 1 }}>Snap</span>
+            <span style={{ fontSize: '48px', fontWeight: 800, color: '#991b1b', letterSpacing: '-2px', lineHeight: 1 }}>Snap</span>
             <span style={{ fontSize: '48px', fontWeight: 800, color: '#1C1917', letterSpacing: '-2px', lineHeight: 1 }}>Bid</span>
           </div>
         </div>
@@ -121,7 +121,7 @@ export default async function Image() {
         >
           Professional quotes
           <br />
-          <span style={{ color: '#16a34a' }}>in 60 seconds.</span>
+          <span style={{ color: '#991b1b' }}>in 60 seconds.</span>
         </div>
 
         {/* Subline */}
@@ -143,13 +143,13 @@ export default async function Image() {
             <div
               key={label}
               style={{
-                background: '#f0fdf4',
-                border: '1.5px solid #86efac',
+                background: '#faf8f5',
+                border: '1.5px solid #fcd34d',
                 borderRadius: '100px',
                 padding: '10px 22px',
                 fontSize: '18px',
                 fontWeight: 600,
-                color: '#14532d',
+                color: '#7f1d1d',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',

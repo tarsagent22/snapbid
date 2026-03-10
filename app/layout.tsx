@@ -118,7 +118,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </head>
         <body>
           {children}
-          <footer className="border-t border-gray-100 py-6 bg-white">
+          <footer className="border-t border-gray-100 py-6 bg-[#faf8f5]">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
               <p className="text-xs text-gray-400">© 2026 SnapBid · Built for tradespeople</p>
               <nav className="flex items-center gap-4 text-xs text-gray-400">

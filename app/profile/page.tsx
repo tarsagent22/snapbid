@@ -336,17 +336,17 @@ export default function ProfilePage() {
     )
   }
 
-  const inputCls = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 bg-white transition-all duration-150"
-  const selectCls = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 bg-white transition-all duration-150"
+  const inputCls = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 bg-[#faf8f5] transition-all duration-150"
+  const selectCls = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 bg-[#faf8f5] transition-all duration-150"
   const labelCls = "block text-sm font-medium text-gray-700 mb-1.5"
-  const sectionCls = "bg-white rounded-2xl border border-gray-100 shadow-md p-6 space-y-5"
+  const sectionCls = "bg-[#faf8f5] rounded-2xl border border-gray-100 shadow-md p-6 space-y-5"
   const helperCls = "text-xs text-gray-400 mt-1"
 
   const showTradeSpecific = TRADE_SPECIFIC.includes(form.trade)
 
   return (
     <main className="min-h-screen" style={{ background: 'var(--background)' }}>
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
+      <header className="bg-[#faf8f5] border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-3.5 flex items-center gap-3">
           <img src="/logo.svg" alt="SnapBid" className="h-9 w-auto" />
           <span className="text-gray-300">·</span>
@@ -371,7 +371,7 @@ export default function ProfilePage() {
             onClick={() => setActiveTab('profile')}
             className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-150 ${
               activeTab === 'profile'
-                ? 'bg-white text-gray-900 shadow-sm'
+                ? 'bg-[#faf8f5] text-gray-900 shadow-sm'
                 : 'text-gray-500 hover:text-gray-700'
             }`}>
             Profile
@@ -381,13 +381,13 @@ export default function ProfilePage() {
             onClick={() => setActiveTab('saved-items')}
             className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-150 ${
               activeTab === 'saved-items'
-                ? 'bg-white text-gray-900 shadow-sm'
+                ? 'bg-[#faf8f5] text-gray-900 shadow-sm'
                 : 'text-gray-500 hover:text-gray-700'
             }`}>
             Saved Items
             {savedLineItems.length > 0 && (
               <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
-                activeTab === 'saved-items' ? 'bg-green-100 text-green-600' : 'bg-gray-200 text-gray-500'
+                activeTab === 'saved-items' ? 'bg-amber-100 text-red-700' : 'bg-gray-200 text-gray-500'
               }`}>{savedLineItems.length}</span>
             )}
           </button>
@@ -398,9 +398,9 @@ export default function ProfilePage() {
         {activeTab === 'profile' && (
           <>
             {isNew && (
-              <div className="bg-gradient-to-r from-[#16a34a] to-blue-700 rounded-2xl px-6 py-5 text-white">
+              <div className="bg-gradient-to-r from-[#991b1b] to-blue-700 rounded-2xl px-6 py-5 text-white">
                 <p className="font-semibold text-base">👋 Welcome to SnapBid!</p>
-                <p className="text-green-100 text-sm mt-1 leading-relaxed">Set up your profile once and every quote will be calibrated to your business — your rates, your contact info, your terms.</p>
+                <p className="text-amber-100 text-sm mt-1 leading-relaxed">Set up your profile once and every quote will be calibrated to your business — your rates, your contact info, your terms.</p>
               </div>
             )}
 
@@ -490,7 +490,7 @@ export default function ProfilePage() {
                       type="checkbox"
                       checked={form.showMarkupOnQuote}
                       onChange={() => setForm({ ...form, showMarkupOnQuote: !form.showMarkupOnQuote })}
-                      className="w-3.5 h-3.5 rounded accent-[#16a34a]"
+                      className="w-3.5 h-3.5 rounded accent-[#991b1b]"
                     />
                     <span className="text-xs text-gray-500">Show on quote</span>
                   </label>
@@ -523,11 +523,11 @@ export default function ProfilePage() {
                       onClick={() => setForm({ ...form, materialTier: tier.value })}
                       className={`px-4 py-3 rounded-xl border text-sm font-medium transition-all duration-200 text-center ${
                         form.materialTier === tier.value
-                          ? 'bg-[#16a34a] border-[#16a34a] text-white shadow-sm'
-                          : 'border-gray-200 text-gray-600 hover:border-green-300 hover:bg-green-50'
+                          ? 'bg-[#991b1b] border-[#991b1b] text-white shadow-sm'
+                          : 'border-gray-200 text-gray-600 hover:border-amber-400 hover:bg-amber-50'
                       }`}>
                       <div className="font-semibold">{tier.label}</div>
-                      <div className={`text-xs mt-0.5 ${form.materialTier === tier.value ? 'text-green-100' : 'text-gray-400'}`}>{tier.desc}</div>
+                      <div className={`text-xs mt-0.5 ${form.materialTier === tier.value ? 'text-amber-100' : 'text-gray-400'}`}>{tier.desc}</div>
                     </button>
                   ))}
                 </div>
@@ -579,11 +579,11 @@ export default function ProfilePage() {
                   type="button"
                   onClick={() => setForm({ ...form, offerTieredOptions: !form.offerTieredOptions })}
                   className={`relative flex-shrink-0 w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none mt-0.5 ${
-                    form.offerTieredOptions ? 'bg-[#16a34a]' : 'bg-gray-300'
+                    form.offerTieredOptions ? 'bg-[#991b1b]' : 'bg-gray-300'
                   }`}
                   role="switch"
                   aria-checked={form.offerTieredOptions}>
-                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
+                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-[#faf8f5] rounded-full shadow transition-transform duration-200 ${
                     form.offerTieredOptions ? 'translate-x-5' : 'translate-x-0'
                   }`} />
                 </button>
@@ -708,15 +708,15 @@ export default function ProfilePage() {
               <button onClick={handleSave} disabled={saving || !form.businessName}
                 className={`flex-1 font-semibold py-3 px-6 rounded-xl transition-all duration-200 text-sm min-h-[44px] shadow-sm ${
                   savedOk
-                    ? 'bg-green-500 text-white'
-                    : 'bg-[#16a34a] hover:bg-green-700 disabled:bg-green-300 text-white shadow-green-200'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-[#991b1b] hover:bg-red-800 disabled:bg-amber-400 text-white shadow-amber-200'
                 }`}>
                 {savedOk ? '✓ Saved!' : saving ? 'Saving…' : isNew ? 'Save Profile & Start Quoting →' : 'Update Profile'}
               </button>
               <button
                 type="button"
                 onClick={() => setShowPreview(v => !v)}
-                className="flex items-center gap-1.5 border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-medium py-3 px-4 rounded-xl transition-colors text-sm">
+                className="flex items-center gap-1.5 border border-gray-200 bg-[#faf8f5] hover:bg-gray-50 text-gray-600 font-medium py-3 px-4 rounded-xl transition-colors text-sm">
                 <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -727,7 +727,7 @@ export default function ProfilePage() {
 
             {/* ── Preview Quote ── */}
             {showPreview && (
-              <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+              <div className="bg-[#faf8f5] rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
                 <div className="px-6 py-4 border-b border-gray-50">
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Quote Preview</p>
                   <p className="text-xs text-gray-400 mt-0.5">Example quote using your current profile settings. Updates as you edit.</p>
@@ -747,7 +747,7 @@ export default function ProfilePage() {
                   </div>
                   <div className="text-right">
                     <p className="text-stone-400 text-xs font-medium uppercase tracking-wide">Quote</p>
-                    <p className="text-green-400 font-bold text-lg mt-0.5">{mockQuote.quoteNumber}</p>
+                    <p className="text-amber-500 font-bold text-lg mt-0.5">{mockQuote.quoteNumber}</p>
                     <p className="text-stone-400 text-xs mt-1">{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                   </div>
                 </div>
@@ -801,19 +801,19 @@ export default function ProfilePage() {
                       )}
                       <div className="flex justify-between font-bold text-base pt-2.5 border-t-2 border-gray-100">
                         <span>Total</span>
-                        <span className="text-[#16a34a] tabular-nums">${mockQuote.total.toLocaleString()}</span>
+                        <span className="text-[#991b1b] tabular-nums">${mockQuote.total.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Inclusions & Exclusions */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="bg-green-50 border border-green-100 rounded-xl p-4">
-                      <p className="text-[10px] font-bold text-green-600 uppercase tracking-widest mb-2">✓ What&apos;s Included</p>
+                    <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
+                      <p className="text-[10px] font-bold text-red-700 uppercase tracking-widest mb-2">✓ What&apos;s Included</p>
                       <ul className="space-y-1.5">
                         {mockQuote.inclusions.map((item, i) => (
-                          <li key={i} className="flex items-start gap-2 text-sm text-green-800">
-                            <svg className="w-3.5 h-3.5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <li key={i} className="flex items-start gap-2 text-sm text-red-800">
+                            <svg className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
                             </svg>
                             {item}
@@ -821,12 +821,12 @@ export default function ProfilePage() {
                         ))}
                       </ul>
                     </div>
-                    <div className="bg-green-50 border border-green-100 rounded-xl p-4">
-                      <p className="text-[10px] font-bold text-green-600 uppercase tracking-widest mb-2">⚠ Not Included</p>
+                    <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
+                      <p className="text-[10px] font-bold text-red-700 uppercase tracking-widest mb-2">⚠ Not Included</p>
                       <ul className="space-y-1.5">
                         {mockQuote.exclusions.map((item, i) => (
-                          <li key={i} className="flex items-start gap-2 text-sm text-green-800">
-                            <svg className="w-3.5 h-3.5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <li key={i} className="flex items-start gap-2 text-sm text-red-800">
+                            <svg className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
                             </svg>
                             {item}
@@ -838,9 +838,9 @@ export default function ProfilePage() {
 
                   {/* Notes */}
                   {mockQuote.notes && (
-                    <div className="bg-green-50 border border-green-100 rounded-xl p-4">
-                      <p className="text-[10px] font-bold text-green-400 uppercase tracking-widest mb-1.5">Notes</p>
-                      <p className="text-sm text-green-800 leading-relaxed">{mockQuote.notes}</p>
+                    <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
+                      <p className="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1.5">Notes</p>
+                      <p className="text-sm text-red-800 leading-relaxed">{mockQuote.notes}</p>
                     </div>
                   )}
 
@@ -871,7 +871,7 @@ export default function ProfilePage() {
                         <p className="text-sm font-medium text-gray-800 truncate">{item.description}</p>
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded uppercase tracking-wide ${
-                            item.category === 'labor' ? 'bg-green-100 text-green-600' :
+                            item.category === 'labor' ? 'bg-amber-100 text-red-700' :
                             item.category === 'material' ? 'bg-gray-200 text-gray-600' :
                             'bg-purple-100 text-purple-600'
                           }`}>{item.category}</span>
@@ -919,7 +919,7 @@ export default function ProfilePage() {
                 </div>
                 <button type="button" onClick={handleAddLineItem}
                   disabled={!newLineItem.description || !newLineItem.defaultUnitPrice}
-                  className="w-full border border-[#16a34a] text-[#16a34a] hover:bg-green-50 disabled:opacity-40 disabled:cursor-not-allowed font-medium py-2 rounded-xl text-sm transition-colors">
+                  className="w-full border border-[#991b1b] text-[#991b1b] hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed font-medium py-2 rounded-xl text-sm transition-colors">
                   + Add to Library
                 </button>
               </div>
@@ -930,8 +930,8 @@ export default function ProfilePage() {
               <button onClick={handleSave} disabled={saving || !form.businessName}
                 className={`flex-1 font-semibold py-3 px-6 rounded-xl transition-all duration-200 text-sm min-h-[44px] shadow-sm ${
                   savedOk
-                    ? 'bg-green-500 text-white'
-                    : 'bg-[#16a34a] hover:bg-green-700 disabled:bg-green-300 text-white shadow-green-200'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-[#991b1b] hover:bg-red-800 disabled:bg-amber-400 text-white shadow-amber-200'
                 }`}>
                 {savedOk ? '✓ Saved!' : saving ? 'Saving…' : 'Save Changes'}
               </button>

@@ -63,12 +63,12 @@ export default function UpgradeClient({ initialSpotsLeft }: Props) {
   return (
     <div className="min-h-screen" style={{ background: 'var(--background)' }}>
       {/* Founder pricing banner */}
-      <div className="bg-green-500 text-white text-center py-2 px-4 text-sm font-semibold">
+      <div className="bg-amber-600 text-white text-center py-2 px-4 text-sm font-semibold">
         🔥 Founder Pricing — First {FOUNDER_SPOTS_TOTAL} users get $9/mo locked in forever. Price goes to $19 after that.
       </div>
 
       {/* Header */}
-      <header className="bg-white border-b border-gray-100">
+      <header className="bg-[#faf8f5] border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center gap-2.5">
           <button
             onClick={() => router.push('/')}
@@ -83,7 +83,7 @@ export default function UpgradeClient({ initialSpotsLeft }: Props) {
       <div className="max-w-lg mx-auto px-4 sm:px-6 py-12 sm:py-20">
         {/* Badge */}
         <div className="flex justify-center mb-6">
-          <span className="inline-flex items-center gap-1.5 bg-green-50 text-green-700 text-xs font-semibold px-3 py-1 rounded-full border border-green-200">
+          <span className="inline-flex items-center gap-1.5 bg-amber-50 text-red-800 text-xs font-semibold px-3 py-1 rounded-full border border-amber-200">
             ⭐ Founder Pricing — First {FOUNDER_SPOTS_TOTAL} users only
           </span>
         </div>
@@ -91,7 +91,7 @@ export default function UpgradeClient({ initialSpotsLeft }: Props) {
         {/* Headline */}
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 text-center leading-tight mb-3">
           Win more jobs.<br />
-          <span className="text-[#16a34a]">Quote in seconds.</span>
+          <span className="text-[#991b1b]">Quote in seconds.</span>
         </h1>
         <p className="text-gray-500 text-center text-base leading-relaxed mb-10">
           Join as a founding member and lock in $9/mo forever — before we open to the public at $19.
@@ -101,22 +101,22 @@ export default function UpgradeClient({ initialSpotsLeft }: Props) {
         <div className="mb-8">
           <div className="flex justify-between text-xs text-gray-500 mb-1.5">
             <span>{spotsClaimed} of {FOUNDER_SPOTS_TOTAL} spots claimed</span>
-            <span className="font-semibold text-green-600">{spotsLeft} left</span>
+            <span className="font-semibold text-red-700">{spotsLeft} left</span>
           </div>
           <div className="w-full bg-gray-100 rounded-full h-2">
             <div
-              className="bg-green-500 h-2 rounded-full transition-all duration-500"
+              className="bg-amber-600 h-2 rounded-full transition-all duration-500"
               style={{ width: `${Math.max(4, 100 - spotsPercent)}%` }}
             />
           </div>
         </div>
 
         {/* Pricing Card */}
-        <div className="bg-white rounded-2xl border-2 border-green-400 shadow-md overflow-hidden mb-6">
+        <div className="bg-[#faf8f5] rounded-2xl border-2 border-amber-500 shadow-md overflow-hidden mb-6">
           {/* Price block */}
-          <div className="bg-[#16a34a] px-8 py-8 text-center relative">
+          <div className="bg-[#991b1b] px-8 py-8 text-center relative">
             {/* Was $19 badge */}
-            <div className="absolute top-4 right-4 bg-white/20 text-white/80 text-xs px-2 py-0.5 rounded-full line-through">
+            <div className="absolute top-4 right-4 bg-[#faf8f5]/20 text-white/80 text-xs px-2 py-0.5 rounded-full line-through">
               $19/mo
             </div>
             <div className="flex items-baseline justify-center gap-1 mb-1">
@@ -124,7 +124,7 @@ export default function UpgradeClient({ initialSpotsLeft }: Props) {
               <span className="text-5xl font-bold text-white">9</span>
               <span className="text-white/70 text-lg font-medium">/mo</span>
             </div>
-            <p className="text-green-100 text-sm mt-1">Locked in forever · Cancel anytime</p>
+            <p className="text-amber-100 text-sm mt-1">Locked in forever · Cancel anytime</p>
           </div>
 
           {/* Features */}
@@ -142,7 +142,7 @@ export default function UpgradeClient({ initialSpotsLeft }: Props) {
             <button
               onClick={handleUpgrade}
               disabled={loading || !isLoaded}
-              className="w-full bg-green-500 hover:bg-green-600 disabled:opacity-70 text-white font-semibold py-3.5 rounded-xl transition-colors text-base shadow-sm flex items-center justify-center gap-2"
+              className="w-full bg-amber-600 hover:bg-red-700 disabled:opacity-70 text-white font-semibold py-3.5 rounded-xl transition-colors text-base shadow-sm flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
