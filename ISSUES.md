@@ -4,6 +4,25 @@
 
 ---
 
+### [BUG] #10 — Clerk publishable key has trailing `\n` — still live as of 2026-03-11 3:11 PM ET
+**Detected:** 2026-03-11 3:11 PM ET (4h quality check cron)
+**Status:** Open
+**Severity:** Medium — auth may appear functional but key is technically malformed in SSR HTML
+
+**Problem:** The Clerk publishable key in the live SSR HTML still ends with a literal `\n`:
+```
+"publishableKey":"pk_test_ZmFzdC1tYXN0b2Rvbi03NS5jbGVyay5hY2NvdW50cy5kZXYk\n"
+```
+This was flagged as issue #4 on 2026-03-10 and is still unresolved. Clerk may silently strip the newline before use, but it's a malformed key value and matches the known failure pattern from TOOLS.md. Also the key is `pk_test_` — development mode — which should be swapped for `pk_live_` before public launch.
+
+**Fix:**
+1. Vercel → Project → Settings → Environment Variables
+2. Edit `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` — strip any trailing `\n` / whitespace
+3. Redeploy
+4. (Pre-launch) Upgrade to a production Clerk instance with `pk_live_` key
+
+---
+
 ### ✅ [MINOR] #9 — `/api/logo` route was dead code (never called from UI)
 **Detected:** 2026-03-11 11:11 AM ET
 **Status:** Resolved — 2026-03-11 (cleanup pass)
