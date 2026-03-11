@@ -5,12 +5,18 @@ import { useUser, UserButton, SignInButton, useClerk } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 
 const TRADE_CHIPS = [
-  { label: 'Plumber', value: 'plumbing' },
-  { label: 'Electrician', value: 'electrical' },
-  { label: 'General Contractor', value: 'general' },
-  { label: 'Roofer', value: 'roofing' },
-  { label: 'Painter', value: 'painting' },
+  { label: 'Plumbing', value: 'plumbing' },
+  { label: 'Electrical', value: 'electrical' },
+  { label: 'Roofing', value: 'roofing' },
+  { label: 'Painting', value: 'painting' },
   { label: 'HVAC', value: 'hvac' },
+  { label: 'Carpentry', value: 'carpentry' },
+  { label: 'Flooring', value: 'flooring' },
+  { label: 'Landscaping', value: 'landscaping' },
+  { label: 'Drywall', value: 'drywall' },
+  { label: 'Concrete', value: 'concrete' },
+  { label: 'General', value: 'general' },
+  { label: 'Handyman', value: 'handyman' },
 ]
 
 const EXAMPLE_PROMPTS = [
@@ -786,8 +792,8 @@ ${biz}`
   }
 
   // ─── Input / label shared styles ──────────────────────────────────────────
-  const inp = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 bg-[#faf8f5] transition-all duration-150"
-  const lbl = "block text-sm font-medium text-gray-700 mb-1.5"
+  const inp = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 bg-white transition-all duration-150 focus:border-[#991b1b] focus:ring-2 focus:ring-[#991b1b]/10"
+  const lbl = "block text-sm font-semibold text-gray-700 mb-1.5"
 
   return (
     <div className="min-h-screen relative" style={{ background: 'var(--background)' }}>
@@ -901,8 +907,8 @@ ${biz}`
               AI-powered · Built for tradespeople
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight mb-4 leading-[1.1]">
-              Professional quotes<br />
-              <span className="text-[#991b1b]">in 60 seconds</span>
+              Professional quotes at
+              <span className="text-[#991b1b]">the snap of a finger</span>
             </h1>
             <p className="text-gray-700 text-lg sm:text-xl max-w-xl mx-auto mb-8 leading-relaxed">
               Describe the job in plain English. SnapBid generates accurate, itemized quotes calibrated to your rates.
@@ -1322,8 +1328,8 @@ ${biz}`
 
                 {/* Business + Trade (guests only) */}
                 {!profile && (
-                  <div className="bg-[#faf8f5] rounded-2xl border border-gray-100 p-5 shadow-md space-y-4">
-                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Your Business</p>
+                  <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4" style={{borderLeft: "3px solid #991b1b"}}>
+                    <p className="text-xs font-bold text-[#991b1b] uppercase tracking-widest">Your Business</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className={lbl}>Business Name</label>
@@ -1332,33 +1338,28 @@ ${biz}`
                       </div>
                       <div>
                         <label className={lbl}>Trade</label>
-                        <select name="trade" value={form.trade} onChange={handleChange} required className={inp}>
-                          <option value="">Select trade…</option>
-                          {['plumbing','electrical','painting','landscaping','hvac','roofing','carpentry','flooring','general','handyman','cleaning','other'].map(t => (
-                            <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
-                          ))}
-                        </select>
-                        <div className="flex flex-wrap gap-1.5 mt-2">
+                        <div className="flex flex-wrap gap-1.5">
                           {TRADE_CHIPS.map(c => (
                             <button key={c.value} type="button"
                               onClick={() => setForm(f => ({ ...f, trade: c.value }))}
-                              className={`text-xs px-2.5 py-1 rounded-lg border transition-all ${
+                              className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-all ${
                                 form.trade === c.value
                                   ? 'bg-[#991b1b] border-[#991b1b] text-white shadow-sm'
-                                  : 'bg-gray-50 border-gray-200 text-gray-500 hover:border-amber-400 hover:text-red-700'
+                                  : 'bg-[#faf8f5] border-gray-200 text-gray-500 hover:border-[#991b1b] hover:text-[#991b1b]'
                               }`}>
                               {c.label}
                             </button>
                           ))}
                         </div>
+                        {!form.trade && <p className="text-xs text-gray-400 mt-1.5">Select your trade above</p>}
                       </div>
                     </div>
                   </div>
                 )}
 
                 {/* Client info */}
-                <div className="bg-[#faf8f5] rounded-2xl border border-gray-100 p-5 shadow-md space-y-4">
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Client</p>
+                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4" style={{borderLeft: "3px solid #d97706"}}>
+                  <p className="text-xs font-bold text-amber-600 uppercase tracking-widest">Client</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className={lbl}>Client Name</label>
@@ -1382,14 +1383,14 @@ ${biz}`
                 </div>
 
                 {/* Job context */}
-                <div className="bg-[#faf8f5] rounded-2xl border border-gray-100 shadow-md overflow-hidden">
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden" style={{borderLeft: "3px solid #64748b"}}>
                   <button
                     type="button"
                     onClick={() => setShowJobContext(v => !v)}
-                    className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors"
+                    className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50/50 transition-colors"
                   >
                     <div>
-                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Job Context</p>
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Job Context</p>
                       <p className="text-xs text-gray-400 mt-0.5">Optional — helps the AI price more accurately</p>
                     </div>
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${showJobContext ? 'bg-amber-100 text-red-700' : 'bg-gray-100 text-gray-400'}`}>
@@ -1465,8 +1466,8 @@ ${biz}`
                 </div>
 
                 {/* Job description */}
-                <div className="bg-[#faf8f5] rounded-2xl border border-gray-100 p-5 shadow-md space-y-3">
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Job Description</p>
+                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-3" style={{borderLeft: "3px solid #991b1b"}}>
+                  <p className="text-xs font-bold text-[#991b1b] uppercase tracking-widest">Job Description</p>
                   <div>
                     <textarea name="jobDescription" value={form.jobDescription} onChange={handleChange}
                       placeholder="Describe the job in plain English…"
