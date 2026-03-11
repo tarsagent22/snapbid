@@ -4,6 +4,32 @@
 
 ---
 
+### [MINOR] #9 — `/api/logo` route is dead code (never called from UI)
+**Detected:** 2026-03-11 11:11 AM ET
+**Status:** Open (low priority cleanup)
+**Severity:** Low (no functional impact)
+
+**Problem:** `app/api/logo/route.ts` exists as a dedicated POST/DELETE endpoint for logo management, but no component in the app ever calls it. The profile page sends `logoDataUrl` inline through `/api/profile` POST. The `/api/logo` route is unreachable from the UI and adds confusion.
+
+**Recommendation:** Either delete `app/api/logo/route.ts` (if the profile route handles everything) or refactor profile to use the dedicated endpoint. No urgent action needed.
+
+---
+
+### [WARNING] #4 — Clerk publishable key has trailing newline in env var
+**Detected:** 2026-03-11  
+**Status:** Resolved — 2026-03-11 11:10 AM ET (commit `0fab3f7`)  
+**Severity:** Medium (feature silently unusable)
+
+**Problem:** `logoDataUrl` was defined in `ContractorProfile`, preserved by the API, and rendered in PDF quote generation. But there was no upload control in `app/profile/page.tsx` — contractors had no way to set it through the UI. The API also never accepted it from the request body (it always preserved the existing value, silently ignoring any submission).
+
+**Fix applied:**
+- Extended `/api/profile` POST handler to accept `logoDataUrl` from the request body (with empty-string as a removal signal).
+- Added logo upload UI to the Business Identity section: image preview with 64×64 thumbnail, file picker (PNG/JPG, 512 KB max), one-click remove button, and descriptive helper text.
+- `handleSave` now includes `logoDataUrl` in the payload.
+- Logo appears on PDF quotes at render time (pre-existing behavior, now actually usable).
+
+---
+
 ### ✅ [BUG] #1 — AI overrides quoteNumber format
 **Detected:** 2026-03-10  
 **Status:** Resolved — 2026-03-10 05:05 AM ET  
