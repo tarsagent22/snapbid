@@ -11,6 +11,7 @@ const isPublicRoute = createRouteMatcher([
   '/api/waitlist',
   '/api/stripe/webhook',
   '/api/founder-count',
+  '/privacy',
   '/opengraph-image',
   '/sitemap.xml',
   '/robots.txt',

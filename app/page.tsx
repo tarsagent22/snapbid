@@ -2094,9 +2094,15 @@ ${biz}`
                 aria-label="Copy quote to clipboard"
                 className="flex items-center justify-center gap-2 border border-gray-200 bg-[#faf8f5] hover:bg-gray-50 text-gray-700 font-semibold py-3 px-4 rounded-xl transition-all text-sm">
                 {copied ? (
-                  <svg className="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg>
+                  <>
+                    <svg className="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg>
+                    <span className="hidden sm:inline">Copied!</span>
+                  </>
                 ) : (
-                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" strokeWidth={2}/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" strokeWidth={2}/></svg>
+                  <>
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" strokeWidth={2}/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" strokeWidth={2}/></svg>
+                    <span className="hidden sm:inline">Copy</span>
+                  </>
                 )}
               </button>
               <button onClick={() => setQuote(null)}

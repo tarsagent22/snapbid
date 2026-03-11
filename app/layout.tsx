@@ -126,6 +126,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <a href="/profile" className="hover:text-gray-600 transition-colors">Profile</a>
                 )}
                 <a href="/upgrade" className="hover:text-gray-600 transition-colors">Upgrade</a>
+                <a href="/privacy" className="hover:text-gray-600 transition-colors">Privacy</a>
                 <a href="mailto:hello@snapbid.app" className="hover:text-gray-600 transition-colors">Contact</a>
               </nav>
             </div>
