@@ -969,8 +969,11 @@ ${biz}`
                 const pending = history.filter(q => !q.status || q.status === 'pending').length
                 const total = history.length
                 const winRate = won + lost > 0 ? Math.round((won / (won + lost)) * 100) : null
+                const revenueWon = history
+                  .filter(q => q.status === 'won')
+                  .reduce((sum, q) => sum + (q.total || 0), 0)
                 return (
-                  <div className="flex items-center gap-3 text-xs">
+                  <div className="flex items-center gap-3 text-xs flex-wrap">
                     <div className="flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
                       <span className="text-gray-500">{won} won</span>
@@ -986,6 +989,11 @@ ${biz}`
                     {winRate !== null && (
                       <span className="bg-amber-50 text-red-700 font-semibold px-2 py-0.5 rounded-full">
                         {winRate}% win rate
+                      </span>
+                    )}
+                    {revenueWon > 0 && (
+                      <span className="bg-emerald-50 text-emerald-700 font-semibold px-2 py-0.5 rounded-full">
+                        ${revenueWon.toLocaleString()} won
                       </span>
                     )}
                   </div>

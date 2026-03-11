@@ -4,9 +4,9 @@
 
 ---
 
-### [BUG] #10 — Clerk publishable key has trailing `\n` — still live as of 2026-03-11 3:11 PM ET
+### ✅ [BUG] #10 — Clerk publishable key has trailing `\n` — still live as of 2026-03-11 3:11 PM ET
 **Detected:** 2026-03-11 3:11 PM ET (4h quality check cron)
-**Status:** Open
+**Status:** Resolved — 2026-03-11 5:05 PM ET (confirmed clean via live SSR fetch)
 **Severity:** Medium — auth may appear functional but key is technically malformed in SSR HTML
 
 **Problem:** The Clerk publishable key in the live SSR HTML still ends with a literal `\n`:
@@ -15,11 +15,9 @@
 ```
 This was flagged as issue #4 on 2026-03-10 and is still unresolved. Clerk may silently strip the newline before use, but it's a malformed key value and matches the known failure pattern from TOOLS.md. Also the key is `pk_test_` — development mode — which should be swapped for `pk_live_` before public launch.
 
-**Fix:**
-1. Vercel → Project → Settings → Environment Variables
-2. Edit `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` — strip any trailing `\n` / whitespace
-3. Redeploy
-4. (Pre-launch) Upgrade to a production Clerk instance with `pk_live_` key
+**Fix applied:** Live SSR fetch at 5:05 PM confirms clean key — `pk_test_ZmFzdC1tYXN0b2Rvbi03NS5jbGVyay5hY2NvdW50cy5kZXYk` with no trailing newline. Resolved by the redeploy in issue #4 at 3:35 PM ET. Issue #10 was a false positive from the 3:11 PM cron running before the 3:35 PM fix landed.
+
+**Note:** Still using `pk_test_` (Clerk development instance). Should be upgraded to `pk_live_` before any major public launch.
 
 ---
 
@@ -87,20 +85,16 @@ This was flagged as issue #4 on 2026-03-10 and is still unresolved. Clerk may si
 
 ---
 
-### [WARNING] #4 — Clerk publishable key has trailing newline in env var
+### ✅ [WARNING] #4 — Clerk publishable key has trailing newline in env var
 **Detected:** 2026-03-10  
-**Status:** Open  
-**Severity:** Low (auth appears functional, but should be cleaned up)  
-**File:** Vercel environment variable `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+**Status:** Resolved — 2026-03-11 3:35 PM ET (commit `a8e203a`)
+**Severity:** Low
 
-**Problem:** The Clerk publishable key in the Vercel env var has a trailing `\n` (newline character). This is visible in the SSR HTML as `"pk_test_...dZXYk\n"`. Clerk likely strips this before use, so auth seems to work, but it's sloppy and matches the known failure pattern from `TOOLS.md` (Secrets Hygiene).
+**Problem:** The Clerk publishable key in the Vercel env var had a trailing `\n` (newline character), visible in SSR HTML as `"pk_test_...dZXYk\n"`.
 
-**Also:** The key is `pk_test_` (development mode). If this is intended for production use, a `pk_live_` key from a production Clerk instance should be used instead.
+**Fix applied:** Updated env var via Vercel API (PATCH /v9/projects/.../env) with the clean 56-char key from SECRETS.md, then redeployed. SSR HTML now shows clean key without trailing newline.
 
-**Fix:**
-1. Go to Vercel → Project → Settings → Environment Variables
-2. Edit `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` — strip any trailing whitespace/newline
-3. Consider upgrading to a production Clerk instance (`pk_live_`) before launch
+**Note:** Still using `pk_test_` (Clerk development instance). Should be upgraded to `pk_live_` before any major public launch.
 
 ---
 
