@@ -4,14 +4,14 @@
 
 ---
 
-### [MINOR] #9 — `/api/logo` route is dead code (never called from UI)
+### ✅ [MINOR] #9 — `/api/logo` route was dead code (never called from UI)
 **Detected:** 2026-03-11 11:11 AM ET
-**Status:** Open (low priority cleanup)
+**Status:** Resolved — 2026-03-11 (cleanup pass)
 **Severity:** Low (no functional impact)
 
-**Problem:** `app/api/logo/route.ts` exists as a dedicated POST/DELETE endpoint for logo management, but no component in the app ever calls it. The profile page sends `logoDataUrl` inline through `/api/profile` POST. The `/api/logo` route is unreachable from the UI and adds confusion.
+**Problem:** `app/api/logo/route.ts` existed as a dedicated POST/DELETE endpoint for logo management, but no component in the app ever called it. The profile page sends `logoDataUrl` inline through `/api/profile` POST. The `/api/logo` route was unreachable from the UI and added confusion.
 
-**Recommendation:** Either delete `app/api/logo/route.ts` (if the profile route handles everything) or refactor profile to use the dedicated endpoint. No urgent action needed.
+**Fix applied:** Deleted `app/api/logo/route.ts`. Logo management continues to work via `/api/profile` POST which already accepts `logoDataUrl` inline.
 
 ---
 

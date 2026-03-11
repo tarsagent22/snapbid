@@ -1623,7 +1623,7 @@ ${biz}`
                     </div>
                   </div>
                   <div className="space-y-3.5">
-                    {['Analyzing your job description…', 'Pricing materials & labor…', 'Assembling itemized line items…', 'Polishing your quote…'].map((step, i) => (
+                    {['Scoping out the job details…', 'Calculating labor hours at your rates…', 'Pricing materials and applying markup…', 'Writing your professional quote…'].map((step, i) => (
                       <div key={i} className={`flex items-center gap-3 transition-all duration-500 ${i <= loadingStep && loadingStep <= 4 ? 'opacity-100' : 'opacity-25'}`}>
                         <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
                           i < loadingStep && loadingStep <= 4 ? 'bg-amber-100' : i === loadingStep ? 'bg-amber-100' : 'bg-gray-100'
