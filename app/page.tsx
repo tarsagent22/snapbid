@@ -63,6 +63,8 @@ export default function Home() {
   const [expandedHistoryId, setExpandedHistoryId] = useState<string | null>(null)
   const [historyPdfDownloading, setHistoryPdfDownloading] = useState<string | null>(null)
   const [statusUpdating, setStatusUpdating] = useState<string | null>(null)
+  const [quoteDeleting, setQuoteDeleting] = useState<string | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [reuseFlash, setReuseFlash] = useState<string | null>(null)
   const [loadingStep, setLoadingStep] = useState(0)
   const [showJobContext, setShowJobContext] = useState(false)
@@ -326,6 +328,29 @@ ${biz}`
     setTimeout(() => setReuseFlash(null), 3000)
     // Scroll to top so the user sees the pre-filled form
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleDeleteQuote = async (quoteId: string) => {
+    // First click: show confirmation state
+    if (deleteConfirm !== quoteId) {
+      setDeleteConfirm(quoteId)
+      // Auto-reset confirmation after 4 seconds if not confirmed
+      setTimeout(() => setDeleteConfirm(c => c === quoteId ? null : c), 4000)
+      return
+    }
+    // Second click: confirmed — delete
+    setQuoteDeleting(quoteId)
+    setDeleteConfirm(null)
+    try {
+      await fetch('/api/quotes', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: quoteId }),
+      })
+      setHistory(prev => prev.filter(q => q.id !== quoteId))
+      setExpandedHistoryId(null)
+    } catch {}
+    setQuoteDeleting(null)
   }
 
   const handleDownloadPDF = async () => {
@@ -1234,6 +1259,28 @@ ${biz}`
                                   Reuse Quote
                                 </>
                               )}
+                            </button>
+                            <button
+                              onClick={() => handleDeleteQuote(q.id)}
+                              disabled={quoteDeleting === q.id}
+                              title={deleteConfirm === q.id ? 'Click again to confirm deletion' : 'Delete this quote'}
+                              className={`flex items-center gap-1.5 border font-semibold py-2 px-3 rounded-xl text-xs transition-all disabled:opacity-60 ${
+                                deleteConfirm === q.id
+                                  ? 'bg-red-500 border-red-500 text-white animate-pulse'
+                                  : 'bg-[#faf8f5] border-gray-200 text-gray-400 hover:border-red-300 hover:text-red-500 hover:bg-red-50'
+                              }`}
+                            >
+                              {quoteDeleting === q.id ? (
+                                <svg className="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                                </svg>
+                              ) : (
+                                <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                              )}
+                              {quoteDeleting === q.id ? '' : deleteConfirm === q.id ? 'Confirm?' : 'Delete'}
                             </button>
                           </div>
                         </div>

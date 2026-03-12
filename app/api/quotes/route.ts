@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { getQuoteHistory, saveQuoteToHistory, updateQuoteStatus, SavedQuote } from '@/lib/profile'
+import { getQuoteHistory, saveQuoteToHistory, updateQuoteStatus, deleteQuote, SavedQuote } from '@/lib/profile'
 
 export async function GET() {
   try {
@@ -40,5 +40,19 @@ export async function PATCH(req: NextRequest) {
   } catch (err: any) {
     console.error('Quotes PATCH error:', err)
     return NextResponse.json({ error: err.message || 'Failed to update quote status' }, { status: 500 })
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { userId } = await auth()
+    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const { id } = await req.json()
+    if (!id) return NextResponse.json({ error: 'Missing quote id' }, { status: 400 })
+    await deleteQuote(userId, id)
+    return NextResponse.json({ ok: true })
+  } catch (err: any) {
+    console.error('Quotes DELETE error:', err)
+    return NextResponse.json({ error: err.message || 'Failed to delete quote' }, { status: 500 })
   }
 }

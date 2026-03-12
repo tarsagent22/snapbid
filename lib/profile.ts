@@ -153,3 +153,14 @@ export async function updateQuoteStatus(
     },
   })
 }
+
+export async function deleteQuote(userId: string, quoteId: string): Promise<void> {
+  const history = await getQuoteHistory(userId)
+  const updated = history.filter(q => q.id !== quoteId)
+  const client = await clerkClient()
+  await client.users.updateUserMetadata(userId, {
+    privateMetadata: {
+      quoteHistory: updated,
+    },
+  })
+}
