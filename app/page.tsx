@@ -71,6 +71,8 @@ export default function Home() {
   const [founderSpotsLeft, setFounderSpotsLeft] = useState<number>(50)
   const [showProfileNudge, setShowProfileNudge] = useState(false)
   const PROFILE_NUDGE_KEY = 'snapbid_profile_nudge_dismissed'
+  const [historySearch, setHistorySearch] = useState('')
+  const [historyStatusFilter, setHistoryStatusFilter] = useState<'all' | 'won' | 'lost' | 'pending'>('all')
 
   // Fetch live founder spot count from Stripe
   useEffect(() => {
@@ -1006,6 +1008,44 @@ ${biz}`
                 )
               })()}
             </div>
+            {/* Search + filter bar */}
+            {!historyLoading && history.length > 0 && (
+              <div className="flex flex-col sm:flex-row gap-2 mb-4">
+                <div className="relative flex-1">
+                  <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
+                  </svg>
+                  <input
+                    type="text"
+                    placeholder="Search by client or address…"
+                    value={historySearch}
+                    onChange={e => setHistorySearch(e.target.value)}
+                    className="w-full pl-8 pr-3 py-2 text-sm border border-gray-200 rounded-xl bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#991b1b] focus:ring-1 focus:ring-[#991b1b]/10 transition-all"
+                  />
+                  {historySearch && (
+                    <button onClick={() => setHistorySearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors">
+                      <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                  )}
+                </div>
+                <div className="flex gap-1.5 flex-shrink-0">
+                  {(['all', 'won', 'lost', 'pending'] as const).map(f => (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => setHistoryStatusFilter(f)}
+                      className={`text-xs px-2.5 py-2 rounded-xl border font-medium transition-all ${
+                        historyStatusFilter === f
+                          ? f === 'won' ? 'bg-amber-600 border-amber-600 text-white' : f === 'lost' ? 'bg-red-500 border-red-500 text-white' : f === 'pending' ? 'bg-gray-400 border-gray-400 text-white' : 'bg-[#991b1b] border-[#991b1b] text-white'
+                          : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'
+                      }`}
+                    >
+                      {f.charAt(0).toUpperCase() + f.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             {historyLoading ? (
               <div className="space-y-3">
                 {[1,2,3].map(i => (
@@ -1035,7 +1075,22 @@ ${biz}`
               </div>
             ) : (
               <div className="space-y-3">
-                {history.map((q: any) => {
+                {(() => {
+                  const filtered = history.filter((q: any) => {
+                    const matchesSearch = !historySearch || [q.clientName, q.clientAddress, q.quoteNumber, q.jobDescription].some((f: any) => f?.toLowerCase().includes(historySearch.toLowerCase()))
+                    const matchesStatus = historyStatusFilter === 'all' || (historyStatusFilter === 'pending' ? (!q.status || q.status === 'pending') : q.status === historyStatusFilter)
+                    return matchesSearch && matchesStatus
+                  })
+                  if (filtered.length === 0) {
+                    return [(
+                      <div key="empty-filter" className="bg-[#faf8f5] rounded-2xl border border-dashed border-gray-200 p-8 text-center">
+                        <p className="text-sm font-medium text-gray-600">No quotes match your filter</p>
+                        <button onClick={() => { setHistorySearch(''); setHistoryStatusFilter('all') }} className="mt-2 text-xs text-amber-600 hover:text-red-800 transition-colors">Clear filters</button>
+                      </div>
+                    )]
+                  }
+                  return filtered
+                })().map((q: any) => {
                   const isExpanded = expandedHistoryId === q.id
                   return (
                     <div key={q.id} className={`bg-[#faf8f5] rounded-2xl border shadow-sm transition-all duration-200 ${isExpanded ? 'border-[#991b1b]/30 shadow-amber-50' : 'border-gray-100 hover:border-gray-200'}`}>
@@ -2164,13 +2219,13 @@ ${biz}`
 
             {/* Price + CTA */}
             <div className="text-center mb-4">
-              <div className="flex items-baseline justify-center gap-1 mb-0.5">
+              <div className="flex items-baseline justify-center gap-2 mb-0.5">
+                <span className="text-gray-400 text-base line-through">$199</span>
                 <span className="text-gray-400 text-base">$</span>
-                <span className="text-3xl font-bold text-gray-900">9</span>
-                <span className="text-gray-400 text-base">/month</span>
-                <span className="text-xs text-gray-400 line-through ml-1">$19</span>
+                <span className="text-3xl font-bold text-gray-900">59</span>
+                <span className="text-gray-400 text-base">one-time</span>
               </div>
-              <p className="text-xs text-gray-400 mb-4">Locked in forever · Cancel anytime · Secured by Stripe</p>
+              <p className="text-xs text-gray-400 mb-4">Pay once · Yours forever · Secured by Stripe</p>
               <button
                 onClick={handleUpgrade}
                 disabled={upgrading}
