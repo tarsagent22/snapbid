@@ -224,7 +224,7 @@ export default function Home() {
     const lines = activeItems.map((item: any, i: number) =>
       `  ${item.description}: $${lineItemOverrides[i] ?? item.total}`
     ).join('\n') ?? ''
-    const text = `QUOTE #${quote.quoteNumber}${tierLabel}\nClient: ${form.clientName}\nAddress: ${form.clientAddress}${form.clientEmail ? `\nEmail: ${form.clientEmail}` : ''}\n\n${lines}\n\nSubtotal: $${activeTotals?.subtotal}\nTax: $${activeTotals?.tax}\nTOTAL: $${activeTotals?.total}`
+    const text = `QUOTE #${quote.quoteNumber}${tierLabel}\nClient: ${form.clientName}\nAddress: ${form.clientAddress}${form.clientEmail ? `\nEmail: ${form.clientEmail}` : ''}\n\n${lines}\n\nSubtotal: $${activeTotals?.subtotal?.toLocaleString()}\nTax: $${activeTotals?.tax?.toLocaleString()}\nTOTAL: $${activeTotals?.total?.toLocaleString()}`
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
@@ -265,9 +265,9 @@ ${quote.scopeOfWork ? `\nScope of Work:\n${quote.scopeOfWork}\n` : ''}
 ${lineList}
 ---
 
-Subtotal: $${activeTotals?.subtotal}
-Tax (est.): $${activeTotals?.tax}
-TOTAL: $${activeTotals?.total}
+Subtotal: $${activeTotals?.subtotal?.toLocaleString()}
+Tax (est.): $${activeTotals?.tax?.toLocaleString()}
+TOTAL: $${activeTotals?.total?.toLocaleString()}
 ${inclList}${exclList}
 ${quote.notes ? `Notes: ${quote.notes}\n\n` : ''}This quote is valid until ${validUntil}.
 
@@ -593,7 +593,7 @@ ${biz}`
     doc.setFontSize(9)
     doc.setFont('helvetica', 'normal')
     doc.text(`${biz} · Estimate prepared with SnapBid`, pageW / 2, y + 22, { align: 'center' })
-    doc.save(`snapbid-quote-${form.clientName.replace(/\s+/g, '-')}.pdf`)
+    doc.save(`snapbid-${quote.quoteNumber}-${form.clientName.replace(/\s+/g, '-')}.pdf`)
   }
 
   const handleDownloadHistoryPDF = async (q: any) => {
@@ -635,6 +635,7 @@ ${biz}`
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(10)
       doc.text(date, pageW - margin, 48, { align: 'right' })
+      doc.text(`Valid for ${profile?.quoteValidityDays || 30} days`, pageW - margin, 62, { align: 'right' })
       y = 96
 
       const histClientBoxH = q.clientEmail ? 68 : 56
@@ -785,7 +786,7 @@ ${biz}`
       doc.setFontSize(9)
       doc.setFont('helvetica', 'normal')
       doc.text(`${biz} · Estimate prepared with SnapBid`, pageW / 2, y + 22, { align: 'center' })
-      doc.save(`snapbid-quote-${(q.clientName || 'quote').replace(/\s+/g, '-')}.pdf`)
+      doc.save(`snapbid-${q.quoteNumber || 'quote'}-${(q.clientName || 'client').replace(/\s+/g, '-')}.pdf`)
     } finally {
       setHistoryPdfDownloading(null)
     }
@@ -2003,16 +2004,16 @@ ${biz}`
                       <div className="flex justify-end pt-2">
                         <div className="w-56 space-y-2 text-sm">
                           <div className="flex justify-between text-gray-500">
-                            <span>Subtotal</span><span className="tabular-nums">${activeTotals?.subtotal}</span>
+                            <span>Subtotal</span><span className="tabular-nums">${activeTotals?.subtotal?.toLocaleString()}</span>
                           </div>
                           {(activeTotals?.tax ?? 0) > 0 && (
                             <div className="flex justify-between text-gray-500">
-                              <span>Tax (est.)</span><span className="tabular-nums">${activeTotals?.tax}</span>
+                              <span>Tax (est.)</span><span className="tabular-nums">${activeTotals?.tax?.toLocaleString()}</span>
                             </div>
                           )}
                           <div className="flex justify-between font-bold text-base pt-2.5 border-t-2 border-gray-100">
                             <span>Total</span>
-                            <span className="text-[#991b1b] tabular-nums">${activeTotals?.total}</span>
+                            <span className="text-[#991b1b] tabular-nums">${activeTotals?.total?.toLocaleString()}</span>
                           </div>
                         </div>
                       </div>
