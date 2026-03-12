@@ -165,6 +165,7 @@ export default function ProfilePage() {
     markup: '20',
     crewSize: '1',
     materialTier: 'standard',
+    showMarkupOnQuote: false,
     // Contact
     phone: '',
     email: '',
@@ -198,6 +199,7 @@ export default function ProfilePage() {
             markup: String(p.markup || '20'),
             crewSize: String(p.crewSize || '1'),
             materialTier: p.materialTier || 'standard',
+            showMarkupOnQuote: p.showMarkupOnQuote || false,
             phone: p.phone || '',
             email: p.email || '',
             businessAddress: p.businessAddress || '',
@@ -321,7 +323,7 @@ export default function ProfilePage() {
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
             {isNew && (
-              <div className="bg-gradient-to-r from-[#991b1b] to-blue-700 rounded-2xl px-6 py-5 text-white">
+              <div className="bg-gradient-to-r from-[#991b1b] to-[#b45309] rounded-2xl px-6 py-5 text-white">
                 <p className="font-semibold text-base">👋 Welcome to SnapBid!</p>
                 <p className="text-amber-100 text-sm mt-1 leading-relaxed">Set up your profile once and every quote will be calibrated to your business — your rates, your contact info, your terms.</p>
               </div>
@@ -442,6 +444,15 @@ export default function ProfilePage() {
                   <label className={labelCls}>Markup on Materials (%)</label>
                   <input name="markup" type="number" value={form.markup} onChange={handleChange} placeholder="20" className={inputCls} />
                   <p className={helperCls}>Added on top of material costs</p>
+                  <label className="flex items-center gap-2 mt-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={form.showMarkupOnQuote}
+                      onChange={() => setForm(f => ({ ...f, showMarkupOnQuote: !f.showMarkupOnQuote }))}
+                      className="w-3.5 h-3.5 rounded accent-[#991b1b]"
+                    />
+                    <span className="text-xs text-gray-500">Show markup line on client quote</span>
+                  </label>
                 </div>
                 <div>
                   <label className={labelCls}>Tax Rate (%)</label>

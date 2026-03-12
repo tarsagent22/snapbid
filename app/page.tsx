@@ -129,7 +129,7 @@ export default function Home() {
   // Cycle loading step messages while AI is generating
   useEffect(() => {
     if (!loading) { setLoadingStep(0); return }
-    const id = setInterval(() => setLoadingStep(s => Math.min(s + 1, 4)), 2800)
+    const id = setInterval(() => setLoadingStep(s => Math.min(s + 1, 3)), 2800)
     return () => clearInterval(id)
   }, [loading])
 
@@ -190,7 +190,7 @@ export default function Home() {
       try { sessionStorage.removeItem(FORM_STORAGE_KEY) } catch {}
       setHistory([]) // will re-fetch if user opens history tab
     } catch (err: any) {
-      setError('Couldn\'t generate the quote. Try describing the job with more detail.')
+      setError(err?.message?.includes('limit') ? 'Free quote limit reached. Upgrade to continue.' : 'Couldn\'t generate the quote — try adding more detail about the job (materials, size, scope).')
     } finally {
       setLoading(false)
     }
@@ -1564,11 +1564,11 @@ ${biz}`
                   </div>
                   <div className="space-y-3.5">
                     {['Scoping out the job details…', 'Calculating labor hours at your rates…', 'Pricing materials and applying markup…', 'Writing your professional quote…'].map((step, i) => (
-                      <div key={i} className={`flex items-center gap-3 transition-all duration-500 ${i <= loadingStep && loadingStep <= 4 ? 'opacity-100' : 'opacity-25'}`}>
+                      <div key={i} className={`flex items-center gap-3 transition-all duration-500 ${i <= loadingStep ? 'opacity-100' : 'opacity-25'}`}>
                         <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          i < loadingStep && loadingStep <= 4 ? 'bg-amber-100' : i === loadingStep ? 'bg-amber-100' : 'bg-gray-100'
+                          i < loadingStep ? 'bg-amber-100' : i === loadingStep ? 'bg-amber-100' : 'bg-gray-100'
                         }`}>
-                          {i < loadingStep && loadingStep <= 4 ? (
+                          {i < loadingStep ? (
                             <svg className="w-3 h-3 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/>
                             </svg>
@@ -1582,7 +1582,7 @@ ${biz}`
                           )}
                         </div>
                         <span className={`text-xs transition-colors ${
-                          i < loadingStep && loadingStep <= 4 ? 'text-gray-400 line-through' : i === loadingStep ? 'text-gray-800 font-medium' : 'text-gray-300'
+                          i < loadingStep ? 'text-gray-400 line-through' : i === loadingStep ? 'text-gray-800 font-medium' : 'text-gray-300'
                         }`}>{step}</span>
                       </div>
                     ))}
