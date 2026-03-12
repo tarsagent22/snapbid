@@ -56,16 +56,10 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [quote, setQuote] = useState<any>(null)
   const [error, setError] = useState('')
-  const [lineItemOverrides, setLineItemOverrides] = useState<Record<number, string>>({})
-  const [editingLineItem, setEditingLineItem] = useState<number | null>(null)
-  const [editingValue, setEditingValue] = useState<string>('')
   const [copied, setCopied] = useState(false)
   const [emailed, setEmailed] = useState(false)
   const [descCount, setDescCount] = useState(0)
   const [selectedTier, setSelectedTier] = useState<'budget' | 'standard' | 'premium'>('standard')
-  const [waitlistEmail, setWaitlistEmail] = useState('')
-  const [waitlistSubmitting, setWaitlistSubmitting] = useState(false)
-  const [waitlistDone, setWaitlistDone] = useState(false)
   const [expandedHistoryId, setExpandedHistoryId] = useState<string | null>(null)
   const [historyPdfDownloading, setHistoryPdfDownloading] = useState<string | null>(null)
   const [statusUpdating, setStatusUpdating] = useState<string | null>(null)
@@ -190,8 +184,6 @@ export default function Home() {
       }
       if (!res.ok) throw new Error(data.error || 'Failed to generate quote')
       setQuote(data)
-      setLineItemOverrides({}) // reset any prior overrides
-      setEditingLineItem(null)
       // Update local count from server response
       if (data.quoteCount !== undefined) setQuotesUsed(data.quoteCount)
       // Clear draft and invalidate history cache
@@ -204,25 +196,13 @@ export default function Home() {
     }
   }
 
-  const calcTotalsWithOverrides = (items: any[], baseTotals: any) => {
-    const hasOverrides = Object.keys(lineItemOverrides).length > 0
-    if (!hasOverrides) return baseTotals
-    const newSubtotal = items.reduce((sum: number, item: any, i: number) => {
-      const val = lineItemOverrides[i] !== undefined ? parseFloat(lineItemOverrides[i]) : (item.total || 0)
-      return sum + val
-    }, 0)
-    const taxRate = baseTotals?.tax && baseTotals?.subtotal ? (baseTotals.tax / baseTotals.subtotal) : 0
-    const newTax = Math.round(newSubtotal * taxRate)
-    return { ...baseTotals, subtotal: newSubtotal, tax: newTax, total: newSubtotal + newTax }
-  }
-
   const handleCopyQuote = () => {
     if (!quote) return
     const activeItems = quote.tiered ? (quote.tiers?.[selectedTier]?.lineItems || []) : (quote.lineItems || [])
-    const activeTotals = calcTotalsWithOverrides(activeItems, quote.tiered ? quote.tiers?.[selectedTier] : quote)
+    const activeTotals = quote.tiered ? quote.tiers?.[selectedTier] : quote
     const tierLabel = quote.tiered ? ` (${selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1)} Option)` : ''
-    const lines = activeItems.map((item: any, i: number) =>
-      `  ${item.description}: $${lineItemOverrides[i] ?? item.total}`
+    const lines = activeItems.map((item: any) =>
+      `  ${item.description}: $${item.total}`
     ).join('\n') ?? ''
     const text = `QUOTE #${quote.quoteNumber}${tierLabel}\nClient: ${form.clientName}\nAddress: ${form.clientAddress}${form.clientEmail ? `\nEmail: ${form.clientEmail}` : ''}\n\n${lines}\n\nSubtotal: $${activeTotals?.subtotal?.toLocaleString()}\nTax: $${activeTotals?.tax?.toLocaleString()}\nTOTAL: $${activeTotals?.total?.toLocaleString()}`
     navigator.clipboard.writeText(text).then(() => {
@@ -234,14 +214,14 @@ export default function Home() {
   const handleEmailQuote = () => {
     if (!quote) return
     const activeItems = quote.tiered ? (quote.tiers?.[selectedTier]?.lineItems || []) : (quote.lineItems || [])
-    const activeTotals = calcTotalsWithOverrides(activeItems, quote.tiered ? quote.tiers?.[selectedTier] : quote)
+    const activeTotals = quote.tiered ? quote.tiers?.[selectedTier] : quote
     const tierLabel = quote.tiered ? ` — ${selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1)} Option` : ''
     const biz = profile?.businessName || form.businessName
     const validDays = profile?.quoteValidityDays || 30
     const validUntil = new Date(Date.now() + validDays * 86400000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
 
-    const lineList = activeItems.map((item: any, i: number) =>
-      `• ${item.description} (${item.qty}) — $${lineItemOverrides[i] ?? item.total}`
+    const lineList = activeItems.map((item: any) =>
+      `• ${item.description} (${item.qty}) — $${item.total}`
     ).join('\n')
 
     const inclList = quote.inclusions && quote.inclusions.length > 0
@@ -286,63 +266,15 @@ ${biz}`
   const handleWhatsAppShare = () => {
     if (!quote) return
     const activeItems = quote.tiered ? (quote.tiers?.[selectedTier]?.lineItems || []) : (quote.lineItems || [])
-    const activeTotals = calcTotalsWithOverrides(activeItems, quote.tiered ? quote.tiers?.[selectedTier] : quote)
+    const activeTotals = quote.tiered ? quote.tiers?.[selectedTier] : quote
     const biz = profile?.businessName || form.businessName
     const tierLabel = quote.tiered ? ` (${selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1)} option)` : ''
-    const lineList = activeItems.map((item: any, i: number) =>
-      `• ${item.description}: $${lineItemOverrides[i] ?? item.total}`
+    const lineList = activeItems.map((item: any) =>
+      `• ${item.description}: $${item.total}`
     ).join('\n')
     const validDays = profile?.quoteValidityDays || 30
     const text = `Hi ${form.clientName},\n\nHere's your quote from *${biz}*${tierLabel} (ref: ${quote.quoteNumber}):\n\n${lineList}\n\n*Total: $${activeTotals?.total?.toLocaleString()}*\n\nThis quote is valid for ${validDays} days. Reply to confirm or ask any questions.\n\n— ${biz}`
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
-  }
-
-  const handleLineItemEditStart = (index: number, currentValue: string | number) => {
-    setEditingLineItem(index)
-    setEditingValue(String(currentValue))
-  }
-
-  const handleLineItemEditCommit = (index: number) => {
-    const parsed = parseFloat(editingValue.replace(/[^0-9.]/g, ''))
-    if (!isNaN(parsed) && parsed >= 0) {
-      setLineItemOverrides(prev => ({ ...prev, [index]: String(Math.round(parsed)) }))
-    }
-    setEditingLineItem(null)
-    setEditingValue('')
-  }
-
-  const handleLineItemEditCancel = () => {
-    setEditingLineItem(null)
-    setEditingValue('')
-  }
-
-  const handleLineItemEditKeyDown = (e: React.KeyboardEvent, index: number) => {
-    if (e.key === 'Enter') handleLineItemEditCommit(index)
-    if (e.key === 'Escape') handleLineItemEditCancel()
-  }
-
-  const handleResetLineItemOverride = (e: React.MouseEvent, index: number) => {
-    e.stopPropagation()
-    setLineItemOverrides(prev => {
-      const next = { ...prev }
-      delete next[index]
-      return next
-    })
-  }
-
-  const handleWaitlistSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!waitlistEmail) return
-    setWaitlistSubmitting(true)
-    try {
-      await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: waitlistEmail }),
-      })
-    } catch {}
-    setWaitlistSubmitting(false)
-    setWaitlistDone(true)
   }
 
   const handleUpgrade = async () => {
@@ -389,7 +321,6 @@ ${biz}`
     setDescCount((q.jobDescription || '').length)
     setQuote(null)
     setError('')
-    setLineItemOverrides({})
     setActiveTab('new')
     setReuseFlash(q.id)
     setTimeout(() => setReuseFlash(null), 3000)
@@ -474,7 +405,7 @@ ${biz}`
     const showMarkup = profile?.showMarkupOnQuote
     const pdfItems = (quote.tiered ? (quote.tiers?.[selectedTier]?.lineItems || []) : (quote.lineItems || []))
       .filter((item: any) => showMarkup || !item.description.toLowerCase().includes('markup'))
-    const pdfTotals = calcTotalsWithOverrides(pdfItems, quote.tiered ? quote.tiers?.[selectedTier] : quote)
+    const pdfTotals = quote.tiered ? quote.tiers?.[selectedTier] : quote
     ;(pdfItems).forEach((item: any, i: number) => {
       if (i % 2 === 1) { doc.setFillColor(249, 250, 251); doc.rect(margin, y, contentW, 24, 'F') }
       doc.setTextColor(55, 65, 81)
@@ -485,7 +416,7 @@ ${biz}`
       doc.text(`$${item.unitPrice}`, margin + contentW * 0.78, y + 16, { align: 'right' })
       doc.setTextColor(17, 24, 39)
       doc.setFont('helvetica', 'bold')
-      doc.text(`$${lineItemOverrides[i] ?? item.total}`, margin + contentW, y + 16, { align: 'right' })
+      doc.text(`$${item.total}`, margin + contentW, y + 16, { align: 'right' })
       doc.setFont('helvetica', 'normal')
       y += Math.max(24, descLines.length * 14)
     })
@@ -1872,22 +1803,9 @@ ${biz}`
                   const activeItems = quote.tiered
                     ? (quote.tiers?.[selectedTier]?.lineItems || [])
                     : (quote.lineItems || [])
-                  const baseActiveTotals = quote.tiered
+                  const activeTotals = quote.tiered
                     ? quote.tiers?.[selectedTier]
                     : quote
-                  // Recalculate totals if any line items have been overridden
-                  const hasOverrides = Object.keys(lineItemOverrides).length > 0
-                  const activeTotals = hasOverrides ? (() => {
-                    const newSubtotal = activeItems.reduce((sum: number, item: any, i: number) => {
-                      const val = lineItemOverrides[i] !== undefined ? parseFloat(lineItemOverrides[i]) : (item.total || 0)
-                      return sum + val
-                    }, 0)
-                    const taxRate = baseActiveTotals?.tax && baseActiveTotals?.subtotal
-                      ? (baseActiveTotals.tax / baseActiveTotals.subtotal)
-                      : 0
-                    const newTax = Math.round(newSubtotal * taxRate)
-                    return { ...baseActiveTotals, subtotal: newSubtotal, tax: newTax, total: newSubtotal + newTax }
-                  })() : baseActiveTotals
                   return (
                     <>
                       {/* Desktop */}
@@ -1898,107 +1816,32 @@ ${biz}`
                               <th className="text-left pb-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide">Description</th>
                               <th className="text-right pb-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide w-16">Qty</th>
                               <th className="text-right pb-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide w-24">Unit</th>
-                              <th className="text-right pb-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide w-28">
-                                Total
-                                <span className="ml-1 text-[9px] font-normal text-gray-300 normal-case tracking-normal">(click to edit)</span>
-                              </th>
+                              <th className="text-right pb-2.5 text-xs font-semibold text-gray-400 uppercase tracking-wide w-24">Total</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {activeItems.map((item: any, i: number) => {
-                              const displayTotal = lineItemOverrides[i] ?? item.total
-                              const isEditing = editingLineItem === i
-                              const isOverridden = lineItemOverrides[i] !== undefined
-                              return (
-                                <tr key={i} className="border-b border-gray-50 group">
-                                  <td className="py-3 text-gray-700 pr-4">{item.description}</td>
-                                  <td className="py-3 text-right text-gray-400 tabular-nums">{item.qty}</td>
-                                  <td className="py-3 text-right text-gray-400 tabular-nums">${item.unitPrice}</td>
-                                  <td className="py-3 text-right tabular-nums">
-                                    {isEditing ? (
-                                      <div className="flex items-center justify-end gap-1">
-                                        <span className="text-gray-400 text-sm">$</span>
-                                        <input
-                                          type="number"
-                                          value={editingValue}
-                                          onChange={e => setEditingValue(e.target.value)}
-                                          onBlur={() => handleLineItemEditCommit(i)}
-                                          onKeyDown={e => handleLineItemEditKeyDown(e, i)}
-                                          autoFocus
-                                          className="w-20 text-right border border-blue-400 rounded-lg px-2 py-1 text-sm font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-amber-50"
-                                        />
-                                      </div>
-                                    ) : (
-                                      <div className="flex items-center justify-end gap-1.5">
-                                        {isOverridden && (
-                                          <button
-                                            type="button"
-                                            title="Reset to original"
-                                            onClick={e => handleResetLineItemOverride(e, i)}
-                                            className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 transition-all text-xs leading-none"
-                                          >
-                                            ↩
-                                          </button>
-                                        )}
-                                        <button
-                                          type="button"
-                                          title="Click to edit"
-                                          onClick={() => handleLineItemEditStart(i, displayTotal)}
-                                          className={`font-semibold tabular-nums transition-colors hover:text-red-700 cursor-pointer rounded px-1 py-0.5 hover:bg-amber-50 ${isOverridden ? 'text-red-700' : 'text-gray-900'}`}
-                                        >
-                                          ${displayTotal}
-                                        </button>
-                                        {!isOverridden && (
-                                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="opacity-0 group-hover:opacity-40 text-gray-400 flex-shrink-0">
-                                            <path d="M7 1L9 3 3.5 8.5 1 9l.5-2.5L7 1z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                                          </svg>
-                                        )}
-                                      </div>
-                                    )}
-                                  </td>
-                                </tr>
-                              )
-                            })}
+                            {activeItems.map((item: any, i: number) => (
+                              <tr key={i} className="border-b border-gray-50">
+                                <td className="py-3 text-gray-700 pr-4">{item.description}</td>
+                                <td className="py-3 text-right text-gray-400 tabular-nums">{item.qty}</td>
+                                <td className="py-3 text-right text-gray-400 tabular-nums">${item.unitPrice}</td>
+                                <td className="py-3 text-right font-semibold text-gray-900 tabular-nums">${item.total}</td>
+                              </tr>
+                            ))}
                           </tbody>
                         </table>
                       </div>
                       {/* Mobile */}
                       <div className="md:hidden space-y-2">
-                        {activeItems.map((item: any, i: number) => {
-                          const displayTotal = lineItemOverrides[i] ?? item.total
-                          const isOverridden = lineItemOverrides[i] !== undefined
-                          const isEditing = editingLineItem === i
-                          return (
-                            <div key={i} className="bg-gray-50 rounded-xl p-3.5">
-                              <p className="text-sm font-medium text-gray-800 mb-2">{item.description}</p>
-                              <div className="flex justify-between text-xs text-gray-400 items-center">
-                                <span>Qty {item.qty} × ${item.unitPrice}</span>
-                                {isEditing ? (
-                                  <div className="flex items-center gap-1">
-                                    <span className="text-gray-400">$</span>
-                                    <input
-                                      type="number"
-                                      value={editingValue}
-                                      onChange={e => setEditingValue(e.target.value)}
-                                      onBlur={() => handleLineItemEditCommit(i)}
-                                      onKeyDown={e => handleLineItemEditKeyDown(e, i)}
-                                      autoFocus
-                                      className="w-16 text-right border border-blue-400 rounded px-1.5 py-0.5 text-xs font-semibold text-gray-900 focus:outline-none bg-amber-50"
-                                    />
-                                  </div>
-                                ) : (
-                                  <button
-                                    type="button"
-                                    onClick={() => handleLineItemEditStart(i, displayTotal)}
-                                    className={`font-semibold transition-colors active:text-red-700 ${isOverridden ? 'text-red-700' : 'text-gray-900'}`}
-                                  >
-                                    ${displayTotal} ✎
-                                  </button>
-                                )}
-                              </div>
+                        {activeItems.map((item: any, i: number) => (
+                          <div key={i} className="bg-gray-50 rounded-xl p-3.5">
+                            <p className="text-sm font-medium text-gray-800 mb-2">{item.description}</p>
+                            <div className="flex justify-between text-xs text-gray-400 items-center">
+                              <span>Qty {item.qty} × ${item.unitPrice}</span>
+                              <span className="font-semibold text-gray-900">${item.total}</span>
                             </div>
-                          )
-                        })}
+                          </div>
+                        ))}
                       </div>
                       {/* Totals */}
                       <div className="flex justify-end pt-2">

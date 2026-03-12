@@ -4,6 +4,26 @@
 
 ---
 
+### ✅ [UX POLISH] #11 — Currency not locale-formatted in quote display, copy, and email; PDF filenames not including quote number
+**Detected:** 2026-03-11 11:05 PM ET (6h feature pass cron)
+**Status:** Resolved — 2026-03-11 11:05 PM ET (commit `e565ad4`)
+**Severity:** Low (cosmetic / polish)
+
+**Problem 1:** Quote totals in the rendered quote card used raw numbers (e.g. `$10000`) instead of locale-formatted strings (`$10,000`). Same issue in copy-to-clipboard text and email body template. WhatsApp share already used `toLocaleString()` but the quote card display, copy text, and email body didn't.
+
+**Problem 2:** History PDF downloaded with filename `snapbid-quote-{clientName}.pdf` — impossible to match saved files to specific quotes. New quote PDF used `snapbid-quote-{clientName}.pdf` too.
+
+**Problem 3:** History PDF header was missing the "Valid for X days" line that was present in the current-quote PDF — inconsistent between the two PDF generators.
+
+**Fix applied:**
+- Added `.toLocaleString()` to all subtotal/tax/total display values in the quote result card.
+- Added `.toLocaleString()` to copy-to-clipboard text and email body.
+- Changed PDF filename for current quote: `snapbid-{quoteNumber}-{clientName}.pdf`
+- Changed PDF filename for history PDFs: `snapbid-{quoteNumber}-{clientName}.pdf`
+- Added `Valid for X days` line to history PDF header (matching the current-quote PDF).
+
+---
+
 ### ✅ [BUG] #10 — Clerk publishable key has trailing `\n` — still live as of 2026-03-11 3:11 PM ET
 **Detected:** 2026-03-11 3:11 PM ET (4h quality check cron)
 **Status:** Resolved — 2026-03-11 5:05 PM ET (confirmed clean via live SSR fetch)
