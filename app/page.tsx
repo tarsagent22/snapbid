@@ -458,10 +458,10 @@ ${biz}`
       doc.text(descLines, margin + 8, y + 16)
       doc.setTextColor(107, 114, 128)
       doc.text(String(item.qty), margin + contentW * 0.62, y + 16, { align: 'right' })
-      doc.text(`$${item.unitPrice}`, margin + contentW * 0.78, y + 16, { align: 'right' })
+      doc.text(`$${Number(item.unitPrice).toLocaleString()}`, margin + contentW * 0.78, y + 16, { align: 'right' })
       doc.setTextColor(17, 24, 39)
       doc.setFont('helvetica', 'bold')
-      doc.text(`$${item.total}`, margin + contentW, y + 16, { align: 'right' })
+      doc.text(`$${Number(item.total).toLocaleString()}`, margin + contentW, y + 16, { align: 'right' })
       doc.setFont('helvetica', 'normal')
       y += Math.max(24, descLines.length * 14)
     })
@@ -473,11 +473,11 @@ ${biz}`
     doc.setTextColor(107, 114, 128)
     doc.setFontSize(10)
     doc.text('Subtotal', totalsX, y + 14)
-    doc.text(`$${pdfTotals?.subtotal}`, pageW - margin, y + 14, { align: 'right' })
+    doc.text(`$${(pdfTotals?.subtotal ?? 0).toLocaleString()}`, pageW - margin, y + 14, { align: 'right' })
     const hasTax1 = (pdfTotals?.tax ?? 0) > 0
     if (hasTax1) {
       doc.text('Tax (est.)', totalsX, y + 30)
-      doc.text(`$${pdfTotals?.tax}`, pageW - margin, y + 30, { align: 'right' })
+      doc.text(`$${(pdfTotals?.tax ?? 0).toLocaleString()}`, pageW - margin, y + 30, { align: 'right' })
     }
     const lineY1 = hasTax1 ? y + 36 : y + 20
     const totalY1 = hasTax1 ? y + 52 : y + 36
@@ -487,7 +487,7 @@ ${biz}`
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(13)
     doc.text('TOTAL', totalsX, totalY1)
-    doc.text(`$${pdfTotals?.total}`, pageW - margin, totalY1, { align: 'right' })
+    doc.text(`$${(pdfTotals?.total ?? 0).toLocaleString()}`, pageW - margin, totalY1, { align: 'right' })
     y += hasTax1 ? 72 : 56
 
     // Helper: render a labeled section box with bullet items
@@ -647,7 +647,8 @@ ${biz}`
 
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(10)
-      const items = q.lineItems || []
+      const histShowMarkup = profile?.showMarkupOnQuote
+      const items = (q.lineItems || []).filter((item: any) => histShowMarkup || !item.description.toLowerCase().includes('markup'))
       items.forEach((item: any, i: number) => {
         if (i % 2 === 1) { doc.setFillColor(249, 250, 251); doc.rect(margin, y, contentW, 24, 'F') }
         doc.setTextColor(55, 65, 81)
@@ -655,10 +656,10 @@ ${biz}`
         doc.text(descLines, margin + 8, y + 16)
         doc.setTextColor(107, 114, 128)
         doc.text(String(item.qty), margin + contentW * 0.62, y + 16, { align: 'right' })
-        doc.text(`$${item.unitPrice}`, margin + contentW * 0.78, y + 16, { align: 'right' })
+        doc.text(`$${Number(item.unitPrice).toLocaleString()}`, margin + contentW * 0.78, y + 16, { align: 'right' })
         doc.setTextColor(17, 24, 39)
         doc.setFont('helvetica', 'bold')
-        doc.text(`$${item.total}`, margin + contentW, y + 16, { align: 'right' })
+        doc.text(`$${Number(item.total).toLocaleString()}`, margin + contentW, y + 16, { align: 'right' })
         doc.setFont('helvetica', 'normal')
         y += Math.max(24, descLines.length * 14)
       })
@@ -670,11 +671,11 @@ ${biz}`
       doc.setTextColor(107, 114, 128)
       doc.setFontSize(10)
       doc.text('Subtotal', totalsX, y + 14)
-      doc.text(`$${q.subtotal}`, pageW - margin, y + 14, { align: 'right' })
+      doc.text(`$${(q.subtotal ?? 0).toLocaleString()}`, pageW - margin, y + 14, { align: 'right' })
       const hasTax2 = (q.tax ?? 0) > 0
       if (hasTax2) {
         doc.text('Tax (est.)', totalsX, y + 30)
-        doc.text(`$${q.tax}`, pageW - margin, y + 30, { align: 'right' })
+        doc.text(`$${(q.tax ?? 0).toLocaleString()}`, pageW - margin, y + 30, { align: 'right' })
       }
       const lineY2 = hasTax2 ? y + 36 : y + 20
       const totalY2 = hasTax2 ? y + 52 : y + 36
@@ -684,7 +685,7 @@ ${biz}`
       doc.setFont('helvetica', 'bold')
       doc.setFontSize(13)
       doc.text('TOTAL', totalsX, totalY2)
-      doc.text(`$${q.total}`, pageW - margin, totalY2, { align: 'right' })
+      doc.text(`$${(q.total ?? 0).toLocaleString()}`, pageW - margin, totalY2, { align: 'right' })
       y += hasTax2 ? 72 : 56
 
       // Reusable section renderer for history PDF
