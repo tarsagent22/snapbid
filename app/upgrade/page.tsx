@@ -8,7 +8,10 @@ import UpgradeClient from './UpgradeClient'
 import Stripe from 'stripe'
 
 export const metadata: Metadata = {
-  title: 'Upgrade — SnapBid | Lifetime Deal',
+  // Use `absolute` to bypass the root layout `template: '%s | SnapBid'`.
+  // Without this, Next.js appends " | SnapBid" and renders the title as
+  // "Upgrade — SnapBid | Lifetime Deal | SnapBid" (duplicate brand name).
+  title: { absolute: 'Upgrade — SnapBid | Lifetime Deal' },
   description:
     'Unlimited contractor quotes for a one-time payment of $59. No monthly fees, ever.',
 }
