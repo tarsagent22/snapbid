@@ -48,6 +48,7 @@ export default function Home() {
     clientAddress: '',
     clientEmail: '',
     jobDescription: '',
+    projectLocation: '',
     materialTierOverride: '',
     jobType: '',
     propertyType: '',
@@ -913,28 +914,28 @@ ${biz}`
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                 <path d="M5.5 0.5L1.5 5.5h3l-.5 4 4.5-6H5.5V0.5z" fill="#991b1b"/>
               </svg>
-              AI-powered · Built for tradespeople
+              AI-powered · Free cost estimates for homeowners
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight mb-4 leading-[1.1]">
-              Send pro quotes in seconds —<br className="hidden sm:block" /> <span className="text-[#991b1b]">close</span> more jobs
+              Find out what your home project should cost —<br className="hidden sm:block" /> <span className="text-[#991b1b]">instantly</span>
             </h1>
             <p className="text-gray-700 text-lg sm:text-xl max-w-xl mx-auto mb-8 leading-relaxed">
-              Describe the work in plain English. SnapBid builds a professional, itemized quote calibrated to your hourly rate, markup, and region — ready to send in one click.
+              Describe your project, get an itemized cost breakdown in seconds. Free to try.
             </p>
-            <SignInButton mode="modal" forceRedirectUrl="/profile">
+            <SignInButton mode="modal" forceRedirectUrl="/">
               <button className="inline-flex items-center gap-2 bg-[#991b1b] hover:bg-red-800 text-white font-semibold px-7 py-3.5 rounded-xl transition-colors shadow-lg shadow-amber-200 text-sm">
-                Try free — 3 quotes included
+                Get my estimate
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M8 3l5 4-5 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </button>
             </SignInButton>
-            <p className="text-xs text-gray-400 mt-3">Free account · No credit card · Setup in 60 seconds</p>
+            <p className="text-xs text-gray-400 mt-3">Free to try · No credit card · Results in seconds</p>
 
             {/* How it works */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 text-left">
               {[
-                { step: '01', title: 'Describe the job', desc: 'Enter client info and describe the work in plain language — no jargon needed.' },
-                { step: '02', title: 'AI builds the quote', desc: 'Itemized line items, materials, labor, and totals — calibrated to your rates.' },
-                { step: '03', title: 'Download or copy', desc: 'Professional PDF ready to send. Impress clients, close more jobs.' },
+                { step: '01', title: 'Describe your project', desc: 'Tell us what needs to be done and where. No jargon needed — plain English works perfectly.' },
+                { step: '02', title: 'AI builds your estimate', desc: 'Get an itemized cost breakdown with labor, materials, and totals — calibrated to your region.' },
+                { step: '03', title: 'Know what to expect', desc: 'Walk into contractor conversations informed. No more guessing or getting overcharged.' },
               ].map(item => (
                 <div key={item.step} className="bg-[#faf8f5] rounded-2xl border border-gray-100 px-6 py-5 shadow-md">
                   <p className="text-[11px] font-bold text-[#991b1b] tracking-widest mb-3">{item.step}</p>
@@ -1404,10 +1405,10 @@ ${biz}`
               {/* Section header */}
               <div className="mb-5">
                 <h2 className="text-xl font-semibold text-gray-900">
-                  {profile ? `Quote for ${profile.businessName}` : 'Generate a Quote'}
+                  {profile ? `Quote for ${profile.businessName}` : 'Get your cost estimate'}
                 </h2>
                 <p className="text-sm text-gray-500 mt-1">
-                  {profile ? 'Calibrated to your rates — describe the job and go.' : 'Fill in the details and we\'ll handle the math.'}
+                  {profile ? 'Calibrated to your rates — describe the job and go.' : 'Describe your project and we\'ll break down what it should cost.'}
                 </p>
               </div>
 
@@ -1423,36 +1424,7 @@ ${biz}`
 
               <form onSubmit={handleSubmit} className="space-y-5">
 
-                {/* Business + Trade (guests only) */}
-                {!profile && (
-                  <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4" style={{borderLeft: "3px solid #991b1b"}}>
-                    <p className="text-xs font-bold text-[#991b1b] uppercase tracking-widest">Your Business</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className={lbl}>Business Name</label>
-                        <input name="businessName" value={form.businessName} onChange={handleChange}
-                          placeholder="Mike's Plumbing LLC" required className={inp} />
-                      </div>
-                      <div>
-                        <label className={lbl}>Trade</label>
-                        <div className="flex flex-wrap gap-1.5">
-                          {TRADE_CHIPS.map(c => (
-                            <button key={c.value} type="button"
-                              onClick={() => setForm(f => ({ ...f, trade: c.value }))}
-                              className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-all ${
-                                form.trade === c.value
-                                  ? 'bg-[#991b1b] border-[#991b1b] text-white shadow-sm'
-                                  : 'bg-[#faf8f5] border-gray-200 text-gray-500 hover:border-[#991b1b] hover:text-[#991b1b]'
-                              }`}>
-                              {c.label}
-                            </button>
-                          ))}
-                        </div>
-                        {!form.trade && <p className="text-xs text-gray-400 mt-1.5">Select your trade above</p>}
-                      </div>
-                    </div>
-                  </div>
-                )}
+                {/* No business/trade section for homeowners — contractor profile handles this for signed-in users */}
 
                 {/* Client info */}
                 <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4" style={{borderLeft: "3px solid #d97706"}}>
@@ -1562,12 +1534,13 @@ ${biz}`
                   </div>}
                 </div>
 
-                {/* Job description */}
-                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-3" style={{borderLeft: "3px solid #991b1b"}}>
-                  <p className="text-xs font-bold text-[#991b1b] uppercase tracking-widest">Job Description</p>
+                {/* Job description + location */}
+                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4" style={{borderLeft: "3px solid #991b1b"}}>
+                  <p className="text-xs font-bold text-[#991b1b] uppercase tracking-widest">Your Project</p>
                   <div>
+                    <label className={lbl}>What needs to be done?</label>
                     <textarea name="jobDescription" value={form.jobDescription} onChange={handleChange}
-                      placeholder="Describe the job in plain English…"
+                      placeholder="Describe your project in plain English — e.g. 'Remodel master bathroom, replace vanity, retile shower, install new toilet'"
                       required rows={4} maxLength={500}
                       className={`${inp} resize-none`} />
                     <div className="flex items-center justify-between mt-1.5">
@@ -1584,6 +1557,12 @@ ${biz}`
                         {descCount}/500
                       </span>
                     </div>
+                  </div>
+                  <div>
+                    <label className={lbl}>Where is the project? <span className="font-normal text-gray-400">(city, state)</span></label>
+                    <input name="projectLocation" value={form.projectLocation} onChange={handleChange}
+                      placeholder="e.g. Austin, TX" className={inp} />
+                    <p className="text-xs text-gray-400 mt-1">Used to calibrate costs to your local market</p>
                   </div>
                 </div>
 
@@ -1649,10 +1628,10 @@ ${biz}`
                     </>
                   ) : !user ? (
                     <>
-                      <svg width="14" height="14" fill="none" stroke="white" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M7.5 1L2 7.5h4l-1 5.5L13 5.5H9.5V1H7.5z" fill="white"/>
                       </svg>
-                      Sign in to Generate
+                      Get my estimate
                     </>
                   ) : quotesUsed >= FREE_QUOTA && !isSubscribed ? (
                     <>
@@ -1663,7 +1642,7 @@ ${biz}`
                       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                         <path d="M7.5 1L2 7.5h4l-1 5.5L13 5.5H9.5V1H7.5z" fill="white"/>
                       </svg>
-                      Generate Quote
+                      Get my estimate
                     </>
                   )}
                 </button>
@@ -1684,7 +1663,7 @@ ${biz}`
                 {/* Free trial reassurance for guests */}
                 {!user && (
                   <div className="flex items-center justify-center gap-4 flex-wrap pt-0.5">
-                    {[`${FREE_QUOTA} free quotes`, 'No credit card', 'Setup in 60 seconds'].map(item => (
+                    {['Free to try', 'No credit card', 'Results in seconds'].map(item => (
                       <div key={item} className="flex items-center gap-1.5 text-xs text-gray-500">
                         <svg className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
@@ -1782,7 +1761,7 @@ ${biz}`
                     </div>
                   </div>
                   <div className="px-5 pb-3.5">
-                    <p className="text-[10px] text-gray-300 text-center italic">← AI-generated · calibrated to your rates</p>
+                    <p className="text-[10px] text-gray-300 text-center italic">← AI-generated · calibrated to your region</p>
                   </div>
                 </div>
               )}
@@ -1811,14 +1790,14 @@ ${biz}`
               {!user && isLoaded && (
                 <div className="bg-[#faf8f5] rounded-2xl border border-gray-100 shadow-md p-5 space-y-4">
                   <div>
-                    <p className="text-sm font-semibold text-gray-900 mb-1">Quotes calibrated to your business</p>
-                    <p className="text-xs text-gray-400 leading-relaxed">Sign in once to set your hourly rate, markup, and region. Every quote auto-adjusts to your exact numbers.</p>
+                    <p className="text-sm font-semibold text-gray-900 mb-1">Know before you hire</p>
+                    <p className="text-xs text-gray-400 leading-relaxed">Get a realistic cost estimate before talking to contractors — so you know what's fair and what's a ripoff.</p>
                   </div>
                   <div className="space-y-2">
                     {[
-                      'Accurate pricing every time',
-                      'Your branding on the PDF',
-                      'Quote history saved automatically',
+                      'Itemized breakdown of costs',
+                      'Regional pricing calibration',
+                      'Free to use — no account required',
                     ].map(f => (
                       <div key={f} className="flex items-center gap-2 text-xs text-gray-600">
                         <svg className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1828,14 +1807,19 @@ ${biz}`
                       </div>
                     ))}
                   </div>
-                  <SignInButton mode="modal" forceRedirectUrl="/">
-                    <button className="w-full bg-[#991b1b] hover:bg-red-800 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors shadow-sm shadow-amber-200">
-                      Create free account →
-                    </button>
-                  </SignInButton>
-                  <p className="text-center text-[11px] text-gray-400">
-                    ✉️ Just your email — no password needed
+                </div>
+              )}
+
+              {/* For Contractors callout */}
+              {!user && isLoaded && (
+                <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 space-y-2">
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">For Contractors</p>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    Are you a contractor? SnapBid also generates professional quotes you can send to clients.
                   </p>
+                  <a href="/profile" className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#991b1b] hover:text-red-800 transition-colors">
+                    Set up your contractor profile →
+                  </a>
                 </div>
               )}
             </div>
@@ -2156,6 +2140,21 @@ ${biz}`
           </div>
         )}
       </div>
+
+      {/* ── FOR CONTRACTORS CALLOUT ──────────────────────────────────────────── */}
+      {isLoaded && !quote && (
+        <div className="relative z-10 border-t border-gray-100 bg-gray-50/80">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 text-center">
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">For Contractors</p>
+            <p className="text-sm text-gray-600 max-w-md mx-auto mb-3">
+              Are you a contractor? SnapBid also generates professional quotes you can send to clients — with your branding, rates, and PDF download.
+            </p>
+            <a href="/profile" className="inline-flex items-center gap-2 text-sm font-semibold text-[#991b1b] hover:text-red-800 transition-colors border border-[#991b1b]/20 hover:border-[#991b1b]/40 px-4 py-2 rounded-xl bg-white">
+              Set up contractor profile →
+            </a>
+          </div>
+        </div>
+      )}
 
       {/* ── PAYWALL MODAL ────────────────────────────────────────────────────── */}
       {showPaywall && (

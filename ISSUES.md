@@ -4,6 +4,41 @@
 
 ---
 
+### [UX/SEO] #19 — `/upgrade` page `canonical` and `og:url` both point to homepage root
+**Detected:** 2026-03-13 3:11 PM ET (4h quality check cron)
+**Status:** Open
+**Severity:** Low (SEO / social sharing — affects how the page is indexed and how shared links preview)
+
+**Problem:** The `/upgrade` page renders:
+```html
+<link rel="canonical" href="https://snapbid.app"/>
+<meta property="og:url" content="https://snapbid.app"/>
+```
+Both should be `https://snapbid.app/upgrade`. The root layout likely defines the canonical/OG URL and the upgrade page isn't overriding it. Impact: search engines treat `/upgrade` as a duplicate of the homepage; social shares of the upgrade URL show the homepage OG card.
+
+**Fix needed:** In `app/upgrade/page.tsx` metadata export, add:
+```ts
+alternates: { canonical: 'https://snapbid.app/upgrade' },
+openGraph: { url: 'https://snapbid.app/upgrade', ... },
+```
+
+---
+
+### [UX POLISH] #20 — Upgrade page progress bar shows 4% fill when 0 spots claimed
+**Detected:** 2026-03-13 3:11 PM ET (4h quality check cron)
+**Status:** Open
+**Severity:** Low (cosmetic — trust/FOMO signal looks inconsistent to first visitors)
+
+**Problem:** `UpgradeClient.tsx` uses `Math.max(4, spotsPercent)` for the progress bar width, so the bar always shows a 4% red fill even when 0 of 50 spots have been claimed. The text correctly reads "0 of 50 founder spots claimed / 50 left" but the non-zero bar looks contradictory — suggests activity that hasn't happened. Confirmed: `/api/founder-count` returns `{"count":0}` and `initialSpotsLeft: 50` is SSR'd correctly.
+
+**Fix needed:** Either:
+- Remove the `Math.max(4, ...)` floor so the bar is truly empty at 0 claimed (honest signal), OR  
+- Keep the `Math.max(4, ...)` for visual continuity but change the bar color to `bg-gray-300` when count is 0 so it reads as "empty slot" rather than "activity."
+
+The current state — red bar with "0 claimed" text — could make the first real buyer distrust the counter.
+
+---
+
 ### ✅ [MINOR SEO] #18 — `/upgrade` page `<title>` had duplicate "SnapBid" suffix
 **Detected:** 2026-03-13 11:11 AM ET (4h quality check cron)
 **Status:** Resolved — 2026-03-13 11:20 AM ET (commit `9a08694`)

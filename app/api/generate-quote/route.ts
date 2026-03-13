@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const {
       jobDescription, clientName, clientAddress, clientEmail, materialTierOverride,
-      jobType, propertyType, accessDifficulty,
+      jobType, propertyType, accessDifficulty, projectLocation,
     } = body
 
     const { userId } = await auth()
@@ -135,15 +135,20 @@ export async function POST(req: NextRequest) {
       'cost-plus': 'COST-PLUS — show actual material cost + markup as distinct values in description (e.g. "Materials: $200 + 20% markup = $240").',
     }
 
-    const prompt = `You are an expert contractor estimator. Generate a professional, accurate quote.
+    // Determine if this is a homeowner estimate (no profile) or contractor quote
+    const isHomeownerMode = !profile
 
-Business: ${businessName}
+    const prompt = `You are an expert home improvement cost estimator. ${isHomeownerMode ? 'Generate a realistic cost estimate that a homeowner would pay for this project. Frame everything from the homeowner\'s perspective — what they will pay to get this done, including labor and materials.' : 'Generate a professional, accurate quote.'}
+
+${isHomeownerMode ? `Project Location: ${projectLocation || clientAddress || 'United States (national average)'}
+Project Description: ${jobDescription}
+${projectLocation ? `Regional Calibration: Adjust all costs to reflect typical contractor rates and material costs in ${projectLocation}. Local labor markets vary significantly — use realistic regional pricing.` : ''}` : `Business: ${businessName}
 Trade: ${trade}
 ${specialties ? `Specialties: ${specialties}` : ''}
 ${yearsInBusiness ? `Experience: ${yearsInBusiness} years in business (use this exact number on the quote — do not use a range)` : ''}
 Client: ${clientName}
 Address: ${clientAddress}
-Job Description: ${jobDescription}
+Job Description: ${jobDescription}`}
 ${jobContextSection}
 
 Contractor's pricing parameters:
@@ -172,7 +177,7 @@ ${accessDifficulty === 'difficult' ? '- Access is DIFFICULT — add 20-30% to al
 ${minimumJobCharge ? `- If total is under $${minimumJobCharge}, add a "Minimum service charge" line item to reach the minimum` : ''}
 - Notes: payment terms, quote validity${yearsInBusiness ? `, mention ${yearsInBusiness} years of experience (exact number)` : ''}. Professional, 2-3 sentences max.${notesTemplate ? ` Always end notes with this contractor's custom message: "${notesTemplate}"` : ''}
 ${introMessage ? `- Incorporate this contractor message naturally: "${introMessage}"` : ''}
-- scopeOfWork: Write 1-2 sentences describing what work will be performed and what the client receives. This is the "what you're getting" summary shown at the top of the quote. Be specific (mention key tasks/materials), professional, and client-facing. Do NOT repeat pricing or payment terms here.
+- scopeOfWork: Write 1-2 sentences describing what work will be performed and what ${isHomeownerMode ? 'the homeowner can expect to pay for' : 'the client receives'}. ${isHomeownerMode ? 'This is the cost estimate summary. Be specific about scope (tasks, materials), mention regional pricing context if relevant.' : 'This is the "what you\'re getting" summary shown at the top of the quote. Be specific (mention key tasks/materials), professional, and client-facing.'} Do NOT repeat pricing or payment terms here.
 - inclusions: Array of 3-5 short strings (plain phrases, no bullet chars) stating exactly what IS included in this quote price. Be specific to this job (e.g. "All labor and materials", "Site cleanup and debris removal", "Drywall patching after rough-in"). These help clients understand what they're paying for and prevent scope disputes.
 - exclusions: Array of 2-4 short strings stating what is NOT included or what could change the price (e.g. "Permits not included — estimated $X if required", "Additional repairs if hidden damage found", "Paint or finish work unless specified"). Be specific to this trade and job type.
 
