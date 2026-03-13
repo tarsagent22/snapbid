@@ -20,9 +20,12 @@ const TRADE_CHIPS = [
 ]
 
 const EXAMPLE_PROMPTS = [
-  'Install new bathroom vanity and replace shut-off valves',
-  'Repair roof shingles on a 2-story house, approx 800 sq ft',
-  'Wire 3 new outlets in garage and install a 20-amp circuit',
+  'Install a new bathroom vanity (36-inch single sink) including faucet, drain, and shut-off valve connections. Standard bathroom, no tile work needed.',
+  'Repair damaged roof shingles on a 2-story house, approximately 800 sq ft affected area. Asphalt shingles, standard pitch roof.',
+  'Install 3 new electrical outlets in a residential garage and add a dedicated 20-amp circuit. Standard drywall walls, panel has available slots.',
+  'Replace kitchen faucet with a new pull-down sprayer model. Standard under-sink connections, no pipe relocation needed.',
+  'Paint interior of a 12x14 living room including walls and ceiling. Two coats, customer supplying paint, walls in good condition.',
+  'Install luxury vinyl plank flooring in a 200 sq ft bedroom. Remove and dispose of existing carpet, standard subfloor.',
 ]
 
 const FREE_QUOTA = 3
@@ -225,7 +228,7 @@ export default function Home() {
       try { sessionStorage.removeItem(FORM_STORAGE_KEY) } catch {}
       setHistory([]) // will re-fetch if user opens history tab
     } catch (err: any) {
-      setError(err?.message?.includes('limit') ? 'Free quote limit reached. Upgrade to continue.' : 'Couldn\'t generate the quote — try adding more detail about the job (materials, size, scope).')
+      setError(err?.message?.includes('limit') ? 'Free estimate limit reached. Upgrade to continue.' : 'We need a bit more detail — try describing it in a sentence or two. For example: "Replace the kitchen faucet, standard sink, chrome finish."')
     } finally {
       setLoading(false)
     }
