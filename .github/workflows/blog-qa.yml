@@ -1,0 +1,19 @@
+name: Blog QA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/blog/**'
+      - 'app/blog/**'
+      - 'scripts/validate-blog.sh'
+
+jobs:
+  validate:
+    name: Validate Blog Content
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run blog QA checks
+        run: bash scripts/validate-blog.sh

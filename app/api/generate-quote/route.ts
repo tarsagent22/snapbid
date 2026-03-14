@@ -1,21 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
-import OpenAI from 'openai'
 import { auth } from '@clerk/nextjs/server'
 import { getProfile, getSubscriptionStatus, incrementQuoteCount, saveQuoteToHistory } from '@/lib/profile'
 import { getTradeHints } from '@/lib/trade-templates'
 
-// Use local claude-max-api-proxy if configured (runs on TARS1 via Claude Max subscription)
-// Falls back to direct Anthropic API if ANTHROPIC_API_KEY is set
-const LOCAL_PROXY_URL = process.env.CLAUDE_PROXY_URL // e.g. http://localhost:3456
-
-const anthropicClient = LOCAL_PROXY_URL
-  ? null
-  : new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || 'placeholder' })
-
-const openaiClient = LOCAL_PROXY_URL
-  ? new OpenAI({ baseURL: `${LOCAL_PROXY_URL}/v1`, apiKey: 'not-needed' })
-  : null
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 const TRADE_RATES: Record<string, number> = {
   plumbing: 95, electrical: 105, painting: 55, landscaping: 60,
@@ -224,24 +213,13 @@ ${offerTieredOptions ? `{
   "notes": "string"
 }`}`
 
-    let content: string
-    if (openaiClient) {
-      // Using local claude-max-api-proxy (OpenAI-compatible format)
-      const completion = await openaiClient.chat.completions.create({
-        model: 'claude-haiku-4',
-        max_tokens: offerTieredOptions ? 2600 : 1500,
-        messages: [{ role: 'user', content: prompt }],
-      })
-      content = completion.choices[0]?.message?.content || ''
-    } else {
-      // Using direct Anthropic API
-      const message = await anthropicClient!.messages.create({
-        model: 'claude-haiku-4-5',
-        max_tokens: offerTieredOptions ? 2600 : 1500,
-        messages: [{ role: 'user', content: prompt }],
-      })
-      content = message.content[0].type === 'text' ? message.content[0].text : ''
-    }
+    const message = await client.messages.create({
+      model: 'claude-haiku-4-5',
+      max_tokens: offerTieredOptions ? 2600 : 1500,
+      messages: [{ role: 'user', content: prompt }],
+    })
+
+    const content = message.content[0].type === 'text' ? message.content[0].text : ''
     const cleaned = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
     const quoteData = JSON.parse(cleaned)
 
