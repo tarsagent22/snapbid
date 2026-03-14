@@ -29,8 +29,13 @@ if [ ! -d "$BLOG_DIR" ]; then
   exit 0
 fi
 
-MD_FILES=("$BLOG_DIR"/*.md)
-if [ ${#MD_FILES[@]} -eq 0 ] || [ ! -f "${MD_FILES[0]}" ]; then
+MD_FILES=()
+while IFS= read -r f; do
+  [[ "$(basename "$f")" == "keyword-tracker.md" ]] && continue
+  MD_FILES+=("$f")
+done < <(find "$BLOG_DIR" -maxdepth 1 -name "*.md" | sort)
+
+if [ ${#MD_FILES[@]} -eq 0 ]; then
   echo "  No markdown files found — skipping blog checks."
   exit 0
 fi
@@ -38,7 +43,7 @@ fi
 # ─── Check 2: Year accuracy ─────────────────────────────────────────────────
 echo ""
 echo "▶ Checking year references..."
-for f in "$BLOG_DIR"/*.md; do
+for f in "${MD_FILES[@]}"; do
   slug=$(basename "$f" .md)
   # Flag past year in title or headings
   if grep -qE "^(title:|#+ .*)(.*${PREV_YEAR})" "$f"; then
@@ -62,7 +67,7 @@ info "Year checks complete"
 echo ""
 echo "▶ Checking SEO requirements..."
 SEEN_TITLES=()
-for f in "$BLOG_DIR"/*.md; do
+for f in "${MD_FILES[@]}"; do
   slug=$(basename "$f" .md)
   title=$(fm_field "$f" "title" | tr -d '"')
   desc=$(fm_field "$f" "description" | tr -d '"')
@@ -108,7 +113,7 @@ info "SEO checks complete"
 # ─── Check 4: Content minimums ──────────────────────────────────────────────
 echo ""
 echo "▶ Checking content minimums..."
-for f in "$BLOG_DIR"/*.md; do
+for f in "${MD_FILES[@]}"; do
   slug=$(basename "$f" .md)
 
   # Word count (strip frontmatter first)
@@ -136,7 +141,7 @@ BANNED_PHRASES=(
   "Client Email"
   "Generate a quote"
 )
-for f in "$BLOG_DIR"/*.md; do
+for f in "${MD_FILES[@]}"; do
   slug=$(basename "$f" .md)
   for phrase in "${BANNED_PHRASES[@]}"; do
     if grep -qi "$phrase" "$f"; then
