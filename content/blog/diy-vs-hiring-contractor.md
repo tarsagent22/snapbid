@@ -1,6 +1,6 @@
 ---
 title: "DIY vs Hiring a Contractor: When to Do It Yourself (And When Not To)"
-date: "2026-03-14"
+date: "2026-04-02"
 description: "Not every home improvement project needs a contractor. Here's the honest framework for deciding when DIY saves money — and when it becomes the most expensive decision you'll make."
 keywords: ["DIY vs hiring a contractor", "when to hire a contractor", "DIY home improvement", "should I DIY or hire a pro", "when to call a contractor"]
 author: "SnapBid"

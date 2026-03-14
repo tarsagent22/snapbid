@@ -1,6 +1,6 @@
 ---
 title: "How Much Does a Kitchen Remodel Cost? (2026 Complete Guide)"
-date: "2026-03-13"
+date: "2026-03-15"
 description: "Kitchen remodel costs range from $10,000 to $150,000+. Here's exactly what drives the price and how to budget smart."
 keywords: ["how much does a kitchen remodel cost", "kitchen remodel cost", "kitchen renovation cost", "kitchen remodel budget", "kitchen renovation 2026"]
 author: "SnapBid"

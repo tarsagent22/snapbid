@@ -1,6 +1,6 @@
 ---
 title: "Roof Replacement Cost in 2026: What Homeowners Actually Pay"
-date: "2026-03-13"
+date: "2026-03-17"
 description: "Roof replacement costs range from $5,000 to $30,000+. Here's what you'll pay for asphalt, metal, and tile — and what drives the final price."
 keywords: ["roof replacement cost", "how much does a roof replacement cost", "roof replacement cost 2026", "new roof cost", "roofing estimate"]
 author: "SnapBid"

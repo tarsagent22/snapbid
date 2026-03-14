@@ -1,6 +1,6 @@
 ---
 title: "Plumbing Repair Costs: What to Expect Before You Call a Plumber"
-date: "2026-03-13"
+date: "2026-03-21"
 description: "Plumbing repair costs range from $100 to $5,000+ depending on the job. Here's what common repairs actually cost and how to get a fair quote."
 keywords: ["plumbing repair cost", "how much does a plumber cost", "plumbing repair prices 2026", "cost to fix a leak", "water heater replacement cost"]
 author: "SnapBid"

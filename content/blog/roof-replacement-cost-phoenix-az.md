@@ -1,6 +1,6 @@
 ---
 title: "Roof Replacement Cost in Phoenix, AZ (2026 Guide)"
-date: "2026-03-14"
+date: "2026-03-25"
 description: "Roof replacement in Phoenix, AZ costs $7,000–$22,000 for most homes. Tile roofs dominate the market here — here's the full breakdown of what Phoenix homeowners actually pay."
 keywords: ["roof replacement cost Phoenix AZ", "Phoenix roof replacement cost", "tile roof replacement Arizona", "roofing cost Phoenix 2026"]
 author: "SnapBid"

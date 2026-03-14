@@ -1,6 +1,6 @@
 ---
 title: "How Much Does It Cost to Build a Deck? (2026 Pricing Guide)"
-date: "2026-03-13"
+date: "2026-03-19"
 description: "Deck building costs range from $15 to $55 per sqft depending on material. Here's the full breakdown for wood, composite, and cedar decks in 2026."
 keywords: ["how much does it cost to build a deck", "deck building cost", "deck cost per square foot", "composite deck cost", "wood deck cost 2026"]
 author: "SnapBid"

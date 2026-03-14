@@ -38,8 +38,11 @@ function getPosts(): PostMeta[] {
     }
   })
 
-  // Sort newest first
-  return posts.sort((a, b) => (a.date < b.date ? 1 : -1))
+  // Only show posts published on or before today, sorted newest first
+  const today = new Date().toISOString().slice(0, 10)
+  return posts
+    .filter(p => p.date <= today)
+    .sort((a, b) => (a.date < b.date ? 1 : -1))
 }
 
 export default function BlogIndex() {

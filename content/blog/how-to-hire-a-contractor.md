@@ -1,6 +1,6 @@
 ---
 title: "How to Hire a Contractor: 10 Things You Must Check Before Signing"
-date: "2026-03-14"
+date: "2026-03-31"
 description: "Hiring the wrong contractor is one of the most expensive mistakes a homeowner can make. Here are 10 specific checks to protect yourself before you sign anything."
 keywords: ["how to hire a contractor", "hiring a contractor checklist", "contractor red flags", "how to find a good contractor", "contractor vetting guide"]
 author: "SnapBid"

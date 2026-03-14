@@ -1,6 +1,6 @@
 ---
 title: "HVAC Replacement Cost in Charlotte, NC (2026 Guide)"
-date: "2026-03-14"
+date: "2026-03-29"
 description: "HVAC replacement in Charlotte, NC costs $4,000–$12,000 for most homes. Heat pumps dominate the Charlotte market — here's what homeowners actually pay and what drives the price."
 keywords: ["HVAC replacement cost Charlotte NC", "Charlotte NC HVAC cost", "heat pump replacement Charlotte", "air conditioner replacement cost North Carolina 2026"]
 author: "SnapBid"
