@@ -1,6 +1,12 @@
 #!/bin/bash
 # SnapBid deploy script — run from workspace/snapbid
 # Usage: ./scripts/deploy.sh "optional commit message"
+#
+# Pre-deploy checklist (MIRROR 2026-03-13):
+# - If any AI-input fields, prompts, or presets were changed:
+#   → Manually test the shortest/most minimal input against the live API
+#   → Verify it doesn't hit the "We need a bit more detail..." error path
+#   → A 2-minute smoke test prevents same-session hotfixes
 set -e
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
