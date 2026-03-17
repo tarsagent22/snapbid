@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { useUser, SignInButton, UserButton } from '@clerk/nextjs'
 
 const navLinks = [
   { label: 'Cost Guides', href: '/blog' },
@@ -12,6 +13,7 @@ const navLinks = [
 
 export default function Header() {
   const pathname = usePathname()
+  const { user, isLoaded } = useUser()
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -105,6 +107,21 @@ export default function Header() {
           >
             Get Estimate
           </Link>
+
+          {/* Auth */}
+          {isLoaded && (
+            user ? (
+              <div className="ml-2 flex items-center">
+                <UserButton />
+              </div>
+            ) : (
+              <SignInButton mode="modal" forceRedirectUrl="/">
+                <button className="ml-2 text-sm text-gray-500 hover:text-[#991b1b] font-medium transition-colors duration-150">
+                  Sign in
+                </button>
+              </SignInButton>
+            )
+          )}
         </nav>
 
         {/* Hamburger (mobile) */}
