@@ -31,7 +31,13 @@ fi
 
 MD_FILES=()
 while IFS= read -r f; do
-  [[ "$(basename "$f")" == "keyword-tracker.md" ]] && continue
+  local_name="$(basename "$f")"
+  [[ "$local_name" == "keyword-tracker.md" ]] && continue
+  [[ "$local_name" == "queue.md" ]] && continue
+  [[ "$local_name" == "affiliate-links.json" ]] && continue
+  # skip any file in feedback/ or rejected/ subdirs
+  [[ "$f" == */feedback/* ]] && continue
+  [[ "$f" == */rejected/* ]] && continue
   MD_FILES+=("$f")
 done < <(find "$BLOG_DIR" -maxdepth 1 -name "*.md" | sort)
 
