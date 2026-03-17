@@ -947,53 +947,7 @@ ${biz}`
       <div className="absolute inset-0 dot-grid opacity-50 pointer-events-none z-0" />
 
       {/* ── HEADER ──────────────────────────────────────────────────────────── */}
-      <header className="bg-[#faf8f5] border-b border-gray-100 sticky top-0 z-50 relative">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center">
-            <img src="/logo.svg" alt="SnapBid" className="h-9 w-auto" />
-          </div>
 
-          {/* Nav / auth */}
-          <div className="flex items-center gap-3">
-            {isLoaded && (
-              user ? (
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => router.push('/profile')}
-                    className="hidden sm:flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block"></span>
-                    {profile?.businessName || 'My Profile'}
-                  </button>
-                  {isSubscribed && (
-                    <button
-                      onClick={async () => {
-                        try {
-                          const res = await fetch('/api/stripe/portal', { method: 'POST' })
-                          const data = await res.json()
-                          if (data.url) window.location.href = data.url
-                        } catch {}
-                      }}
-                      className="hidden sm:flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
-                      title="Manage subscription"
-                    >
-                      ⚡ Pro · Manage
-                    </button>
-                  )}
-                  <UserButton />
-                </div>
-              ) : (
-                <SignInButton mode="modal" forceRedirectUrl="/profile">
-                  <button className="text-sm bg-[#991b1b] hover:bg-red-800 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm shadow-amber-200">
-                    Sign In
-                  </button>
-                </SignInButton>
-              )
-            )}
-          </div>
-        </div>
-      </header>
 
       {/* ── UPGRADE SUCCESS BANNER ──────────────────────────────────────────── */}
       {showUpgradedBanner && (

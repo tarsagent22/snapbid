@@ -53,19 +53,7 @@ export default function BlogIndex() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--background, #faf8f5)' }}>
-      {/* Header */}
-      <header className="bg-[#faf8f5] border-b border-gray-100 sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-          <Link href="/">
-            <img src="/logo.svg" alt="SnapBid" className="h-9 w-auto" />
-          </Link>
-          <nav className="flex items-center gap-4">
-            <Link href="/" className="text-sm text-gray-500 hover:text-gray-800 transition-colors">
-              Get Estimate
-            </Link>
-          </nav>
-        </div>
-      </header>
+
 
       {/* Hero */}
       <div className="bg-[#1C1917] text-white">
