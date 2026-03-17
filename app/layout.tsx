@@ -3,6 +3,7 @@ import { Inter, Geist_Mono } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import { auth } from '@clerk/nextjs/server'
 import './globals.css'
+import Header from './components/Header'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -121,7 +122,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
         </head>
         <body>
+          <Header />
+          <div className="pt-16">
           {children}
+          </div>
           <footer className="border-t border-gray-100 py-6 bg-[#faf8f5]">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
               <p className="text-xs text-gray-400">© 2026 SnapBid · Built to help homeowners understand project costs</p>
