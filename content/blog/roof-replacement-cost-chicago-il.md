@@ -1,4 +1,3 @@
-```yaml
 ---
 title: "Roof Replacement Cost in Chicago, IL (2026)"
 date: "2026-03-18"
@@ -9,7 +8,6 @@ author: "SnapBid"
 readTime: "9 min read"
 wordCount: 1450
 ---
-```
 
 # Roof Replacement Cost in Chicago, IL (2026)
 
