@@ -10,6 +10,7 @@ Check this before starting any new post. A post is not complete until both Publi
 | Bathroom Remodel Cost in Austin, TX (2026) | /blog/bathroom-remodel-cost-austin-tx | 2026-03-15 | 1420 | 2026-03-15 |
 | HVAC Replacement Cost in Denver, CO (2026) | /blog/hvac-replacement-cost-denver-co | 2026-03-16 | 1796 | 2026-03-16 |
 | Kitchen Remodel Cost in Phoenix, AZ (2026) | /blog/kitchen-remodel-cost-phoenix-az | 2026-03-17 | 1400 | 2026-03-17 |
+| Roof Replacement Cost in Chicago, IL (2026) | /blog/roof-replacement-cost-chicago-il | 2026-03-18 | 1990 | 2026-03-18 |
 
 ## Queued / Scheduled
 
