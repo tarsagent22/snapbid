@@ -13,6 +13,7 @@ Check this before starting any new post. A post is not complete until both Publi
 | Roof Replacement Cost in Chicago, IL (2026) | /blog/roof-replacement-cost-chicago-il | 2026-03-18 | 1990 | 2026-03-18 |
 | Bathroom Remodel Cost in Charlotte, NC (2026) | /blog/bathroom-remodel-cost-charlotte-nc | 2026-03-20 | 1722 | 2026-03-20 |
 | HVAC Replacement Cost in Houston, TX (2026) | /blog/hvac-replacement-cost-houston-tx | 2026-03-21 | 1729 | 2026-03-21 |
+| Deck Addition Cost in Seattle, WA (2026) | /blog/deck-addition-cost-seattle-wa | 2026-03-23 | 2031 | pending |
 
 ## Queued / Scheduled
 
